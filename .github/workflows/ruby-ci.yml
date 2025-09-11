@@ -30,8 +30,9 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: ./api/.ruby-version
           bundler-cache: true
+          working-directory: ./api
 
       - name: Scan for common Rails security vulnerabilities using static analysis
         run: bundle exec brakeman --no-pager
@@ -50,8 +51,9 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: ./api/.ruby-version
           bundler-cache: true
+          working-directory: ./api
 
       - name: Lint code for consistent style
         run: bundle exec rubocop -f github
