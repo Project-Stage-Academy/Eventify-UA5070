@@ -30,10 +30,8 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          # ruby-version: api/.ruby-version
+          ruby-version: .ruby-version
           bundler-cache: true
-        env:
-          BUNDLE_GEMFILE: api/Gemfile
 
       - name: Scan for common Rails security vulnerabilities using static analysis
         run: bundle exec brakeman --no-pager
@@ -52,10 +50,8 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          # ruby-version-file: api/.ruby-version
+          ruby-version: .ruby-version
           bundler-cache: true
-        env:
-          BUNDLE_GEMFILE: api/Gemfile
 
       - name: Lint code for consistent style
         run: bundle exec rubocop -f github
