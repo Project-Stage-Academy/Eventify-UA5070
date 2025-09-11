@@ -2,17 +2,18 @@ name: RUBY-CI
 
 on:
   push:
-    branches: ["issue-*"]
+    branches: ["issue-**"]
     paths:
       - "api/**"
-      - ".github/workflows/ci.yml"
+      - ".github/workflows/ruby-ci.yml"
       - "api/.rubocop*"
   pull_request:
     branches: [main, develop]
     paths:
       - "api/**"
-      - ".github/workflows/ci.yml"
+      - ".github/workflows/ruby-ci.yml"
       - "api/.rubocop*"
+  workflow_dispatch: {}
 
 jobs:
   scan_ruby:
@@ -29,8 +30,10 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: api/.ruby-version
+          ruby-version-file: api/.ruby-version
           bundler-cache: true
+        env:
+          BUNDLE_GEMFILE: api/Gemfile
 
       - name: Scan for common Rails security vulnerabilities using static analysis
         run: bundle exec brakeman --no-pager
@@ -49,7 +52,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: api/.ruby-version
+          ruby-version-file: api/.ruby-version
           bundler-cache: true
         env:
           BUNDLE_GEMFILE: api/Gemfile
