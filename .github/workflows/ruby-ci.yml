@@ -21,7 +21,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: api
+        working-directory: ./api
 
     steps:
       - name: Checkout code
@@ -30,7 +30,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ./api/.ruby-version
+          ruby-version: file:./api/.ruby-version
           bundler-cache: true
           working-directory: ./api
 
@@ -42,7 +42,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: api
+        working-directory: ./api
 
     steps:
       - name: Checkout code
@@ -51,7 +51,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ./api/.ruby-version
+          ruby-version: file:./api/.ruby-version
           bundler-cache: true
           working-directory: ./api
 
