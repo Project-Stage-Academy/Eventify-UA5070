@@ -30,7 +30,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version-file: api/.ruby-version
+          ruby-version: api/.ruby-version
           bundler-cache: true
         env:
           BUNDLE_GEMFILE: api/Gemfile
@@ -52,7 +52,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version-file: api/.ruby-version
+          ruby-version: api/.ruby-version
           bundler-cache: true
         env:
           BUNDLE_GEMFILE: api/Gemfile
