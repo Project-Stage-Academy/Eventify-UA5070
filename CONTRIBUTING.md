@@ -1,5 +1,7 @@
 # Setup guide
 
+## Ruby
+
 ### rbenv install
 
 ##### 1. Install build tools and libraries
@@ -64,4 +66,26 @@ cd ./Eventify-UA5070/api
 bundle install
 ```
 
+## React
 
+### npm install
+
+##### 1. Install nvm via curl
+
+```shell
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+```
+
+##### 2. Install Node
+
+```shell
+nvm install 22
+```
+
+### Install React project deps
+
+```shell
+git clone https://github.com/Project-Stage-Academy/Eventify-UA5070.git
+cd ./Eventify-UA5070/web
+npm install
+```
