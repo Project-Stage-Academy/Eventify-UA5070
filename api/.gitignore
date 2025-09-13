@@ -31,5 +31,11 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-# IDEs
-/.idea
+# Ignore IDE and editor config files
+.idea
+
+# Ignore Visual Studio Code config folder
+.vscode
+
+# Ignore Mac system files
+.DS_Store
