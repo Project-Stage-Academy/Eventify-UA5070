@@ -44,7 +44,7 @@ echo 'export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"' >> ~/.bashrc
 **for zsh users**
 
 ```shell
-echo 'export PATH=$HOME:/usr/local/bin:$PATH' >> ~/.bashrc
+echo 'export PATH=$HOME:/usr/local/bin:$PATH' >> ~/.zshrc
 echo 'export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"' >> ~/.zshrc
 ```
 
