@@ -1,91 +1,76 @@
 # Setup guide
 
-## Ruby
+## ASDF Installation
 
-### rbenv install
+> [!NOTE]
+> These installation steps have been tested on Ubuntu 24.04 LTS and Debian 12 (Bookworm). If you’re using another OS and run into issues, please open an issue or submit a PR with the fix or a short guide.
 
-##### 1. Install build tools and libraries
+### 1. Requirements
+
+ASDF installation requires installed `git` and `curl` tools.
 
 ```shell
 sudo apt-get update
 sudo apt-get upgrade
-sudo apt-get install -y git curl build-essential libssl-dev \
-libreadline-dev zlib1g-dev libyaml-dev libffi-dev libgdbm-dev \
-libdb-dev uuid-dev
+sudo apt-get install -y git curl
 ```
 
-##### 2. Install rbenv
+To build ASDF from source you also need installed Golang with version at least 1.23.4. You can download and install Golang from [here](https://go.dev/doc/install).
+
+### 2. Download ASDF
+
+```shell
+cd ~
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.18.0
+```
+
+### 3. Build ASDF from source
+
+```shell
+cd ~/.asdf
+make
+cp ./asdf ~/.local/bin
+```
+
+### 4. Add ASDF to system PATH
 
 **for bash users**
 
 ```shell
-cd ~
-git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-echo 'eval "$(rbenv init - bash)"' >> ~/.bashrc
-exec $SHELL -l
+echo 'export PATH=$HOME:/usr/local/bin:$PATH' >> ~/.bashrc
+echo 'export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"' >> ~/.bashrc
 ```
 
 **for zsh users**
 
 ```shell
-cd ~
-git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.zshrc
-echo 'eval "$(rbenv init - bash)"' >> ~/.zshrc
-exec $SHELL -l
+echo 'export PATH=$HOME:/usr/local/bin:$PATH' >> ~/.bashrc
+echo 'export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"' >> ~/.zshrc
 ```
 
-##### 3. Install ruby-build
+## Start working on the project
 
-```shell
-mkdir -p "$(rbenv root)"/plugins
-git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
 ```
-
-##### 4. Install Ruby
-
-```shell
-rbenv install 3.4.5
-rbenv global 3.4.5
-rbenv rehash
-```
-
-##### 5. Install Bundler
-
-```shell
-gem install bundler
-rbenv rehash
-```
-
-### API gems install
-
-```shell
 git clone https://github.com/Project-Stage-Academy/Eventify-UA5070.git
-cd ./Eventify-UA5070/api
+cd ./Eventify-UA5070
+```
+
+### Working on Rails api
+
+In project root run:
+
+```shell
+cd ./api
+asdf install
 bundle install
 ```
 
-## React
+### Working on React SPA
 
-### npm install
-
-##### 1. Install nvm via curl
+In project root run:
 
 ```shell
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-```
-
-##### 2. Install Node
-
-```shell
-nvm install 22
-```
-
-### Install React project deps
-
-```shell
-git clone https://github.com/Project-Stage-Academy/Eventify-UA5070.git
-cd ./Eventify-UA5070/web
+cd ./web
+asdf install
 npm install
 ```
