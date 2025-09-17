@@ -10,7 +10,7 @@ class CreateEvents < ActiveRecord::Migration[8.0]
       t.decimal :ticket_price, precision: 10, scale: 2
       t.string  :status, default: "draft"
       t.references :organizer, type: :uuid, foreign_key: { to_table: :users }, null: true
-      
+
       t.timestamps
     end
 
