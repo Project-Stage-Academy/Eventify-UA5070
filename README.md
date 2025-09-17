@@ -31,7 +31,8 @@ We use **issue-based branching** to keep development organized and traceable.
 
 ### Project Structure & Conventions
 
-See [docs/project-structure.md](docs/project-structure.md) for folder organization and conventions.
+- Project layout: see [docs/project-structure.md](docs/project-structure.md).
+- Conventions: see [docs/conventions.md](docs/conventions.md).
 
 ### Workflow
 
