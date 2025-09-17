@@ -36,7 +36,7 @@ See [docs/project-structure.md](docs/project-structure.md) for folder organizati
 ### Workflow
 
 1. Make sure there is a GitHub issue for your work.
-2. Create a new branch from `main`:
+2. Create a new branch from `develop`:
 
    ```bash
    git checkout -b issue-12/add-event-crud

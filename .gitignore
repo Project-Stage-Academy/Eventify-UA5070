@@ -67,3 +67,12 @@ yarn-debug.log*
 /storage/*
 !/storage/.keep
 /public/uploads
+
+# Ignore IDE and editor config files
+.idea
+
+# Ignore Visual Studio Code config folder
+.vscode
+
+# Ignore Mac system files
+.DS_Store
