@@ -27,6 +27,9 @@ This document defines naming, coding, and workflow conventions for Eventify.
 - Commit messages follow Conventional Commits (`feat:`, `fix:`, `test:`, `docs:`).
 - CI/CD stages: lint → test → build.
 - Documentation: Technical docs under `docs/` (ERD, API spec).
+- Empty directories: 
+  - Use `.gitkeep` to keep required empty directories in Git.
+  - Remove the `.gitkeep` once real files are added to that directory.
 
 ---
 
