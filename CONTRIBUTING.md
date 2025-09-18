@@ -29,7 +29,8 @@ git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.18.0
 ```shell
 cd ~/.asdf
 make
-cp ./asdf ~/.local/bin
+mkdir ~/.local/bin
+cp ~/.asdf/asdf ~/.local/bin
 ```
 
 ### 4. Add ASDF to system PATH
@@ -61,6 +62,7 @@ In project root run:
 
 ```shell
 cd ./api
+asdf plugin add ruby
 asdf install
 bundle install
 ```
@@ -71,6 +73,7 @@ In project root run:
 
 ```shell
 cd ./web
+asdf plugin add nodejs
 asdf install
 npm install
 ```
