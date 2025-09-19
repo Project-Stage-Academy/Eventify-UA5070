@@ -1,0 +1,10 @@
+uk:
+  activerecord:
+    errors:
+      models:
+        event:
+          attributes:
+            start_date:
+              not_in_future: "Дата початку події має бути в майбутньому"
+            finish_date:
+              after_start_date: "дата завершення має бути після дати початку події"
