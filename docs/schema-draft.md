@@ -7,130 +7,114 @@ This document describes the comprehensive database schema for the event manageme
 
 ---
 
-## Entities
-
-### 1. User
-Represents a person who can participate in or organize events.
-
-- **id**: Primary key, unique identifier of the user.  
-- **name**: User's full name (required).  
-- **email**: User's email address (required, unique).  
-- **password_digest**: Hashed password for authentication.  
-- **created_at / updated_at**: Timestamps automatically managed by the system.
+## users
+- **id (PK)** – unique user identifier.  
+- **name** – user’s name (required).  
+- **email** – user’s email (required, unique).  
+- **password_hashed** – stored password hash.  
+- **created_at, updated_at** – managed automatically by ActiveRecord.  
 
 ---
 
-### 2. Role
-Defines different permission levels in the system.
-
-- **RoleId**: Primary key, unique identifier of the role.  
-- **name**: Role name (required, unique). Possible values: `USER`, `ORGANIZER`, `ADMIN`.  
-- **description**: Optional text describing the role permissions.
+## roles
+- **id (PK)** – unique role identifier.  
+- **name** – role name (e.g., `ADMIN`, `USER`), unique and required.  
 
 ---
 
-### 3. UserRole
-Junction table managing many-to-many relationships between users and roles.
-
-- **UserId**: Foreign key referencing `User.id` (composite primary key).  
-- **RoleId**: Foreign key referencing `Role.RoleId` (composite primary key).
-
----
-
-### 4. Event
-Represents an event with comprehensive details and status tracking.
-
-- **id**: Primary key, unique identifier of the event.  
-- **title**: Event title (required).  
-- **description**: Optional text describing the event.  
-- **location**: Event location (required).  
-- **start_date**: Event start date and time (required, must be in the future).  
-- **finish_date**: Event end date and time (required, must be after start_date).  
-- **participant_capacity**: Maximum number of participants (optional).  
-- **ticket_price**: Event ticket price (optional, must be non-negative).  
-- **status**: Event status (required). Possible values: `PUBLISHED`, `DRAFT`, `CANCELLED`, `COMPLETED`, `IN_REVIEW`, `REJECTED`.
+## user_roles
+Join table for **many-to-many** relation between `users` and `roles`.  
+- **user_id (FK → users.id)** – user reference.  
+- **role_id (FK → roles.id)** – role reference.  
+- **composite PK (user_id, role_id)** – ensures uniqueness.  
 
 ---
 
-### 5. EventParticipant
-Junction table managing event registrations and participant status.
-
-- **user_id**: Foreign key referencing `User.id` (composite primary key).  
-- **event_id**: Foreign key referencing `Event.id` (composite primary key).  
-- **registered_at**: Timestamp of registration (auto-generated).
-
----
-
-### 6. EventOrganizer
-Manages which users can organize specific events.
-
-- **id**: Primary key, unique identifier.  
-- **participant_id**: Foreign key referencing `EventParticipant.id`.
-
----
-
-### 7. Member
-Tracks detailed participant information and ratings.
-
-- **id**: Primary key, unique identifier.  
-- **participant_id**: Foreign key referencing `EventParticipant.id`.  
-- **ticket_qr_code**: QR code for event entry (unique).  
-- **rating**: Member rating (integer, must be between 1-5).  
-- **comment**: Additional comments (optional).
+## events
+Main table for events.  
+- **id (PK)** – unique event identifier.  
+- **title** – event title.  
+- **description** – event description.  
+- **location** – event location.  
+- **start_date** – event start timestamp.  
+- **finish_date** – event end timestamp.  
+- **member_capacity** – maximum allowed participants.  
+- **ticket_price** – ticket price.  
+- **status** – event status:  
+  - `DRAFT`  
+  - `PUBLISHED`  
+  - `CANCELLED`  
+  - `ARCHIVED`  
+- **created_at, updated_at** – managed automatically.  
 
 ---
 
-### 8. EventParticipantComments
-Stores comments from participants about events.
-
-- **id**: Primary key, unique identifier.  
-- **participant_id**: Foreign key referencing `EventParticipant.id`.  
-- **comment**: Comment text (required).  
-- **created_at**: Comment timestamp (auto-generated).
+## event_organizers
+Defines which users are organizers of an event.  
+- **user_id (FK → users.id)**  
+- **event_id (FK → events.id)**  
+- **composite PK (user_id, event_id)** – one user can organize the same event only once.  
 
 ---
 
-### 9. ReviewSubmission
-Manages event review processes.
-
-- **id**: Primary key, unique identifier.  
-- **event_id**: Foreign key referencing `Event.id`.  
-- **status**: Review status (required). Possible values: `OPEN`, `CLOSED`.  
-- **comment**: Review comments (optional).  
-- **submitted_at**: Submission timestamp (auto-generated).
-
----
-
-### 10. Tag
-Provides categorization system for events.
-
-- **id**: Primary key, unique identifier.  
-- **name**: Tag name (required, unique).
+## event_members
+Defines event participation.  
+- **id (PK)**  
+- **user_id (FK → users.id)** – participant reference.  
+- **event_id (FK → events.id)** – event reference.  
+- **status** – membership status (TBD: pending, approved, etc.).  
+- **ticket_qr_code** – unique ticket identifier.  
+- **rating** – smallint, constrained between 1 and 5.  
+- **comment** – optional participant comment.  
+- **unique_pair(user_id, event_id)** – prevents duplicates.  
 
 ---
 
-### 11. EventTags
-Junction table managing many-to-many relationships between events and tags.
-
-- **event_id**: Foreign key referencing `Event.id` (composite primary key).  
-- **tag_id**: Foreign key referencing `Tag.id` (composite primary key).
+## event_comments
+User comments on events.  
+- **id (PK)**  
+- **event_id (FK → events.id)** – event reference.  
+- **author_id (FK → users.id)** – author of the comment.  
+- **message_text** – comment text.  
+- **belongs_to (FK → event_comments.author_id, nullable)** – optional reply to another comment.  
 
 ---
 
-## Relationships
+## tags
+- **id (PK)**  
+- **name** – unique tag name.  
+Used for categorizing events.  
 
-### Primary Relationships
+---
 
-- **User ↔ Role** (Many-to-Many via UserRole): Users can have multiple roles, roles can be assigned to multiple users.
+## event_tags
+Join table for **many-to-many** relation between events and tags.  
+- **event_id (FK → events.id)**  
+- **tag_id (FK → tags.id)**  
+- **composite PK (event_id, tag_id)**  
 
-- **User ↔ Event** (Many-to-Many via EventParticipant): Users can participate in multiple events, events can have multiple participants.
+---
 
-- **Event ↔ Tag** (Many-to-Many via EventTags): Events can have multiple tags, tags can be applied to multiple events.
+## proposed_events
+Moderation workflow for new events or updates to existing events.  
+- **id (PK)**  
+- **event_id (FK → events.id, nullable)** – `NULL` means new event, otherwise it refers to the event being updated.  
+- **title, description, location, start_date, finish_date, member_capacity, ticket_price** – proposed fields.  
+- **review_status** – status of review process:  
+  - `DRAFT`  
+  - `ON_REVIEW`  
+  - `APPROVED`  
+  - `REJECTED`  
+- **review_comment** – moderator’s comment.  
 
-- **EventParticipant → EventOrganizer** (One-to-Zero-or-One): Some participants can become organizers.
+---
 
-- **EventParticipant → Member** (One-to-Zero-or-One): Participants can have detailed member profiles with ratings and QR codes.
+# Relationships (Summary)
 
-- **EventParticipant → EventParticipantComments** (One-to-Many): Participants can make multiple comments about events.
-
-- **Event → ReviewSubmission** (One-to-Many): Events can have multiple review submissions during the approval process.
+- One **User** can have many **Roles** (through `user_roles`).  
+- One **User** can organize many **Events** (through `event_organizers`).  
+- One **User** can participate in many **Events** (through `event_members`).  
+- One **User** can post many **Comments**.  
+- One **Event** can have many **Members**, **Organizers**, **Comments**, and **Tags**.  
+- One **Event** can have zero or one **ProposedEvent**.  
+- One **Tag** can be assigned to many **Events** (through `event_tags`).  
