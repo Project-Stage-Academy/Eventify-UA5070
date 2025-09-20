@@ -251,6 +251,12 @@ GEM
     regexp_parser (2.11.2)
     reline (0.6.2)
       io-console (~> 0.5)
+    rswag-api (2.16.0)
+      activesupport (>= 5.2, < 8.1)
+      railties (>= 5.2, < 8.1)
+    rswag-ui (2.16.0)
+      actionpack (>= 5.2, < 8.1)
+      railties (>= 5.2, < 8.1)
     rgeo (3.0.1)
     rgeo-activerecord (8.0.0)
       activerecord (>= 7.0)
@@ -373,6 +379,8 @@ DEPENDENCIES
   pg
   puma (>= 5.0)
   rails (~> 8.0.2, >= 8.0.2.1)
+  rswag-api
+  rswag-ui
   rspec-rails (~> 6.1)
   rubocop
   rubocop-performance

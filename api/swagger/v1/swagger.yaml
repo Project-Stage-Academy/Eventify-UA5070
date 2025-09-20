@@ -1,0 +1,10 @@
+openapi: 3.0.1
+info:
+  title: Eventify API
+  version: v1
+  description: |
+    REST API for Eventify MVP
+servers:
+  - url: http://localhost:7000
+paths: {}
+components: {}
