@@ -38,7 +38,7 @@ class Event < ApplicationRecord
   def validate_finish_date
     return if start_date.blank? || finish_date.blank?
 
-    if finish_date <= start_date
+    if finish_date < start_date
       errors.add(:finish_date, :after_start_date)
     end
   end
