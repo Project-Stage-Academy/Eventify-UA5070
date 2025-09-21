@@ -76,3 +76,4 @@ yarn-debug.log*
 
 # Ignore Mac system files
 .DS_Store
+.venv/
