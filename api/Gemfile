@@ -39,7 +39,7 @@ gem "thruster", require: false
 # gem "rack-cors"
 
 
-gem 'kaminari'
+gem "kaminari"
 
 group :development, :test do
   gem "dotenv-rails"

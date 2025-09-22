@@ -2,7 +2,7 @@ class EventsController < ApplicationController
   def index
     events = Event.all
 
-    #sorting
+    # sorting
     sortable = {
       "title" => :title,
       "date"  => :created_at,
@@ -13,7 +13,7 @@ class EventsController < ApplicationController
     sort_direction = params[:direction] == "desc" ? :desc : :asc
     events = events.order(sort_column => sort_direction)
 
-    #pagination         
+    # pagination
     @events = events.page(params[:page]).per(params[:per_page] || 10)
 
     render json: {
@@ -28,7 +28,7 @@ class EventsController < ApplicationController
 
   def show
     @event = Event.find(params[:id])
-    render json:{data: @event.as_json}
+    render json: { data: @event.as_json }
   end
 
   def create
