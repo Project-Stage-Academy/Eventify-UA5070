@@ -7,3 +7,14 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+
+puts "Seeding events..."
+
+20.times do |i|
+  Event.create!(
+    title: "Event #{i + 1}"
+  )
+end
+
+puts "Seeding done!"
