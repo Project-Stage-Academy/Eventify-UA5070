@@ -14,7 +14,7 @@ class EventsController < ApplicationController
     events = events.order(sort_column => sort_direction)
 
     #pagination         
-    events = events.page(params[:page]).per(params[:per_page] || 10)
+    @events = events.page(params[:page]).per(params[:per_page] || 10)
 
     render json: {
       data: events.as_json,
@@ -27,7 +27,8 @@ class EventsController < ApplicationController
   end
 
   def show
-
+    @event = Event.find(params[:id])
+    render json:{data: @event.as_json}
   end
 
   def create
