@@ -2,14 +2,14 @@ class Event < ApplicationRecord
   belongs_to :organizer, class_name: "User", optional: false
 
   enum status: {
-  draft: 0,
-  published: 1,
-  in_review: 2,
-  rejected: 3,
-  cancelled: 4,
-  completed: 5,
-  archived: 6
-}
+      draft: 0,
+      published: 1,
+      in_review: 2,
+      rejected: 3,
+      cancelled: 4,
+      completed: 5,
+      archived: 6
+  }
 
   # Validations for text fields
   validates :title, presence: true, length: { maximum: 150 }
