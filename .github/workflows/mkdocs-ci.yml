@@ -1,0 +1,46 @@
+name: Deploy MkDocs Manually
+
+on:
+  push:
+    branches: ["issue-**"]
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "requirements.txt"
+  pull_request:
+    branches: [develop]
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "requirements.txt"
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install MkDocs and Dependencies
+        run: pip install mkdocs mkdocs-material mkdocs-include-markdown-plugin
+      - name: Build MkDocs Site
+        run: mkdocs build
+      - name: Deploy to gh-pages Branch
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          cd site
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add origin https://x-access-token:${GH_TOKEN}@github.com/Project-Stage-Academy/Eventify-UA5070.git
+          git checkout -b gh-pages
+          git add .
+          git commit -m "Deploy MkDocs site"
+          git push --force origin gh-pages

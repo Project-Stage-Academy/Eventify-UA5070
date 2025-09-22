@@ -76,4 +76,9 @@ yarn-debug.log*
 
 # Ignore Mac system files
 .DS_Store
+
+#Ignore Python environment
 .venv/
+
+#Ignore mkdocs static build directory
+/site

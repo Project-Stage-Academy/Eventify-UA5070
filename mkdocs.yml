@@ -1,0 +1,80 @@
+site_name: Eventify Docs
+site_url: https://example.com/docs/
+repo_url: https://github.com/Project-Stage-Academy/Eventify-UA5070
+repo_name: Eventify-UA5070
+edit_uri: ""
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.instant
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+    - content.action.edit
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/white-balance-sunny
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+nav:
+  - Home: index.md
+
+  - API:
+      - Overview: api/index.md
+      - Swagger (UI): api/swagger.md
+
+  - Dev Guide:
+    - Project Structure: project-structure.md
+    - Contributing: guides/contributing.md
+    - Rails API Guide: guides/rails.md
+    - React Guide: guides/react.md
+
+
+
+plugins:
+  - search
+  - include-markdown:
+      rewrite_relative_urls: true
+      heading_offset: 1
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - footnotes
+  - tables
+  - def_list
+  - attr_list
+  - md_in_html
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.emoji
+  - pymdownx.details
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+extra_css:
+  - assets/custom.css
+
+extra_javascript:
+  - docs/assets/theme-toggle.js
