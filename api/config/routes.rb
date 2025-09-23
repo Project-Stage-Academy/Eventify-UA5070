@@ -7,4 +7,11 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  scope :auth do
+    post :register, to: "auth#register"
+    post :login, to: "auth#login"
+  end
+
+  get "/user/me", to: "users#me"
 end
