@@ -13,5 +13,7 @@ Rails.application.routes.draw do
     post :login, to: "auth#login"
   end
 
-  get "/user/me", to: "users#me"
+  scope :user do
+    get :me, to: "users#me"
+  end
 end
