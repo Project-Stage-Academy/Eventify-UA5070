@@ -10,8 +10,7 @@ This document defines naming, coding, and workflow conventions for Eventify.
 
 ## Front-end
 
-- Use functional components and React hooks.
-- Enforce code style with ESLint and Prettier.
+For detailed frontend conventions, see [frontend-conventions.md](frontend-conventions.md).
 
 ## Shared
 

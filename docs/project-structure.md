@@ -22,11 +22,19 @@ web/					# React front-end root
 	├───assets/			# Static assets (images, fonts, etc.)
 	├───components/     # Reusable UI components (EventList, EventForm, Navbar)
 	├───context/        # Authentication context (AuthContext)
+	├───hooks/          # Custom React hooks (reusable logic)
 	├───pages/          # Full pages (LoginPage, EventsPage)
 	├───services/       # API calls (axios/fetch)
-	└───styles/         # Tailwind config and custom styles
+	├───styles/         # Tailwind config and custom styles
+	└───utils/          # Utility functions (constants, helpers, validators)
 ```
 
 ---
 
-**For more details, see the [README.md](../README.md).**
+---
+
+## Documentation
+
+- **[Frontend Setup](frontend-setup.md)** - Installation, development commands, and workflow
+- **[Frontend Conventions](frontend-conventions.md)** - Code style, component patterns, and best practices
+- **[README.md](../README.md)** - Project overview and contributing guidelines

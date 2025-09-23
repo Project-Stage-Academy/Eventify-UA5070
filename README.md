@@ -31,8 +31,10 @@ We use **issue-based branching** to keep development organized and traceable.
 
 ### Project Structure & Conventions
 
-- Project layout: see [docs/project-structure.md](docs/project-structure.md).
-- Conventions: see [docs/conventions.md](docs/conventions.md).
+- **Project layout**: [docs/project-structure.md](docs/project-structure.md)
+- **Frontend setup**: [docs/frontend-setup.md](docs/frontend-setup.md)
+- **Frontend conventions**: [docs/frontend-conventions.md](docs/frontend-conventions.md)
+- **General conventions**: [docs/conventions.md](docs/conventions.md)
 
 ### Workflow
 
