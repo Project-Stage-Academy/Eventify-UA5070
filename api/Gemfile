@@ -10,7 +10,7 @@ gem "mongoid", "~> 9.0"
 
 gem "puma", ">= 5.0"
 
-gem 'activerecord-postgis-adapter'
+gem "activerecord-postgis-adapter"
 
 # gem "jbuilder"
 
