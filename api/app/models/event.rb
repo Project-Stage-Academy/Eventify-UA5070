@@ -19,8 +19,8 @@ class Event < ApplicationRecord
   validates :location, :start_date, :finish_date, presence: true
 
   # Custom validation methods
-  validates :validate_start_date
-  validates :validate_finish_date
+  validate :validate_start_date
+  validate :validate_finish_date
 
   # Validations for numeric fields
   validates :ticket_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
