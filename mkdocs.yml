@@ -7,7 +7,7 @@ edit_uri: ""
 
 theme:
   name: material
-  logo: "assets/images/eventify-logo.svg"
+  logo: "assets/images/eventify-logo.png"
   favicon: "assets/images/eventify-icon.svg"
   palette:
     - scheme: default
