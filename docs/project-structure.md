@@ -9,7 +9,7 @@ api/					# Rails API root
 |	├───models/         # Business logic, associations, validations
 |	├───policies/       # Authorization rules (Pundit/CanCanCan)
 |	├───serializers/    # JSON response formatting
-|	└───services/       # Service objects (JwtService)
+|	└───services/       # Service objects (e.g., JwtService)
 └───spec/           	# RSpec tests
 	├───models/			# Model specs
 	└───requests/		# Request specs: end-to-end API tests for controllers, routes, and middleware
