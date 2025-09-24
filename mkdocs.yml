@@ -1,12 +1,31 @@
-site_name: Eventify Docs
-site_url: https://example.com/docs/
+site_name: Docs Space
+
+site_url: https://project-stage-academy.github.io/Eventify-UA5070/
 repo_url: https://github.com/Project-Stage-Academy/Eventify-UA5070
 repo_name: Eventify-UA5070
 edit_uri: ""
 
 theme:
   name: material
-  language: en
+  logo: "assets/images/eventify-logo.svg"
+  favicon: "assets/images/eventify-icon.svg"
+  palette:
+    - scheme: default
+      primary: red
+      accent: red
+      toggle:
+        icon: material/brightness-7
+        name: "Switch to dark mode"
+
+    - scheme: slate
+      primary: red
+      accent: red
+      toggle:
+        icon: material/brightness-4
+        name: "Switch to light mode"
+  font:
+    text: "e-Ukraine, sans-serif"
+    code: "GeistMono, monospace"
   features:
     - navigation.tabs
     - navigation.sections
@@ -16,65 +35,15 @@ theme:
     - search.suggest
     - content.code.copy
     - content.action.edit
-  palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/weather-night
-        name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/white-balance-sunny
-        name: Switch to light mode
-  font:
-    text: Inter
-    code: JetBrains Mono
-
-nav:
-  - Home: index.md
-
-  - API:
-      - Overview: api/index.md
-      - Swagger (UI): api/swagger.md
-
-  - Dev Guide:
-    - Project Structure: project-structure.md
-    - Contributing: guides/contributing.md
-    - Rails API Guide: guides/rails.md
-    - React Guide: guides/react.md
-
-
 
 plugins:
   - search
+  - awesome-nav
+  - swagger-ui-tag:
+      supportedSubmitMethods: []
   - include-markdown:
       rewrite_relative_urls: true
       heading_offset: 1
 
-markdown_extensions:
-  - admonition
-  - toc:
-      permalink: true
-  - footnotes
-  - tables
-  - def_list
-  - attr_list
-  - md_in_html
-  - pymdownx.highlight
-  - pymdownx.inlinehilite
-  - pymdownx.superfences
-  - pymdownx.emoji
-  - pymdownx.details
-  - pymdownx.tasklist:
-      custom_checkbox: true
-
 extra_css:
-  - assets/custom.css
-
-extra_javascript:
-  - docs/assets/theme-toggle.js
+  - "assets/css/custom.css"

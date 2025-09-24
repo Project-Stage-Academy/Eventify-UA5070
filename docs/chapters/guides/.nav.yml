@@ -1,0 +1,5 @@
+nav:
+  - Contributing: contributing.md
+  - Rails API Guide: rails.md
+  - React SPA Guide: react.md
+  - Project Structure: project-structure.md
