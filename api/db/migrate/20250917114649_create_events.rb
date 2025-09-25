@@ -11,10 +11,10 @@ class CreateEvents < ActiveRecord::Migration[8.0]
       t.decimal :ticket_price, precision: 10, scale: 2, default: 0.0
       t.check_constraint "ticket_price >= 0", name: "ticket_price_non_negative"
       t.integer :status, default: 0
-      
+
       # t.references :organizer, type: :uuid, foreign_key: { to_table: :users }, null: false
       # uncomment when users table will be ready
-      
+
       t.timestamps
     end
 
