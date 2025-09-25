@@ -1,6 +1,6 @@
   services:
     postgres:
-      image: postgis/postgis:17
+      image: postgis/postgis:17-master
       container_name: eventify-postgres
       restart: unless-stopped
       environment:

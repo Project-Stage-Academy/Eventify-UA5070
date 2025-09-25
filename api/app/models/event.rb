@@ -1,7 +1,7 @@
 class Event < ApplicationRecord
-  belongs_to :organizer, class_name: "User", optional: false
+  # belongs_to :organizer, class_name: "User", optional: false
 
-  enum status: {
+  enum :status, {
       draft: 0,
       published: 1,
       in_review: 2,
