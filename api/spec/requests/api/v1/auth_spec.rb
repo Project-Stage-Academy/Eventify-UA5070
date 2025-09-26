@@ -31,8 +31,17 @@ RSpec.describe "Auth", type: :request do
   describe "POST /api/v1/auth/login" do
     let!(:user) { User.create!(name: "Joe", email: "joe@example.com", password: "password123") }
 
-    it "returns tokens for valid credentials" do
+    it "returns tokens for valid credentials with lower case email" do
       post "/api/v1/auth/login", params: { email: "joe@example.com", password: "password123" }, as: :json
+
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json["access_token"]).to be_present
+      expect(json["refresh_token"]).to be_present
+    end
+
+    it "returns tokens for valid credentials with mixed-case email" do
+      post "/api/v1/auth/login", params: { email: "JoE@eXaMPle.cOm", password: "password123" }, as: :json
 
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)

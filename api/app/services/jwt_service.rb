@@ -11,7 +11,7 @@ class JwtService
   end
 
   def self.encode(payload, exp:)
-    body = payload.dup
+    body = payload.dup.symbolize_keys
     body[:exp] = exp.to_i
     JWT.encode(body, secret_key, ALGORITHM)
   end
@@ -21,14 +21,15 @@ class JwtService
     decoded.with_indifferent_access
   rescue JWT::ExpiredSignature
     raise ExpiredToken, "Token has expired"
-  rescue JWT::DecodeError
+  rescue JWT::DecodeError, JWT::VerificationError
     raise InvalidToken, "Token is invalid"
   end
 
   def self.issue_tokens_for(user)
     now = Time.current
-    access = encode({ sub: user.id, typ: "access" }, exp: now + ACCESS_TTL)
-    refresh = encode({ sub: user.id, typ: "refresh" }, exp: now + REFRESH_TTL)
+    jti = SecureRandom.uuid
+    access = encode({ sub: user.id, typ: "access", jti: jti }, exp: now + ACCESS_TTL)
+    refresh = encode({ sub: user.id, typ: "refresh", jti: jti }, exp: now + REFRESH_TTL)
     { access_token: access, refresh_token: refresh }
   end
 end

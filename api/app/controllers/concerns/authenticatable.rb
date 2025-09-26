@@ -15,7 +15,7 @@ module Authenticatable
 
   def authorize_request
     header = request.headers["Authorization"].to_s
-    token = header.start_with?("Bearer") ? header.split(" ", 2).last : nil
+    token = header[/\ABearer\s+/i] ? header.split(" ", 2).last : nil
     raise JwtService::InvalidToken, "Missing bearer token" if token.blank?
 
     payload = JwtService.decode(token)
