@@ -29,3 +29,13 @@
 
 en:
   hello: "Hello world"
+  activerecord:
+    errors:
+      models:
+        event:
+          attributes:
+            start_date:
+              not_in_future: "The event's start date must be in the future"
+            finish_date:
+              after_start_date: "The event's finish date must be after its start date"
+

@@ -8,7 +8,4 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-# User Roles
-%w[USER ADMIN].each do |user_role|
-  Role.find_or_create_by!(name: user_role)
-end
+load Rails.root.join("db/seeds/events.rb")

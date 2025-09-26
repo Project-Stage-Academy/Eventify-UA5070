@@ -29,19 +29,12 @@ It allows organizers to create and publish events (concerts, lectures, meetups),
 
 We use **issue-based branching** to keep development organized and traceable.
 
-### Branch Naming
+### Project Structure & Conventions
 
-Use the format:
-
-```
-issue-<issue-number>/<short-description>
-```
-
-**Examples:**
-
-* `issue-12/add-event-crud`
-* `issue-45/fix-login-validation`
-* `issue-77/update-readme`
+- **Project layout**: [docs/project-structure.md](docs/project-structure.md)
+- **Frontend setup**: [docs/frontend-setup.md](docs/frontend-setup.md)
+- **Frontend conventions**: [docs/frontend-conventions.md](docs/frontend-conventions.md)
+- **General conventions**: [docs/conventions.md](docs/conventions.md)
 
 ### Workflow
 

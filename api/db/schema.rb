@@ -10,9 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_23_122523) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_26_172521) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "postgis"
+
+  create_table "events", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description"
+    t.string "location", null: false
+    t.geography "coordinates", limit: {srid: 4326, type: "st_point", geographic: true}
+    t.datetime "start_date", null: false
+    t.datetime "finish_date"
+    t.integer "participant_capacity"
+    t.decimal "ticket_price", precision: 10, scale: 2, default: "0.0"
+    t.integer "status", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["coordinates"], name: "index_events_on_coordinates", using: :gist
+    t.index ["start_date"], name: "index_events_on_start_date"
+    t.check_constraint "ticket_price >= 0::numeric", name: "ticket_price_non_negative"
+  end
 
   create_table "roles", force: :cascade do |t|
     t.string "name", limit: 64, null: false
