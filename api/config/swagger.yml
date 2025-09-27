@@ -1,0 +1,10 @@
+default: &default
+  ui_endpoints:
+    - path: /api-docs/v1/swagger.yaml
+      title: API V1 Docs
+development:
+  <<: *default
+test:
+  <<: *default
+production:
+  <<: *default

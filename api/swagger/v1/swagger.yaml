@@ -2,8 +2,7 @@ openapi: 3.0.1
 info:
   title: Eventify API
   version: v1
-servers:
-  - url: http://localhost:7000
+  description: Base spec
 paths:
   /api/v1/events:
     get:
