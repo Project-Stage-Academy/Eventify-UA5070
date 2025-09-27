@@ -379,8 +379,8 @@ DEPENDENCIES
   pg
   puma (>= 5.0)
   rails (~> 8.0.2, >= 8.0.2.1)
-  rswag-api
-  rswag-ui
+  rswag-api (= 2.16.0)
+  rswag-ui (= 2.16.0)
   rspec-rails (~> 6.1)
   rubocop
   rubocop-performance
