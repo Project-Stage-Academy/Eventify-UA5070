@@ -32,4 +32,4 @@ For detailed frontend conventions, see [frontend-conventions.md](frontend-conven
 
 ---
 
-**For more details, see the [README.md](../README.md).**
+**For more details, see the [README.md](readme-docs.md).**

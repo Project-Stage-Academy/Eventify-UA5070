@@ -98,4 +98,4 @@ The build files will be in the `dist/` directory, ready for deployment.
    ```
 
 
-**For more details, see the [README.md](../README.md).**
+**For more details, see the [README.md](readme-docs.md).**

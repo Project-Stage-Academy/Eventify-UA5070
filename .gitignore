@@ -79,6 +79,7 @@ yarn-debug.log*
 
 #Ignore Python environment
 .venv/
+venv/
 
 #Ignore mkdocs static build directory
 /site

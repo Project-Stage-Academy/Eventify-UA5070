@@ -31,10 +31,8 @@ web/					# React front-end root
 
 ---
 
----
-
 ## Documentation
 
 - **[Frontend Setup](frontend-setup.md)** - Installation, development commands, and workflow
 - **[Frontend Conventions](frontend-conventions.md)** - Code style, component patterns, and best practices
-- **[README.md](../README.md)** - Project overview and contributing guidelines
+- **[README](readme-docs.md)** - Project overview and contributing guidelines
