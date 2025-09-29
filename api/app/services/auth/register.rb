@@ -26,7 +26,7 @@ module Auth
       tokens = @token_issuer.issue_tokens_for(user)
 
       { user: user, tokens: tokens }
-    rescue ActiveRecord::RecordInvalid
+    rescue ActiveRecord::RecordInvalid => e
       raise Api::Errors::CommonError::InvalidParams.new(meta: { errors: e.record.errors.to_hash })
     end
   end
