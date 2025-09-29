@@ -1,30 +1,31 @@
 module Authenticatable
   extend ActiveSupport::Concern
 
-  included do
-    rescue_from JwtService::ExpiredToken do |e| render json: { error: e.message }, status: :unauthorized end
-    rescue_from JwtService::InvalidToken do |e| render json: { error: e.message }, status: :unauthorized end
-    rescue_from ActiveRecord::RecordNotFound do
-      render json: { error: "User not found" }, status: :unauthorized
-    end
-  end
-
-  def current_user
-    @current_user
-  end
+  attr_reader :current_user
 
   def authorize_request
     header = request.headers["Authorization"].to_s
     token = header[/\ABearer\s+/i] ? header.split(" ", 2).last : nil
-    raise JwtService::InvalidToken, "Missing bearer token" if token.blank?
+
+    if token.blank?
+      raise Api::Errors::AuthError::MissingBearerToken
+    end
 
     payload = JwtService.decode(token)
-    @current_user = User.find(payload[:sub])
+    @current_user = User.includes(:roles).find(payload[:sub])
+  rescue ActiveRecord::RecordNotFound
+    raise Api::Errors::UserError::NotFound
   end
 
   def require_role!(*role_names)
-    unless current_user&.roles&.exists?(name: role_names)
-      render json: { error: "Forbidden" }, status: :forbidden
+    roles = role_names.flatten.compact.map!(&:to_sym)
+
+    allowed =
+      current_user.present? &&
+      (roles.empty? || roles.any? { |role| current_user.has_role?(role) })
+
+    unless allowed
+      raise Api::Errors::CommonError::Forbidden
     end
   end
 end

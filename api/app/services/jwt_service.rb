@@ -20,9 +20,9 @@ class JwtService
     decoded, = JWT.decode(token, secret_key, true, { algorithm: ALGORITHM })
     decoded.with_indifferent_access
   rescue JWT::ExpiredSignature
-    raise ExpiredToken, "Token has expired"
+    raise Api::Errors::AuthError::ExpiredToken
   rescue JWT::DecodeError, JWT::VerificationError
-    raise InvalidToken, "Token is invalid"
+    raise Api::Errors::AuthError::InvalidToken
   end
 
   def self.issue_tokens_for(user)
@@ -30,6 +30,7 @@ class JwtService
     jti = SecureRandom.uuid
     access = encode({ sub: user.id, typ: "access", jti: jti }, exp: now + ACCESS_TTL)
     refresh = encode({ sub: user.id, typ: "refresh", jti: jti }, exp: now + REFRESH_TTL)
+
     { access_token: access, refresh_token: refresh }
   end
 end

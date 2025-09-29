@@ -4,38 +4,19 @@ module Api
       skip_before_action :authorize_request, only: %i[register login]
 
       def register
-        user = User.new(register_params)
+        result = Auth::Register.call!(register_params)
 
-        if user.save
-          user.roles << Role.find_by!(name: "USER")
-          tokens = JwtService.issue_tokens_for(user)
-          render json: {
-            access_token: tokens[:access_token],
-            refresh_token: tokens[:refresh_token],
-            user: {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              roles: user.roles.select(:id, :name)
-            }
-          }, status: :created
-        else
-          render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
-        end
+        render json: {
+          access_token: result[:tokens][:access_token],
+          refresh_token: result[:tokens][:refresh_token],
+          user: UserSerializer.new(result[:user])
+        }, status: :created
       end
 
       def login
-        user = User.find_by("LOWER(email) = ?", login_params[:email].to_s.downcase)
+        tokens = Auth::Login.call!(login_params)
 
-        if user&.authenticate(login_params[:password])
-          tokens = JwtService.issue_tokens_for(user)
-          render json: {
-            access_token: tokens[:access_token],
-            refresh_token: tokens[:refresh_token]
-          }, status: :ok
-        else
-          render json: { error: "Invalid email or password" }, status: :unauthorized
-        end
+        render json: tokens, status: :ok
       end
 
       private
