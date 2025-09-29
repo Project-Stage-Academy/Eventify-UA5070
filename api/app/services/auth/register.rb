@@ -27,7 +27,7 @@ module Auth
 
       { user: user, tokens: tokens }
     rescue ActiveRecord::RecordInvalid => e
-      raise Api::Errors::CommonError::InvalidParams.new(meta: { errors: e.record.errors.to_hash })
+      raise Api::Errors::CommonError::InvalidParams.new(meta: { errors: e.record&.errors&.to_hash })
     end
   end
 end
