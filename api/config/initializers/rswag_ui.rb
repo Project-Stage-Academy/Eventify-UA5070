@@ -1,6 +1,10 @@
 Rswag::Ui.configure do |c|
-  cfg = Rails.application.config_for(:swagger)
-  Array(cfg["ui_endpoints"]).each do |ep|
-    c.swagger_endpoint ep["path"], ep["title"]
+  path = SWAGGER_PATH
+  title = "API V1 Docs"
+
+  if c.respond_to?(:openapi_endpoint)
+    c.openapi_endpoint path, title
+  else
+    c.swagger_endpoint path, title
   end
 end
