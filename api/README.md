@@ -18,12 +18,26 @@ cp .env.example .env
 ### Check database connection
 
 ```shell
-bin/rails db:version
-bin/rails db:prepare
+rails db:version
+rails db:prepare
+```
+
+### Run database migration
+
+```shell
+rails db:reset # erases DB
+rails db:migrate # runs DB migrations
+rails db:seed # adds record into DB tables
 ```
 
 ### Run server
 
 ```shell
-bin/rails s -p 7000
+rails s -p 7000
+```
+
+### Run all tests
+
+```shell
+rspec
 ```
