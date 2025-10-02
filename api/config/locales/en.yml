@@ -38,4 +38,16 @@ en:
               not_in_future: "The event's start date must be in the future"
             finish_date:
               after_start_date: "The event's finish date must be after its start date"
+  errors:
+    common:
+      invalid_params: "Invalid parameters"
+      forbidden: "Forbidden"
+    auth:
+      invalid_credentials: "Invalid email or password"
+      missing_bearer_token: "Missing bearer token"
+      expired_token: "Session expired. Please log in again."
+      invalid_token: "Invalid token"
+    user:
+      not_found: "User not found"
+      email_taken: "Email is already taken"
 

@@ -5,4 +5,8 @@ class ApplicationController < ActionController::API
     render json: { error: "#{model_name} not found" }, status: :not_found
   end
 
+  include ErrorRendering
+  include Authenticatable
+
+  before_action :authorize_request
 end

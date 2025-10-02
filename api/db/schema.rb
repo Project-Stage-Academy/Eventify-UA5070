@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_17_114649) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_28_132824) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -24,11 +24,42 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_17_114649) do
     t.datetime "finish_date"
     t.integer "participant_capacity"
     t.decimal "ticket_price", precision: 10, scale: 2, default: "0.0"
-    t.integer "status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "event_status", default: 0, null: false
+    t.integer "review_status", default: 0, null: false
+    t.text "review_comment"
     t.index ["coordinates"], name: "index_events_on_coordinates", using: :gist
     t.index ["start_date"], name: "index_events_on_start_date"
+    t.check_constraint "participant_capacity >= 0", name: "participant_capacity_non_negative"
     t.check_constraint "ticket_price >= 0::numeric", name: "ticket_price_non_negative"
   end
+
+  create_table "roles", force: :cascade do |t|
+    t.string "name", limit: 64, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_roles_on_name", unique: true
+  end
+
+  create_table "user_roles", id: false, force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "role_id"], name: "index_user_roles_on_user_id_and_role_id", unique: true
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "name", limit: 64, null: false
+    t.string "email", limit: 128, null: false
+    t.string "password_digest", limit: 64, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.check_constraint "email::text = lower(btrim(email::text))", name: "users_email_is_lower_and_trimmed"
+  end
+
+  add_foreign_key "user_roles", "roles"
+  add_foreign_key "user_roles", "users"
 end

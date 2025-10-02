@@ -14,8 +14,9 @@ events_data = [
     finish_date: 2.days.from_now + 3.hours,
     participant_capacity: 30,
     ticket_price: 50.0,
-    status: :published
-    # organizer: User.first
+    event_status: :published,
+    review_status: :unverified,
+    review_comment: nil
   },
   {
     title: "Frontend Meetup",
@@ -26,8 +27,9 @@ events_data = [
     finish_date: 5.days.from_now + 4.hours,
     participant_capacity: 50,
     ticket_price: 0.0,
-    status: :draft
-    # organizer: User.second
+    event_status: :draft,
+    review_status: :on_review,
+    review_comment: nil
   },
   {
     title: "AI & Machine Learning Seminar",
@@ -38,8 +40,9 @@ events_data = [
     finish_date: 10.days.from_now + 2.hours,
     participant_capacity: 100,
     ticket_price: 100.0,
-    status: :in_review
-    # organizer: User.first
+    event_status: :published,
+    review_status: :unverified,
+    review_comment: nil
   },
   {
     title: "Music Festival",
@@ -50,8 +53,9 @@ events_data = [
     finish_date: 20.days.from_now + 8.hours,
     participant_capacity: 500,
     ticket_price: 150.0,
-    status: :published
-    # organizer: User.first
+    event_status: :published,
+    review_status: :approved,
+    review_comment: "Ready for publishing"
   },
   {
     title: "Startup Pitch Night",
@@ -62,8 +66,9 @@ events_data = [
     finish_date: 15.days.from_now + 3.hours,
     participant_capacity: 75,
     ticket_price: 20.0,
-    status: :draft
-    # organizer: User.first
+    event_status: :draft,
+    review_status: :pending_review,
+    review_comment: nil
   }
 ]
 
