@@ -27,8 +27,13 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def show
-    @event = Event.find(params[:id])
-    render json: { data: @event.as_json }
+    event = Event.find_by(id: params[:id])
+
+    if event
+      render json: { data: event.as_json }
+    else
+      render json: { errors: [ "Event with id=#{params[:id]} not found" ] }, status: :not_found
+    end
   end
 
   def create
@@ -37,8 +42,8 @@ class Api::V1::EventsController < ApplicationController
     if event.save
       render json: { data: event.as_json }, status: :created
     else
-      render json: { 
-        errors: event.errors.full_messages 
+      render json: {
+        errors: event.errors.full_messages
       }, status: :unprocessable_entity # 422
     end
   end
@@ -48,14 +53,17 @@ class Api::V1::EventsController < ApplicationController
   # Strong params
   def event_params
     params.require(:event).permit(
-      :title, 
-      :description, 
-      :location, 
-      :start_date, 
-      :finish_date, 
-      :participant_capacity, 
-      :ticket_price, 
-      :status
+      :title,
+      :description,
+      :location,
+      :coordinates,
+      :start_date,
+      :finish_date,
+      :participant_capacity,
+      :ticket_price,
+      :event_status,
+      :review_status,
+      :review_comment
     )
   end
 end

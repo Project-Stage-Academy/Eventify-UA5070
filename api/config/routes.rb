@@ -20,7 +20,7 @@ Rails.application.routes.draw do
         get :me, to: "users#me"
       end
 
-      resources :events, only: [:index, :show, :create]
+      resources :events, only: [ :index, :show, :create ]
 
       get :hello, to: "auth#hello"
     end
