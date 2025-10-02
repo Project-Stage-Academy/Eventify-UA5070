@@ -1,18 +1,23 @@
 class Event < ApplicationRecord
   # belongs_to :organizer, class_name: "User", optional: false
 
-  enum :status, {
-      draft: 0,
-      published: 1,
-      in_review: 2,
-      rejected: 3,
-      cancelled: 4,
-      completed: 5,
-      archived: 6
+  enum :event_status, {
+    draft: 0,
+    published: 1,
+    cancelled: 2,
+    archived: 3
+  }
+
+  enum :review_status, {
+    pending_review: 0,
+    on_review: 1,
+    unverified: 2,
+    approved: 3,
+    rejected: 4
   }
 
   # Validations for text fields
-  validates :title, presence: true, length: { maximum: 150 }
+  validates :title, presence: true, length: { maximum: 128 }
   validates :description, length: { maximum: 500 }, allow_blank: true
 
   # Validations for required dates and location
@@ -24,6 +29,7 @@ class Event < ApplicationRecord
 
   # Validations for numeric fields
   validates :ticket_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
+  validates :participant_capacity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
 
   private
 
