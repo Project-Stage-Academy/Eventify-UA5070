@@ -2,7 +2,7 @@ name: Deploy MkDocs Manually
 
 on:
   push:
-    branches: ["issue-**", develop]
+    branches: [develop]
     paths:
       - "docs/**"
       - "mkdocs.yml"
