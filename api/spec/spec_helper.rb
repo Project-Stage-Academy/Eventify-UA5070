@@ -93,6 +93,6 @@ RSpec.configure do |config|
 =end
 
   config.before(:suite) do
-    Rails.application.load_seed
+    load Rails.root.join("db/seeds/roles.rb")
   end
 end
