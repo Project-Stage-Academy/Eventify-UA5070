@@ -1,5 +1,4 @@
 class Events::FetchEventsService
-
   SORTABLE_COLUMNS = {
     "title" => :title,
     "start_date" => :start_date,
@@ -19,6 +18,5 @@ class Events::FetchEventsService
 
     # pagination
     @events = events.page(@params[:page]).per(@params[:per_page] || 10)
-
-  end 
+  end
 end

@@ -19,5 +19,4 @@ class EventSerializer
       review_comment: @event.review_comment
     }
   end
-
 end
