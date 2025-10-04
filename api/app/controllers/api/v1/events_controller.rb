@@ -1,23 +1,9 @@
 class Api::V1::EventsController < ApplicationController
   def index
-    events = Event.all
-
-    # sorting
-    sortable = {
-      "title" => :title,
-      "start_date" => :start_date,
-      "id" => :id
-    }
-
-    sort_column = sortable[params[:sort]] || :id
-    sort_direction = params[:direction] == "desc" ? :desc : :asc
-    events = events.order(sort_column => sort_direction)
-
-    # pagination
-    @events = events.page(params[:page]).per(params[:per_page] || 10)
+    @events = Events::FetchEventsService.new(params).call
 
     render json: {
-      data: @events.as_json,
+      data: @events.map { |event| EventSerializer.new(event).as_json },
       pagination: {
         current_page: @events.current_page,
         total_pages: @events.total_pages,
@@ -30,7 +16,7 @@ class Api::V1::EventsController < ApplicationController
     event = Event.find_by(id: params[:id])
 
     if event
-      render json: { data: event.as_json }
+      render json: { data: EventSerializer.new(event).as_json }
     else
       render json: { errors: [ "Event with id=#{params[:id]} not found" ] }, status: :not_found
     end
@@ -40,7 +26,7 @@ class Api::V1::EventsController < ApplicationController
     event = Event.new(event_params)
 
     if event.save
-      render json: { data: event.as_json }, status: :created
+      render json: { data: EventSerializer.new(event).as_json }, status: :created
     else
       render json: {
         errors: event.errors.full_messages
