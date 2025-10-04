@@ -15,11 +15,13 @@ uk:
         event_organizer:
           messages:
             last_organizer_removal_forbidden: "Подія повинна мати принаймні одного організатора. Неможливо видалити останнього."
-
+            organizer_removed: "Організатора успішно видалено."
   errors:
     common:
       invalid_params: "Невірні параметри"
       forbidden: "Доступ заборонено"
+      not_authorized: "Ви не маєте доступу"
+      organizer_not_found: "Організатора не знайдено"
     auth:
       invalid_credentials: "Невірна електронна пошта або пароль"
       missing_bearer_token: "Відсутній токен доступу"

@@ -44,10 +44,13 @@ en:
         event_organizer:
           messages:
             last_organizer_removal_forbidden: "An event must have at least one organizer. You cannot remove the last one."
+            organizer_removed: "Organizer removed successfully."
   errors:
     common:
       invalid_params: "Invalid parameters"
       forbidden: "Forbidden"
+      not_authorized: "Not authorized"
+      organizer_not_found: "Organizer not found"
     auth:
       invalid_credentials: "Invalid email or password"
       missing_bearer_token: "Missing bearer token"
