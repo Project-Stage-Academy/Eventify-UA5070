@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_28_132824) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_04_133351) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
+
+  create_table "event_organizers", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "event_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "user_id"], name: "index_event_organizers_on_event_id_and_user_id", unique: true
+    t.index ["event_id"], name: "index_event_organizers_on_event_id"
+    t.index ["user_id"], name: "index_event_organizers_on_user_id"
+  end
 
   create_table "events", force: :cascade do |t|
     t.string "title", null: false
@@ -60,6 +70,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_28_132824) do
     t.check_constraint "email::text = lower(btrim(email::text))", name: "users_email_is_lower_and_trimmed"
   end
 
+  add_foreign_key "event_organizers", "events"
+  add_foreign_key "event_organizers", "users"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
 end
