@@ -4,6 +4,9 @@ class User < ApplicationRecord
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
 
+  has_many :event_organizers, dependent: :destroy
+  has_many :organized_events, through: :event_organizers, source: :event
+
   normalizes :email, with: ->(e) { e.to_s.strip.downcase }
 
   validates :name, presence: true, length: { maximum: 64 }

@@ -29,6 +29,7 @@
 
 en:
   hello: "Hello world"
+
   activerecord:
     errors:
       models:
@@ -38,6 +39,11 @@ en:
               not_in_future: "The event's start date must be in the future"
             finish_date:
               after_start_date: "The event's finish date must be after its start date"
+          messages:
+            missing_organizer: "An event must have at least one organizer."
+        event_organizer:
+          messages:
+            last_organizer_removal_forbidden: "An event must have at least one organizer. You cannot remove the last one."
   errors:
     common:
       invalid_params: "Invalid parameters"
