@@ -15,20 +15,18 @@ class Api::V1::EventsController < ApplicationController
   def show
     event = Event.find_by(id: params[:id])
 
-    return render_error(["Event not found"], :not_found) if event.nil?
+    return render_error([ "Event not found" ], :not_found) if event.nil?
 
     render json: { data: EventSerializer.new(event).as_json }
-
   end
 
   def create
     event = Events::CreateEventService.new(event_params).call
-    unless event.persisted? 
+    unless event.persisted?
       return render_error(event.errors.full_messages, :unprocessable_entity)
     end
 
     render json: { data: EventSerializer.new(event).as_json }, status: :created
-
   end
 
   private
@@ -53,5 +51,4 @@ class Api::V1::EventsController < ApplicationController
    def render_error(errors, status)
     render json: { errors: errors }, status: status
   end
-
 end

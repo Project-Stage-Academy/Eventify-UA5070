@@ -8,5 +8,4 @@ class Events::CreateEventService
     event.save
     event
   end
-
 end
