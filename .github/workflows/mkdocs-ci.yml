@@ -1,0 +1,45 @@
+name: Deploy MkDocs Manually
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "requirements.txt"
+      - "api/README.md"
+      - "web/README.md"
+  workflow_dispatch: {}
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git Credentials
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Set up Python and Caching
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+      - uses: actions/cache@v4
+        with:
+          key: mkdocs-material-${{ env.cache_id }}
+          path: ~/.cache
+          restore-keys: |
+            mkdocs-material-
+
+      - name: Install MkDocs and Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build and Deploy MkDocs Site
+        run: mkdocs gh-deploy --force
