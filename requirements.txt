@@ -1,0 +1,4 @@
+mkdocs-material
+mkdocs-awesome-nav
+mkdocs-swagger-ui-tag
+mkdocs-include-markdown-plugin

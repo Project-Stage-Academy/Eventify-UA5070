@@ -1,0 +1,225 @@
+openapi: 3.1.0
+info:
+  title: Auth API
+  version: "1.0.0"
+  description: |
+    Auth endpoints for registering and logging in users.
+    Matches `Api::V1::AuthController` behavior.
+
+servers:
+  - url: http://localhost:3000
+    description: Local dev
+
+tags:
+  - name: Auth
+    description: Registration and login
+
+paths:
+  /api/v1/auth/register:
+    post:
+      summary: Register a new user
+      description: Creates a user, assigns the USER role, and returns access & refresh JWTs with the created user payload.
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [name, email, password]
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 64
+                email:
+                  type: string
+                  format: email
+                  minLength: 1
+                  maxLength: 128
+                password:
+                  type: string
+                  minLength: 1
+            examples:
+              valid:
+                summary: Valid registration
+                value:
+                  name: Jane Doe
+                  email: jane@example.com
+                  password: password123
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterResponse"
+              examples:
+                success:
+                  value:
+                    access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    refresh_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    user:
+                      id: 1
+                      name: Jane Doe
+                      email: jane@example.com
+                      roles:
+                        - id: 1
+                          name: USER
+        "422":
+          description: Unprocessable Entity (validation errors)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrors"
+              examples:
+                duplicateEmail:
+                  value:
+                    errors:
+                      - Email has already been taken
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/auth/login:
+    post:
+      summary: Login
+      description: Verifies email/password and returns access & refresh JWTs.
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  minLength: 1
+                  maxLength: 128
+                password:
+                  type: string
+                  minLength: 1
+            examples:
+              valid:
+                value:
+                  email: joe@example.com
+                  password: password123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenPair"
+              examples:
+                success:
+                  value:
+                    access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    refresh_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        "401":
+          description: Unauthorized (invalid credentials)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                invalid:
+                  value:
+                    error: Invalid email or password
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    RoleShort:
+      type: object
+      additionalProperties: false
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+
+    UserPublic:
+      type: object
+      additionalProperties: false
+      required: [id, name, email, roles]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+        email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 128
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/RoleShort"
+
+    TokenPair:
+      type: object
+      additionalProperties: false
+      required: [access_token, refresh_token]
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+
+    RegisterResponse:
+      type: object
+      additionalProperties: false
+      required: [access_token, refresh_token, user]
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        user:
+          $ref: "#/components/schemas/UserPublic"
+
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error:
+          type: string
+
+    ValidationErrors:
+      type: object
+      additionalProperties: false
+      required: [errors]
+      properties:
+        errors:
+          type: array
+          items:
+            type: string

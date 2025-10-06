@@ -1,0 +1,50 @@
+site_name: Docs Space
+
+repo_url: https://github.com/Project-Stage-Academy/Eventify-UA5070
+site_url: https://Project-Stage-Academy.github.io/Eventify-UA5070/
+
+repo_name: Eventify-UA5070
+edit_uri: ""
+
+theme:
+  name: material
+  logo: "assets/images/eventify-logo.png"
+  favicon: "assets/images/eventify-icon.svg"
+  palette:
+    - scheme: default
+      primary: red
+      accent: red
+      toggle:
+        icon: material/brightness-7
+        name: "Switch to dark mode"
+
+    - scheme: slate
+      primary: red
+      accent: red
+      toggle:
+        icon: material/brightness-4
+        name: "Switch to light mode"
+  font:
+    text: "e-Ukraine, sans-serif"
+    code: "GeistMono, monospace"
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.instant
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+    - content.action.edit
+
+plugins:
+  - search
+  - awesome-nav
+  - swagger-ui-tag:
+      supportedSubmitMethods: []
+  - include-markdown:
+      rewrite_relative_urls: true
+      heading_offset: 1
+
+extra_css:
+  - "assets/css/custom.css"
