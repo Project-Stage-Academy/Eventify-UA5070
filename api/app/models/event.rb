@@ -3,7 +3,7 @@ class Event < ApplicationRecord
 
   enum :status, {
     draft: 0,
-    on_review: 1,
+    draft_on_review: 1,
     published: 2,
     rejected: 3,
     published_unverified: 4,

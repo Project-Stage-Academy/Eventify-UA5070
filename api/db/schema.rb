@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_06_122430) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_06_130949) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -26,7 +26,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_06_122430) do
     t.decimal "ticket_price", precision: 10, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "status", default: 0, null: false
+    t.integer "status", default: 4, null: false
     t.text "review_comment"
     t.string "proposed_title", limit: 128
     t.text "proposed_desc"
