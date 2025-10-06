@@ -2,7 +2,9 @@ module MongoidEnum
   extend ActiveSupport::Concern
 
   class_methods do
-    def mongoid_enum(field_name, values)
+    def mongoid_enum(field_name, values, prefix: nil)
+      values = values.map { |val| "#{prefix}_#{val}".to_sym } if prefix
+
       field field_name, type: String
       validates field_name, inclusion: { in: values.map(&:to_s) }
 
@@ -11,6 +13,11 @@ module MongoidEnum
       end
 
       values.each do |val|
+        if respond_to?(val)
+          raise ArgumentError, "Scope or method '#{val}' already exists on #{self.name}. " \
+                               "Use the 'prefix' argument to avoid conflicts."
+        end
+
         scope val, -> { where(field_name => val.to_s) }
 
         define_method("#{val}!") do
