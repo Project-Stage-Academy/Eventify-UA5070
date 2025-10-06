@@ -15,7 +15,7 @@ class Api::V1::EventsController < ApplicationController
     event = Event.find(params[:id])
     render json: { data: EventSerializer.new(event).as_json }
   rescue ActiveRecord::RecordNotFound
-    render_json_error(message: [ "Event not found" ], status: :not_found)
+    render_json_error(message: "Event not found", status: :not_found)
   end
 
   def create
