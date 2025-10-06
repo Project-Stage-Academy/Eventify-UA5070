@@ -1,32 +1,30 @@
 class Api::V1::EventsController < ApplicationController
+  include Serialization
+  include JsonErrorRendering
+
   def index
-    @events = Events::FetchEventsService.new(params).call
+    @events = EventService.fetch(params)
 
     render json: {
-      data: @events.map { |event| EventSerializer.new(event).as_json },
-      pagination: {
-        current_page: @events.current_page,
-        total_pages: @events.total_pages,
-        total_count: @events.total_count
-      }
+      data: serialized_events(@events),
+      pagination: pagination_meta(@events)
    }
   end
 
   def show
-    event = Event.find_by(id: params[:id])
-
-    return render_error([ "Event not found" ], :not_found) if event.nil?
-
+    event = Event.find(params[:id])
     render json: { data: EventSerializer.new(event).as_json }
+  rescue ActiveRecord::RecordNotFound
+    render_json_error(message: [ "Event not found" ], status: :not_found)
   end
 
   def create
-    event = Events::CreateEventService.new(event_params).call
-    unless event.persisted?
-      return render_error(event.errors.full_messages, :unprocessable_entity)
+    result = EventService.create(event_params)
+    if result.success
+      render json: { data: EventSerializer.new(result.event).as_json }, status: :created
+    else
+      render_json_error(message: result.errors)
     end
-
-    render json: { data: EventSerializer.new(event).as_json }, status: :created
   end
 
   private
@@ -46,9 +44,5 @@ class Api::V1::EventsController < ApplicationController
       :review_status,
       :review_comment
     )
-  end
-
-   def render_error(errors, status)
-    render json: { errors: errors }, status: status
   end
 end
