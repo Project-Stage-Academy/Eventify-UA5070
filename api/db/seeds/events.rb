@@ -1,5 +1,3 @@
-# Clear old data (optional)
-# SEED_RESET=true rails db:seed
 if ENV["SEED_RESET"] == "true"
   Event.delete_all
 end
@@ -14,8 +12,7 @@ events_data = [
     finish_date: 2.days.from_now + 3.hours,
     participant_capacity: 30,
     ticket_price: 50.0,
-    event_status: :published,
-    review_status: :unverified,
+    status: :published,
     review_comment: nil
   },
   {
@@ -27,8 +24,7 @@ events_data = [
     finish_date: 5.days.from_now + 4.hours,
     participant_capacity: 50,
     ticket_price: 0.0,
-    event_status: :draft,
-    review_status: :on_review,
+    status: :draft,
     review_comment: nil
   },
   {
@@ -40,8 +36,7 @@ events_data = [
     finish_date: 10.days.from_now + 2.hours,
     participant_capacity: 100,
     ticket_price: 100.0,
-    event_status: :published,
-    review_status: :unverified,
+    status: :published,
     review_comment: nil
   },
   {
@@ -53,8 +48,7 @@ events_data = [
     finish_date: 20.days.from_now + 8.hours,
     participant_capacity: 500,
     ticket_price: 150.0,
-    event_status: :published,
-    review_status: :approved,
+    status: :published,
     review_comment: "Ready for publishing"
   },
   {
@@ -66,16 +60,14 @@ events_data = [
     finish_date: 15.days.from_now + 3.hours,
     participant_capacity: 75,
     ticket_price: 20.0,
-    event_status: :draft,
-    review_status: :pending_review,
+    status: :draft,
     review_comment: nil
   }
 ]
 
-# Event seeds
 begin
-  events_data.each do |event_attrs|
-    Event.create!(event_attrs)
+  events_data.each do |attrs|
+    Event.create!(attrs)
   end
 rescue => e
   puts "Seed error: #{e.message}"
