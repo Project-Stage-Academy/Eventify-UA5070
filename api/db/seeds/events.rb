@@ -62,7 +62,7 @@ events_data.each do |attrs|
   organizers = attrs.delete(:organizers)
 
   event = Event.new(attrs)
-  event.save!(validate: false)  
+  event.save!(validate: false)
 
   organizers.each do |org|
     raise "User not found: #{org.inspect}" if org[:user].nil?
@@ -70,7 +70,7 @@ events_data.each do |attrs|
   end
 
   event.reload
-  event.save! 
+  event.save!
 end
 
 puts "Event seeds created."

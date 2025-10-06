@@ -8,7 +8,7 @@ FactoryBot.define do
     ticket_price { 100 }
 
     transient do
-      organizer_user { nil } 
+      organizer_user { nil }
     end
 
     after(:create) do |event, evaluator|
