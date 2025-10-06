@@ -34,9 +34,6 @@ class Event < ApplicationRecord
   validates :ticket_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
   validates :participant_capacity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
 
-  # Validations for organizer
-  validate :validate_organizer_presence
-
   private
 
   def validate_start_date
@@ -53,11 +50,5 @@ class Event < ApplicationRecord
     if finish_date < start_date
       errors.add(:finish_date, :after_start_date)
     end
-  end
-
-  def validate_organizer_presence
-    return unless new_record? && event_organizers.empty?
-
-    errors.add(:base, :missing_organizer)
   end
 end

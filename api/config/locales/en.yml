@@ -39,6 +39,8 @@ en:
               not_in_future: "The event's start date must be in the future"
             finish_date:
               after_start_date: "The event's finish date must be after its start date"
+            base:
+              missing_organizer: "Event must have at least one organizer"
           messages:
             missing_organizer: "An event must have at least one organizer."
         event_organizer:

@@ -18,7 +18,8 @@ class Api::V1::EventOrganizersController < ApplicationController
   def destroy
     authorize @event, :manage_organizers?
 
-    @organizer = @event.event_organizers.find_by(user_id: params[:user_id])
+    @organizer = @event.event_organizers.find_by(user_id: params[:id])
+
     return render json: { error: I18n.t("errors.common.organizer_not_found") }, status: :not_found unless @organizer
 
     if @organizer.destroy
