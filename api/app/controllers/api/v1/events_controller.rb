@@ -46,5 +46,4 @@ class Api::V1::EventsController < ApplicationController
       :proposed_location
     )
   end
-
 end

@@ -15,9 +15,9 @@ class EventSerializer
       participant_capacity: @event.participant_capacity,
       ticket_price: @event.ticket_price,
       status: @event.status,
-      proposed_title:@event.proposed_title,
-      proposed_desc:@event.proposed_desc,
-      proposed_location:@event.proposed_location,
+      proposed_title: @event.proposed_title,
+      proposed_desc: @event.proposed_desc,
+      proposed_location: @event.proposed_location,
       review_comment: @event.review_comment
     }
   end
