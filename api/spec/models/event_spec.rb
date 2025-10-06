@@ -4,7 +4,7 @@ RSpec.describe Event, type: :model do
   describe "enums" do
     it { should define_enum_for(:status).with_values(
       draft: 0,
-      on_review: 1,
+      draft_on_review: 1,
       published: 2,
       rejected: 3,
       published_unverified: 4,
