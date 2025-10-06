@@ -1,0 +1,263 @@
+/* =====================================================
+   e-Ukraine Font Definitions
+   ===================================================== */
+@font-face {
+  font-family: "e-Ukraine";
+  /*src: url('../fonts/e-Ukraine/e-Ukraine-Thin.otf') format('opentype');*/
+  src:
+    url("../fonts/e-Ukraine-woff/e-ukraine-thin_w.woff2") format("woff2"),
+    url("../fonts/e-Ukraine-woff/e-ukraine-thin_w.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: "e-Ukraine";
+  /*src: url('../fonts/e-Ukraine/e-Ukraine-UltraLight.otf') format('opentype');*/
+  src:
+    url("../fonts/e-Ukraine-woff/e-ukraine-ultralight_w.woff2") format("woff2"),
+    url("../fonts/e-Ukraine-woff/e-ukraine-ultralight_w.woff") format("woff");
+  font-weight: 200;
+  font-style: normal;
+}
+@font-face {
+  font-family: "e-Ukraine";
+  /*src: url('../fonts/e-Ukraine/e-Ukraine-Light.otf') format('opentype');*/
+  src:
+    url("../fonts/e-Ukraine-woff/e-ukraine-light_w.woff2") format("woff2"),
+    url("../fonts/e-Ukraine-woff/e-ukraine-light_w.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: "e-Ukraine";
+  /*src: url('../fonts/e-Ukraine/e-Ukraine-Regular.otf') format('opentype');*/
+  src:
+    url("../fonts/e-Ukraine-woff/e-ukraine-regular_w.woff2") format("woff2"),
+    url("../fonts/e-Ukraine-woff/e-ukraine-regular_w.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "e-Ukraine";
+  /*src: url('../fonts/e-Ukraine/e-Ukraine-Medium.otf') format('opentype');*/
+  src:
+    url("../fonts/e-Ukraine-woff/e-ukraine-medium_w.woff2") format("woff2"),
+    url("../fonts/e-Ukraine-woff/e-ukraine-medium_w.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "e-Ukraine";
+  /*src: url('../fonts/e-Ukraine/e-Ukraine-Bold.otf') format('opentype');*/
+  src:
+    url("../fonts/e-Ukraine-woff/e-ukraine-bold_w.woff2") format("woff2"),
+    url("../fonts/e-Ukraine-woff/e-ukraine-bold_w.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* =====================================================
+   GeistMono Font Definitions
+   ===================================================== */
+@font-face {
+  font-family: "GeistMono";
+  src: url("../fonts/GeistMono/GeistMonoNerdFontMono-UltraLight.otf")
+    format("opentype");
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GeistMono";
+  src: url("../fonts/GeistMono/GeistMonoNerdFontMono-Thin.otf")
+    format("opentype");
+  font-weight: 200;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GeistMono";
+  src: url("../fonts/GeistMono/GeistMonoNerdFontMono-Light.otf")
+    format("opentype");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GeistMono";
+  src: url("../fonts/GeistMono/GeistMonoNerdFontMono-Regular.otf")
+    format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GeistMono";
+  src: url("../fonts/GeistMono/GeistMonoNerdFontMono-Medium.otf")
+    format("opentype");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GeistMono";
+  src: url("../fonts/GeistMono/GeistMonoNerdFontMono-SemiBold.otf")
+    format("opentype");
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GeistMono";
+  src: url("../fonts/GeistMono/GeistMonoNerdFontMono-Bold.otf")
+    format("opentype");
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GeistMono";
+  src: url("../fonts/GeistMono/GeistMonoNerdFontMono-Black.otf")
+    format("opentype");
+  font-weight: 800;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GeistMono";
+  src: url("../fonts/GeistMono/GeistMonoNerdFontMono-UltraBlack.otf")
+    format("opentype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+/* =====================================================
+   Base Font Overrides
+   ===================================================== */
+body,
+.md-content {
+  font-family: "e-Ukraine", sans-serif;
+  font-weight: 300; /* Light weight for main body */
+  font-size: 16px; /* Main text size */
+  line-height: 1.5; /* If you prefer unitless, use line-height: 1.5; */
+  text-align: left;
+  margin: 0;
+  text-transform: none;
+}
+
+.md-typeset code,
+.md-typeset pre {
+  font-family: "GeistMono", monospace;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Ensures large images can overflow if needed */
+img {
+  max-width: none;
+}
+
+/* =====================================================
+   Typography Rules for e-Ukraine Headings
+   ===================================================== */
+/*
+   Each heading uses Regular (400) weight.
+   If you want better zoom scaling, consider using unitless line-height, e.g.
+   line-height: 1.07 for H1 if the ratio is 60/56.
+*/
+
+/* H1: 56px / 60px */
+h1,
+.h1 {
+  font-size: 56px;
+  line-height: 60px;
+  font-weight: 400;
+  text-transform: none;
+}
+
+/* H2: 38px / 40px */
+h2,
+.h2 {
+  font-size: 38px;
+  line-height: 40px;
+  font-weight: 400;
+  text-transform: none;
+}
+
+/* H3: 28px / 32px */
+h3,
+.h3 {
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 400;
+  text-transform: none;
+}
+
+/* H4: 24px / 28px */
+h4,
+.h4 {
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 400;
+  text-transform: none;
+}
+
+/* H5: 20px / 24px */
+h5,
+.h5 {
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 400;
+  text-transform: none;
+}
+
+/* H6: 18px / 28px */
+h6,
+.h6 {
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 400;
+  text-transform: none;
+}
+
+/* If you need H7, use a custom class */
+.h7 {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  text-transform: none;
+}
+
+/* =====================================================
+   Body, Explanatory, and Link Text
+   ===================================================== */
+/* Body paragraphs (already set in body {}), repeated here if needed for specificity */
+p {
+  margin: 1em 0;
+}
+
+/* Explanatory text: 13px / 18px, Regular */
+.explanatory-text {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  text-align: left;
+  text-transform: none;
+}
+
+:root > * {
+  --md-primary-fg-color: #be043b;
+  --md-primary-fg-color--light: #d1e8ff;
+  --md-primary-fg-color--dark: #001d36;
+}
+
+.swagger-ui .opblock .opblock-summary-method,
+.swagger-ui .opblock .opblock-summary-control {
+  display: none !important;
+}
+
+.swagger-ui .try-out {
+  display: none !important;
+}
+
+.md-nav {
+  font-size: 20px;
+}
+
+.md-nav__link {
+  font-size: 18px;
+  line-height: 24px;
+}

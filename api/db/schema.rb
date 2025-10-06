@@ -57,7 +57,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_28_132824) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.check_constraint "email::text = lower(btrim(email::text))", name: "users_email_is_lower_and_trimmed"
   end
 
   add_foreign_key "user_roles", "roles"

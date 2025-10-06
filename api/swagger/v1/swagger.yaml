@@ -1,0 +1,13 @@
+openapi: 3.0.1
+info:
+  title: Eventify API
+  version: v1
+  description: Base spec
+paths:
+  /api/v1/events:
+    get:
+      summary: List events
+      tags: [Events]
+      responses:
+        "200":
+          description: OK
