@@ -8,6 +8,7 @@ class LogEntry
   field :metadata, type: Hash
   mongoid_enum :action, %i[
     event_member_created
+    event_organizer_created
   ]
 
   validates :user_id, presence: true
