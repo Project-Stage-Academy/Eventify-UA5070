@@ -1,8 +1,9 @@
-# Clear old data (optional)
 # SEED_RESET=true rails db:seed
-if ENV["SEED_RESET"] == "true"
-  Event.delete_all
-end
+Event.delete_all if ENV["SEED_RESET"] == "true"
+
+alice = User.find_by(email: "alice@example.com")
+bob   = User.find_by(email: "bob@example.com")
+charlie = User.find_by(email: "charlie@example.com")
 
 events_data = [
   {
@@ -16,7 +17,11 @@ events_data = [
     ticket_price: 50.0,
     event_status: :published,
     review_status: :unverified,
-    review_comment: nil
+    review_comment: nil,
+    organizers: [
+      { user: alice, is_primary: true },
+      { user: bob, is_primary: false }
+    ]
   },
   {
     title: "Frontend Meetup",
@@ -29,20 +34,10 @@ events_data = [
     ticket_price: 0.0,
     event_status: :draft,
     review_status: :on_review,
-    review_comment: nil
-  },
-  {
-    title: "AI & Machine Learning Seminar",
-    description: "Seminar on modern artificial intelligence techniques.",
-    location: "Berlin, Germany",
-    coordinates: "POINT(13.4050 52.5200)",
-    start_date: 10.days.from_now,
-    finish_date: 10.days.from_now + 2.hours,
-    participant_capacity: 100,
-    ticket_price: 100.0,
-    event_status: :published,
-    review_status: :unverified,
-    review_comment: nil
+    review_comment: nil,
+    organizers: [
+      { user: bob, is_primary: true }
+    ]
   },
   {
     title: "Music Festival",
@@ -55,30 +50,27 @@ events_data = [
     ticket_price: 150.0,
     event_status: :published,
     review_status: :approved,
-    review_comment: "Ready for publishing"
-  },
-  {
-    title: "Startup Pitch Night",
-    description: "Presentation of startups for potential investors.",
-    location: "Munich, Germany",
-    coordinates: "POINT(11.5820 48.1351)",
-    start_date: 15.days.from_now,
-    finish_date: 15.days.from_now + 3.hours,
-    participant_capacity: 75,
-    ticket_price: 20.0,
-    event_status: :draft,
-    review_status: :pending_review,
-    review_comment: nil
+    review_comment: "Ready for publishing",
+    organizers: [
+      { user: bob, is_primary: true },
+      { user: charlie, is_primary: false }
+    ]
   }
 ]
 
-# Event seeds
-begin
-  events_data.each do |event_attrs|
-    Event.create!(event_attrs)
+events_data.each do |attrs|
+  organizers = attrs.delete(:organizers)
+
+  event = Event.new(attrs)
+  event.save!(validate: false)  
+
+  organizers.each do |org|
+    raise "User not found: #{org.inspect}" if org[:user].nil?
+    EventOrganizer.create!(event: event, user: org[:user], is_primary: org[:is_primary] || false)
   end
-rescue => e
-  puts "Seed error: #{e.message}"
+
+  event.reload
+  event.save! 
 end
 
 puts "Event seeds created."
