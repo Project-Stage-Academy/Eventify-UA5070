@@ -40,9 +40,11 @@ class Api::V1::EventsController < ApplicationController
       :finish_date,
       :participant_capacity,
       :ticket_price,
-      :event_status,
-      :review_status,
-      :review_comment
+      :status,
+      :proposed_title,
+      :proposed_desc,
+      :proposed_location
     )
   end
+
 end
