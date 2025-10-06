@@ -9,7 +9,7 @@ class LogEntryCreationJob < ApplicationJob
       metadata: metadata
     )
 
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error("LogEntryCreationJob failed: #{e.message}")
     raise
   end

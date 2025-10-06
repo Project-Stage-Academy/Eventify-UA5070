@@ -18,7 +18,7 @@ RSpec.describe LogEntryCreationJob, type: :job do
       .with(**params)
   end
 
-  it 'create a LogEntry' do
+  it 'creates a LogEntry' do
     expect { perform_enqueued_jobs { job } }.to change(LogEntry, :count).by(1)
   end
 end
