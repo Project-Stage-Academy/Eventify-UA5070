@@ -1,0 +1,2 @@
+class EventMember < ApplicationRecord
+end
