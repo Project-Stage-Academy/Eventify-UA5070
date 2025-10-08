@@ -4,7 +4,7 @@ class User < ApplicationRecord
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
   has_many :event_members, dependent: :destroy
-  has_many :events, through: :event_members, source: :event
+  has_many :joined_events, through: :event_members, source: :event
 
   normalizes :email, with: ->(e) { e.to_s.strip.downcase }
 

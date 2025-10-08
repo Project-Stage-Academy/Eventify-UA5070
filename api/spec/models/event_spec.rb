@@ -61,4 +61,9 @@ RSpec.describe Event, type: :model do
       end
     end
   end
+
+  describe "associations" do
+    it { is_expected.to have_many(:event_members) }
+    it { is_expected.to have_many(:members).through(:event_members) }
+  end
 end
