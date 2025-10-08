@@ -18,7 +18,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_200838) do
   create_table "event_members", force: :cascade do |t|
     t.bigint "event_id", null: false
     t.bigint "user_id", null: false
-    t.integer "ticket_qr_code", null: false
+    t.string "ticket_qr_code", limit: 10, null: false
     t.integer "rating", limit: 2
     t.text "comment"
     t.datetime "created_at", null: false
