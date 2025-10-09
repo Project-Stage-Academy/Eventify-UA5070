@@ -1,6 +1,5 @@
 class Api::V1::EventsController < ApplicationController
   include Serialization
-  include JsonErrorRendering
 
   def index
     @events = EventService.fetch(params)
