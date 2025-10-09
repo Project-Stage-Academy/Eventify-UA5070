@@ -18,6 +18,7 @@ class EventService
 
   def self.create(params)
     event = Event.new(params)
+
     if event.save
       Result.new(true, event, [])
     else

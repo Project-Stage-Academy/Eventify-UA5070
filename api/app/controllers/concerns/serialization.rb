@@ -1,5 +1,6 @@
 module Serialization
   extend ActiveSupport::Concern
+
   def serialized_events(events)
     events.map { |event| EventSerializer.new(event).as_json }
   end
