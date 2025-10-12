@@ -2,30 +2,28 @@ module MongoidEnum
   extend ActiveSupport::Concern
 
   class_methods do
-    def mongoid_enum(field_name, values, prefix: nil)
-      values = values.map { |val| "#{prefix}_#{val}".to_sym } if prefix
+    def mongoid_enum(field_name, values, bare: false)
+      actual_values = values.map(&:to_s)
 
       field field_name, type: String
-      validates field_name, inclusion: { in: values.map(&:to_s) }
+      validates field_name, inclusion: { in: actual_values }
 
       define_singleton_method(field_name.to_s.pluralize) do
-        values
+        actual_values
       end
 
       values.each do |val|
-        if respond_to?(val)
-          raise ArgumentError, "Scope or method '#{val}' already exists on #{self.name}. " \
-                               "Use the 'prefix' argument to avoid conflicts."
+        value_str = val.to_s
+        method_name = bare ? value_str : "#{field_name}_#{value_str}"
+
+        scope method_name, -> { where(field_name => value_str) }
+
+        define_method("#{method_name}!") do
+          update!(field_name => value_str)
         end
 
-        scope val, -> { where(field_name => val.to_s) }
-
-        define_method("#{val}!") do
-          update!(field_name => val.to_s)
-        end
-
-        define_method("#{val}?") do
-          send(field_name) == val.to_s
+        define_method("#{method_name}?") do
+          send(field_name) == value_str
         end
       end
     end

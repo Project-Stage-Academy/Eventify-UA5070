@@ -24,14 +24,14 @@ RSpec.describe LogEntry, type: :model do
     end
 
     it "provides a class method to list all actions" do
-      expect(described_class.actions).to match_array(actions)
+      expect(described_class.actions).to match_array(actions.map(&:to_s))
     end
 
     it "provides scopes for each action" do
       log_entry.update!(action: actions.second)
 
       actions.each do |action|
-        scope = described_class.send(action)
+        scope = described_class.send("action_#{action}")
 
         expect(scope).to_not include(log_entry)
 
@@ -42,14 +42,14 @@ RSpec.describe LogEntry, type: :model do
 
     it "provides setter methods for each action" do
       actions.each do |action|
-        log_entry.send("#{action}!")
+        log_entry.send("action_#{action}!")
         expect(log_entry.action).to eq(action.to_s)
       end
     end
 
     it "provides predicate methods for each action" do
       actions.each do |action|
-        expect(log_entry.send("#{action}?")).to eq(log_entry.action == action.to_s)
+        expect(log_entry.send("action_#{action}?")).to eq(log_entry.action == action.to_s)
       end
     end
   end
