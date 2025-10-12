@@ -50,4 +50,7 @@ en:
     user:
       not_found: "User not found"
       email_taken: "Email is already taken"
+    event:
+      not_found: "Event not found"
+      validation_error: "Validation failed for event"
 

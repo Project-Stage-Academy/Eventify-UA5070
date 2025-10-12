@@ -41,9 +41,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_200838) do
     t.decimal "ticket_price", precision: 10, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "event_status", default: 0, null: false
-    t.integer "review_status", default: 0, null: false
+    t.integer "status", default: 4, null: false
     t.text "review_comment"
+    t.string "proposed_title", limit: 128
+    t.text "proposed_desc"
+    t.geography "proposed_location", limit: {srid: 4326, type: "st_point", geographic: true}
     t.index ["coordinates"], name: "index_events_on_coordinates", using: :gist
     t.index ["start_date"], name: "index_events_on_start_date"
     t.check_constraint "participant_capacity >= 0", name: "participant_capacity_non_negative"
