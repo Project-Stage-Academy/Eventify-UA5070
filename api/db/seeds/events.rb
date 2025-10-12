@@ -1,6 +1,7 @@
 # Clear old data (optional)
 # SEED_RESET=true rails db:seed
 if ENV["SEED_RESET"] == "true"
+  EventMember.delete_all
   Event.delete_all
 end
 
@@ -75,7 +76,7 @@ events_data = [
 # Event seeds
 begin
   events_data.each do |event_attrs|
-    Event.create!(event_attrs)
+    Event.find_or_initialize_by(title: event_attrs[:title]).update!(event_attrs.except(:title))
   end
 rescue => e
   puts "Seed error: #{e.message}"

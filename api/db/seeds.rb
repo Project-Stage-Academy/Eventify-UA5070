@@ -8,9 +8,14 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+Faker::Config.random = Random.new(42)
+srand(42)
+
 # User Roles
 Role::NAMES.values.each do |val|
   Role.find_or_create_by!(name: val)
 end
 
 load Rails.root.join("db/seeds/events.rb")
+load Rails.root.join("db/seeds/users.rb")
+load Rails.root.join("db/seeds/event_members.rb")
