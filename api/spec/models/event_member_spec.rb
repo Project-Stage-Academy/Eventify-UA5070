@@ -30,6 +30,16 @@ RSpec.describe EventMember, type: :model do
     it { is_expected.to allow_value("").for(:comment) }
 
     it { is_expected.to validate_numericality_of(:rating).only_integer.is_greater_than_or_equal_to(1).is_less_than_or_equal_to(5) }
+
+    it "validates presence of rating if comment is present" do
+      subject.comment = "Great event!"
+      subject.rating = nil
+      expect(subject).not_to be_valid
+      expect(subject.errors.details[:rating]).to include(error: :required_if_comment_present)
+
+      subject.rating = 4
+      expect(subject).to be_valid
+    end
   end
 
   describe "associations" do
