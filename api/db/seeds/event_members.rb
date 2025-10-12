@@ -13,13 +13,9 @@ users = Role.for(:user).users.order(:id).to_a
 events = Event.order(:id).to_a
 rated_event = events.first
 
-users.each_with_index do |user, i|
-  rand(1..3).times do |j|
-    create_event_member!(
-      events[(i + j) % events.size],
-      user,
-      qr_tag: "base_#{j}"
-    )
+users.sample(10).each_with_index do |user, i|
+  events.sample(2).each do |event|
+    create_event_member!(event, user, qr_tag: "base_#{i}")
   end
 
   create_event_member!(

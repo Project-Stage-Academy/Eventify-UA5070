@@ -1,6 +1,8 @@
 if ENV["SEED_RESET"] == "true"
-  EventMember.delete_all
-  Event.delete_all
+  ActiveRecord::Base.transaction do
+    EventMember.delete_all
+    Event.delete_all
+  end
 end
 
 events_data = [
