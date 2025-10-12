@@ -6,6 +6,7 @@ RSpec.describe LogEntryCreationJob, type: :job do
   let(:params) do
     { user_id: 1, event_id: 1, action: :event_member_created, metadata: { key: "value" } }
   end
+
   subject(:job) { described_class.perform_later(**params) }
 
   after do

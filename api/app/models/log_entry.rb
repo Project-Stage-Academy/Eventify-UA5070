@@ -3,8 +3,8 @@ class LogEntry
   include Mongoid::Timestamps::Created
   include MongoidEnum
 
-  field :user_id, type: Integer
-  field :event_id, type: Integer
+  field :user_id, type: BSON::ObjectId
+  field :event_id, type: BSON::ObjectId
   field :metadata, type: Hash
   mongoid_enum :action, %i[
     event_member_created
