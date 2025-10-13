@@ -330,7 +330,7 @@ components:
           description: "Ticket price for the event"
           example: 50.0
         status:
-          type: string
+          type: integer
           description: "Enum field representing event status"
           enum:
             - published_unverified
