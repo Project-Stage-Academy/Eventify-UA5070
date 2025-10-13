@@ -134,6 +134,142 @@ paths:
                 serverError:
                   value:
                     error: Internal server error
+    post:
+      summary: Create a new event
+      description: Creates a new event with the provided details.
+      tags:
+        - Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventPublic"
+            examples:
+              createExample:
+                value:
+                  title: "Ruby on Rails Workshop"
+                  description: "Intensive workshop on building web applications with Ruby on Rails."
+                  location: "Kyiv, Ukraine"
+                  coordinates: "POINT (30.5238 50.4547)"
+                  start_date: "2025-10-08T12:37:07.615Z"
+                  finish_date: "2025-10-08T15:37:07.615Z"
+                  participant_capacity: 30
+                  ticket_price: 50.0
+                  status: draft
+      responses:
+        "201":
+          description: Event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventPublic"
+              examples:
+                createdExample:
+                  value:
+                    id: 36
+                    title: "Ruby on Rails Workshop"
+                    description: "Intensive workshop on building web applications with Ruby on Rails."
+                    location: "Kyiv, Ukraine"
+                    coordinates: "POINT (30.5238 50.4547)"
+                    start_date: "2025-10-08T12:37:07.615Z"
+                    finish_date: "2025-10-08T15:37:07.615Z"
+                    participant_capacity: 30
+                    ticket_price: 50.0
+                    status: draft
+                    created_at: "2025-07-01T12:34:56Z"
+                    updated_at: "2025-07-01T12:34:56Z"
+        "422":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                validationError:
+                  value:
+                    error:
+                      code: "event.validation_error"
+                      title: "Validation failed for event"
+                      detail: "Validation failed for event"
+                      meta:
+                        errors:
+                          - "Title can't be blank"
+        "500":
+          description: Unexpected server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                serverError:
+                  value:
+                    error: Internal server error
+  /api/v1/events/{id}:
+    get:
+      summary: Get single event by ID
+      description: Returns details for a specific event.
+      tags:
+        - Events
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier of the event
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK — event found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventPublic"
+              examples:
+                eventExample:
+                  value:
+                    id: 33
+                    title: Ruby on Rails Workshop
+                    description: Intensive workshop on building web applications with Ruby on Rails.
+                    location: Kyiv, Ukraine
+                    coordinates: "POINT (30.5238 50.4547)"
+                    start_date: "2025-10-08T12:37:07.615Z"
+                    finish_date: "2025-10-08T15:37:07.615Z"
+                    participant_capacity: 30
+                    ticket_price: "50.0"
+                    status: published_unverified
+                    proposed_title: null
+                    proposed_desc: null
+                    proposed_location: null
+                    review_comment: null
+                    created_at: "2025-07-01T12:34:56Z"
+                    updated_at: "2025-07-02T08:22:10Z"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                notFound:
+                  value:
+                    error:
+                      code: "event.not_found"
+                      title: "Event not found"
+                      detail: "Event not found"
+                      meta: null
+        "500":
+          description: Unexpected server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                serverError:
+                  value:
+                    error: Internal server error
+
 
 components:
   schemas:
@@ -194,9 +330,15 @@ components:
           description: "Ticket price for the event"
           example: 50.0
         status:
-          type: integer
+          type: string
           description: "Enum field representing event status"
-          example: 4
+          enum:
+            - published_unverified
+            - draft_on_review
+            - published
+            - draft
+            - archived
+          example: published_unverified
         review_comment:
           type: string
           nullable: true
@@ -229,25 +371,6 @@ components:
           description: "Record last updated timestamp"
           example: "2025-07-02T08:22:10Z"
 
-
-      Pagination:
-        type: object
-        additionalProperties: false
-        required:
-          - current_page
-          - total_pages
-          - total_count
-        properties:
-          current_page:
-            type: integer
-            example: 1
-          total_pages:
-            type: integer
-            example: 3
-          total_count:
-            type: integer
-            example: 9
-
     Pagination:
       type: object
       additionalProperties: false
@@ -275,5 +398,21 @@ components:
       required: [error]
       properties:
         error:
-          type: string
-          example: Internal server error
+          type: object
+          additionalProperties: false
+          required: [code, title, detail]
+          properties:
+            code:
+              type: string
+              description: Machine-readable error code (e.g. "invalid_request")
+            title:
+              type: string
+              description: Short human-readable summary of the error
+            detail:
+              type: string
+              description: Longer human-readable explanation
+            meta:
+              type: object
+              nullable: true
+              description: Optional extra details about the error
+
