@@ -33,7 +33,7 @@ RSpec.describe LogEntry, type: :model do
       actions.each do |action|
         scope = described_class.send("action_#{action}")
 
-        expect(scope).to_not include(log_entry)
+        expect(scope).not_to include(log_entry)
 
         log_entry.update!(action: action)
         expect(scope).to include(log_entry)
