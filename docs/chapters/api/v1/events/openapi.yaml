@@ -27,6 +27,7 @@ paths:
       tags:
         - Events
       parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
         - name: page
           in: query
           description: Page number (1-based)
@@ -142,6 +143,8 @@ paths:
       description: Creates a new event with the provided details.
       tags:
         - Events
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
       requestBody:
         required: true
         content:
@@ -215,6 +218,7 @@ paths:
       tags:
         - Events
       parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
         - name: id
           in: path
           required: true
@@ -423,3 +427,12 @@ components:
               type: object
               nullable: true
               description: Optional extra details about the error
+  parameters:
+    AuthorizationHeader:
+      name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+        example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      description: "Bearer token. Required role: user"
