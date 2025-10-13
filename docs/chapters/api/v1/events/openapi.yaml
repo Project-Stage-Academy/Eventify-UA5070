@@ -18,9 +18,9 @@ paths:
     get:
       summary: List events with pagination and sorting
       description: >
-        Returns events wrapped in a `data` array and a `pagination` object.
-        Supports pagination (`page`, `per_page`) and sorting (`sort`, `direction`).
-        `per_page` is capped at 50 on the server side.
+        Returns events wrapped in a data array and a pagination` object.
+        Supports pagination (page, per_page) and sorting (sort, direction).
+        per_page is capped at 50 on the server side.
       tags:
         - Events
       parameters:
