@@ -41,12 +41,6 @@ RSpec.configure do |config|
   config.fixture_paths = [
     Rails.root.join('spec/fixtures')
   ]
-  # config.before(:suite) do
-  #   Role::NAMES.values.each do |name|
-  #     Role.find_or_create_by!(name:)
-  #   end
-  # end
-  #
 
   Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
 
