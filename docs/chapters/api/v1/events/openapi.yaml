@@ -13,6 +13,9 @@ servers:
 tags:
   - name: Events
 
+security:
+  - bearerAuth: [] 
+  
 paths:
   /api/v1/events:
     get:
@@ -272,6 +275,11 @@ paths:
 
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     EventPublic:
       type: object
@@ -391,7 +399,7 @@ components:
           type: integer
           description: "Total number of items across all pages"
           example: 9
-
+        
     ErrorResponse:
       type: object
       additionalProperties: false
@@ -415,4 +423,3 @@ components:
               type: object
               nullable: true
               description: Optional extra details about the error
-
