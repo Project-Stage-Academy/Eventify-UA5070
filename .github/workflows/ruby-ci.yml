@@ -103,6 +103,10 @@ jobs:
             sleep 2
           done
 
+      - name: Drop PostGIS geocoder if exists
+        run: |
+          psql -h localhost -U postgres -d api_test -c "DROP EXTENSION IF EXISTS postgis_tiger_geocoder CASCADE;"
+
       - name: Prepare database
         run: |
           bundle exec rails db:create
