@@ -46,7 +46,7 @@ gem "thruster", require: false
 gem "kaminari"
 gem "rswag-api", "2.16.0"
 gem "rswag-ui", "2.16.0"
-gem 'rswag-specs', '2.16.0'
+gem "rswag-specs", "2.16.0"
 
 group :development, :test do
   gem "dotenv-rails"

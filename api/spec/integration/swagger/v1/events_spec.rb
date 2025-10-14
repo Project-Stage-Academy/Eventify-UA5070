@@ -8,7 +8,7 @@ RSpec.describe 'Events API', type: :request do
       security [ bearerAuth: [] ]
 
       response '200', 'events found' do
-        let(:Authorization) { "Bearer #{create(:user).token}" } # токен для rswag при генерації
+        let(:Authorization) { "Bearer #{create(:user).token}" }
         run_test!
       end
     end

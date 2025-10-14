@@ -96,6 +96,5 @@ RSpec.describe "Api::V1::Events", type: :request do
         expect(body["error"]["meta"]["errors"]).to include("Start date The event's start date must be in the future")
       end
     end
-
   end
 end
