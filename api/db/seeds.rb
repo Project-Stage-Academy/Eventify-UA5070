@@ -8,8 +8,9 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-Faker::Config.random = Random.new(42)
-srand(42)
+DETERMINISTIC_SEED = 42
+Faker::Config.random = Random.new(DETERMINISTIC_SEED)
+srand(DETERMINISTIC_SEED)
 
 # User Roles
 Role::NAMES.values.each do |val|

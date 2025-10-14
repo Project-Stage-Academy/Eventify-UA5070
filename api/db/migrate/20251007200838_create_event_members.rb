@@ -3,7 +3,7 @@ class CreateEventMembers < ActiveRecord::Migration[8.0]
     create_table :event_members do |t|
       t.references :event, null: false, foreign_key: true
       t.references :user, null: false, foreign_key: true
-      t.string :ticket_qr_code, null: false, limit: 10
+      t.string :ticket_qr_code, null: false, limit: 18
       t.integer :rating, limit: 2
       t.check_constraint "rating IS NULL OR (rating >= 1 AND rating <= 5)", name: "rating_range"
       t.text :comment

@@ -1,5 +1,5 @@
 def create_event_member!(event, user, rating: nil, comment: nil, qr_tag: nil)
-  qr = Digest::SHA256.hexdigest("#{user.id}:#{event.id}:#{qr_tag}")[0, 10]
+  qr = Digest::SHA256.hexdigest("#{user.id}:#{event.id}:#{qr_tag}")[0, EventMember::QR_CODE_LENGTH]
 
   EventMember.find_or_create_by!(ticket_qr_code: qr) do |em|
     em.event = event
