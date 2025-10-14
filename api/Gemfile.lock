@@ -126,10 +126,10 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
+    json (2.15.0)
     json-schema (5.2.2)
       addressable (~> 2.8)
       bigdecimal (~> 3.1)
-    json (2.15.0)
     jwt (3.1.2)
       base64
     kamal (2.7.0)
@@ -420,10 +420,10 @@ DEPENDENCIES
   puma (>= 5.0)
   pundit
   pundit-matchers
-  rswag-specs
   rails (~> 8.0)
   rspec-rails (~> 8.0)
   rswag-api (= 2.16.0)
+  rswag-specs
   rswag-ui (= 2.16.0)
   rubocop
   rubocop-performance

@@ -18,7 +18,7 @@ events_data = [
     participant_capacity: 30,
     ticket_price: 50.0,
     status: :published,
-    review_comment: nil
+    review_comment: nil,
     organizers: [
       { user: alice, is_primary: true },
       { user: bob, is_primary: false }
@@ -34,7 +34,7 @@ events_data = [
     participant_capacity: 50,
     ticket_price: 0.0,
     status: :draft,
-    review_comment: nil
+    review_comment: nil,
     organizers: [
       { user: bob, is_primary: true }
     ]
@@ -63,8 +63,8 @@ events_data = [
     finish_date: 20.days.from_now + 8.hours,
     participant_capacity: 500,
     ticket_price: 150.0,
-     status: :published,
-    review_comment: "Ready for publishing"
+    status: :published,
+    review_comment: "Ready for publishing",
     organizers: [
       { user: bob, is_primary: true },
       { user: charlie, is_primary: false }

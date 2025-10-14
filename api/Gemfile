@@ -71,11 +71,7 @@ group :development, :test do
   gem "faker"
 
   # API documentation and Swagger testing
-  gem "rswag-api"
-  gem "rswag-ui"
   gem "rswag-specs"
-
-  gem "pundit-matchers"
 
   gem "factory_bot_rails"
 
