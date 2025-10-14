@@ -28,6 +28,8 @@ class Event < ApplicationRecord
   validates :ticket_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
   validates :participant_capacity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
 
+  validates :status, inclusion: { in: statuses.keys }
+
   private
 
   def validate_start_date
