@@ -10,7 +10,7 @@ RSpec.describe EventMember, type: :model do
 
     it { is_expected.to validate_uniqueness_of(:ticket_qr_code) }
 
-    it { is_expected.to validate_length_of(:ticket_qr_code).is_at_least(10).is_at_most(18) }
+    it { is_expected.to validate_length_of(:ticket_qr_code).is_at_most(36) }
     it { is_expected.to validate_length_of(:comment).is_at_most(1000) }
 
     it { is_expected.to allow_value(nil).for(:rating) }

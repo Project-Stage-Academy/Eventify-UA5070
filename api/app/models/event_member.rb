@@ -1,12 +1,12 @@
 class EventMember < ApplicationRecord
-  QR_CODE_LENGTH = 12
+  QR_CODE_LENGTH = 36
 
   belongs_to :event
   belongs_to :user
 
   validates :user, presence: true
   validates :event, presence: true
-  validates :ticket_qr_code, presence: true, uniqueness: true, length: { minimum: 10, maximum: 18 }
+  validates :ticket_qr_code, presence: true, uniqueness: true, length: { maximum: 36 }
   validates :rating, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 5 }, allow_nil: true
   validates :comment, length: { maximum: 1000 }, allow_blank: true
   validate :require_rating_for_comment
