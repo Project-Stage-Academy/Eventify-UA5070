@@ -104,8 +104,10 @@ jobs:
           done
 
       - name: Drop PostGIS geocoder if exists
+        env:
+          PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
         run: |
-          psql -h localhost -U postgres -d api_test -c "DROP EXTENSION IF EXISTS postgis_tiger_geocoder CASCADE;"
+          psql -h localhost -U ${{ env.DATABASE_USERNAME }} -d ${{ env.POSTGRES_DB || 'api_test' }} -c "DROP EXTENSION IF EXISTS postgis_tiger_geocoder CASCADE;"
 
       - name: Prepare database
         run: |
