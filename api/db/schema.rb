@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_06_130949) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_14_194711) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -33,6 +33,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_06_130949) do
     t.geography "proposed_location", limit: {srid: 4326, type: "st_point", geographic: true}
     t.index ["coordinates"], name: "index_events_on_coordinates", using: :gist
     t.index ["start_date"], name: "index_events_on_start_date"
+    t.index ["title"], name: "index_events_on_title", unique: true
     t.check_constraint "participant_capacity >= 0", name: "participant_capacity_non_negative"
     t.check_constraint "ticket_price >= 0::numeric", name: "ticket_price_non_negative"
   end
@@ -59,6 +60,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_06_130949) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.check_constraint "email::text = lower(btrim(email::text))", name: "users_email_is_lower_and_trimmed"
   end
 
   add_foreign_key "user_roles", "roles"

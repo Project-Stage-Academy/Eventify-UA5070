@@ -14,7 +14,7 @@ class Event < ApplicationRecord
   }
 
   # Validations for text fields
-  validates :title, presence: true, length: { maximum: 128 }
+  validates :title, presence: true, length: { maximum: 128 }, uniqueness: true
   validates :description, length: { maximum: 500 }, allow_blank: true
 
   # Validations for required dates and location
