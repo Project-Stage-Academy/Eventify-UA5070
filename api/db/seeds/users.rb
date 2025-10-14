@@ -1,7 +1,4 @@
-if ENV["SEED_RESET"] == "true"
-  UserRole.delete_all
-  User.delete_all
-end
+UserRole.delete_all if ENV["SEED_RESET"] == "true"
 
 def create_user!(role_key, index)
   role_value = Role::NAMES[role_key]

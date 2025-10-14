@@ -12,11 +12,9 @@ DETERMINISTIC_SEED = 42
 Faker::Config.random = Random.new(DETERMINISTIC_SEED)
 srand(DETERMINISTIC_SEED)
 
-# User Roles
-Role::NAMES.values.each do |val|
-  Role.find_or_create_by!(name: val)
+ActiveRecord::Base.transaction do
+  load Rails.root.join("db/seeds/roles.rb")
+  load Rails.root.join("db/seeds/events.rb")
+  load Rails.root.join("db/seeds/users.rb")
+  load Rails.root.join("db/seeds/event_members.rb")
 end
-
-load Rails.root.join("db/seeds/events.rb")
-load Rails.root.join("db/seeds/users.rb")
-load Rails.root.join("db/seeds/event_members.rb")

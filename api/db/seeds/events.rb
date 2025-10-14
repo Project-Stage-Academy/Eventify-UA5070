@@ -1,8 +1,6 @@
 if ENV["SEED_RESET"] == "true"
-  ActiveRecord::Base.transaction do
-    EventMember.delete_all
-    Event.delete_all
-  end
+  EventMember.delete_all
+  Event.delete_all
 end
 
 events_data = [
@@ -68,12 +66,8 @@ events_data = [
   }
 ]
 
-begin
-  events_data.each do |attrs|
-    Event.find_or_initialize_by(title: attrs[:title]).update!(attrs.except(:title))
-  end
-rescue => e
-  puts "Seed error: #{e.message}"
+events_data.each do |attrs|
+  Event.find_or_initialize_by(title: attrs[:title]).update!(attrs.except(:title))
 end
 
 puts "Event seeds created."
