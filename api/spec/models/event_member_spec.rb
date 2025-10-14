@@ -2,19 +2,7 @@ require 'rails_helper'
 
 RSpec.describe EventMember, type: :model do
   describe "validations" do
-    subject do
-      described_class.new(
-        event: Event.new(
-          title: "Test",
-          location: "Kyiv",
-          start_date: 2.days.from_now,
-          finish_date: 3.days.from_now,
-          participant_capacity: 100
-        ),
-        user: User.new(name: "J", email: "j@example.com", password: "password123"),
-        ticket_qr_code: "ABCDEF1234"
-      )
-    end
+    subject { FactoryBot.create(:event_member) }
 
     it { is_expected.to validate_presence_of(:event) }
     it { is_expected.to validate_presence_of(:user) }
