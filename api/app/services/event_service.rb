@@ -16,10 +16,12 @@ class EventService
     self.paginate(events, params)
   end
 
-  def self.create(params)
+  def self.create(params, user)
     event = Event.new(params)
 
     if event.save
+      EventOrganizer.create!(event: event, user: user, is_primary: true)
+      
       Result.new(true, event, [])
     else
       Result.new(false, event, event.errors.full_messages)
