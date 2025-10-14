@@ -71,4 +71,6 @@ group :development, :test do
   gem "factory_bot_rails"
 
   gem "simplecov", require: false
+
+  gem "database_cleaner-active_record"
 end
