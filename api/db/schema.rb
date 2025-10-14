@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_04_182403) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_06_130949) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -37,9 +37,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_04_182403) do
     t.decimal "ticket_price", precision: 10, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "event_status", default: 0, null: false
-    t.integer "review_status", default: 0, null: false
+    t.integer "status", default: 4, null: false
     t.text "review_comment"
+    t.string "proposed_title", limit: 128
+    t.text "proposed_desc"
+    t.geography "proposed_location", limit: {srid: 4326, type: "st_point", geographic: true}
     t.index ["coordinates"], name: "index_events_on_coordinates", using: :gist
     t.index ["start_date"], name: "index_events_on_start_date"
     t.check_constraint "participant_capacity >= 0", name: "participant_capacity_non_negative"
@@ -68,7 +70,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_04_182403) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.check_constraint "email::text = lower(btrim(email::text))", name: "users_email_is_lower_and_trimmed"
   end
 
   add_foreign_key "event_organizers", "events"

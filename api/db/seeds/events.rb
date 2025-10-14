@@ -1,5 +1,7 @@
 # SEED_RESET=true rails db:seed
-Event.delete_all if ENV["SEED_RESET"] == "true"
+if ENV["SEED_RESET"] == "true"
+  Event.delete_all
+end
 
 alice = User.find_by(email: "alice@example.com")
 bob   = User.find_by(email: "bob@example.com")
@@ -15,9 +17,8 @@ events_data = [
     finish_date: 2.days.from_now + 3.hours,
     participant_capacity: 30,
     ticket_price: 50.0,
-    event_status: :published,
-    review_status: :unverified,
-    review_comment: nil,
+    status: :published,
+    review_comment: nil
     organizers: [
       { user: alice, is_primary: true },
       { user: bob, is_primary: false }
@@ -32,10 +33,24 @@ events_data = [
     finish_date: 5.days.from_now + 4.hours,
     participant_capacity: 50,
     ticket_price: 0.0,
-    event_status: :draft,
-    review_status: :on_review,
-    review_comment: nil,
+    status: :draft,
+    review_comment: nil
     organizers: [
+      { user: bob, is_primary: true }
+    ]
+  },
+  {
+    title: "AI & Machine Learning Seminar",
+    description: "Seminar on modern artificial intelligence techniques.",
+    location: "Berlin, Germany",
+    coordinates: "POINT(13.4050 52.5200)",
+    start_date: 10.days.from_now,
+    finish_date: 10.days.from_now + 2.hours,
+    participant_capacity: 100,
+    ticket_price: 100.0,
+    status: :published,
+    review_comment: nil,
+     organizers: [
       { user: bob, is_primary: true }
     ]
   },
@@ -48,9 +63,8 @@ events_data = [
     finish_date: 20.days.from_now + 8.hours,
     participant_capacity: 500,
     ticket_price: 150.0,
-    event_status: :published,
-    review_status: :approved,
-    review_comment: "Ready for publishing",
+     status: :published,
+    review_comment: "Ready for publishing"
     organizers: [
       { user: bob, is_primary: true },
       { user: charlie, is_primary: false }
