@@ -67,4 +67,6 @@ group :development, :test do
   gem "rspec-rails", "~> 8.0"
 
   gem "faker"
+
+  gem "pundit"
 end
