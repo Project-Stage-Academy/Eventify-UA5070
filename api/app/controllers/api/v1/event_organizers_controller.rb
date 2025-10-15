@@ -10,7 +10,9 @@ class Api::V1::EventOrganizersController < ApplicationController
     if @organizer.save
       render json: { id: @organizer.user.id, name: @organizer.user.name }, status: :created
     else
-      render json: { errors: @organizer.errors.full_messages }, status: :unprocessable_entity
+      raise Api::Errors::EventOrganizersError::ValidationError.new(
+        meta: { errors: @organizer.errors.full_messages }
+      )
     end
   end
 
@@ -18,15 +20,21 @@ class Api::V1::EventOrganizersController < ApplicationController
   def destroy
     authorize @event, :manage_organizers?
 
-    @organizer = @event.event_organizers.find_by(user_id: params[:id])
+    @organizer = @event.event_organizers.find_by(user_id: params[:user_id])
 
-    return render json: { error: I18n.t("errors.common.organizer_not_found") }, status: :not_found unless @organizer
+    raise Api::Errors::EventOrganizersError::NotFound.new(
+      event_id: params[:event_id],
+      user_id: params[:user_id]
+    ) unless @organizer
 
-    if @organizer.destroy
-      render json: { message: I18n.t("activerecord.errors.models.event_organizer.messages.organizer_removed") }, status: :ok
-    else
-      render json: { errors: @organizer.errors.full_messages }, status: :forbidden
+    if @event.event_organizers.count <= 1
+      raise Api::Errors::EventOrganizersError::CannotRemoveLastOrganizer.new(
+        event_id: params[:event_id]
+      )
     end
+
+    @organizer.destroy
+    head :ok
   end
 
   private
