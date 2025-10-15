@@ -17,27 +17,6 @@ RSpec.describe "Api::V1::Events", type: :request do
 
     context "when no events exist" do
       before { Event.delete_all }
-      it "returns an empty data array" do
-        get "/api/v1/events", headers: headers
-
-        expect(response).to have_http_status(:ok)
-        body = JSON.parse(response.body)
-        expect(body["data"]).to eq([])
-      end
-    end
-    context "when no events exist" do
-      before { Event.delete_all }
-
-      it "returns an empty data array" do
-        get "/api/v1/events", headers: headers
-
-        expect(response).to have_http_status(:ok)
-        body = JSON.parse(response.body)
-        expect(body["data"]).to eq([])
-      end
-    end
-    context "when no events exist" do
-      before { Event.delete_all }
 
       it "returns an empty data array" do
         get "/api/v1/events", headers: headers
