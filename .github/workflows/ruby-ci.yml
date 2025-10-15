@@ -81,6 +81,7 @@ jobs:
 
     env:
       RAILS_ENV: test
+      DATABASE_PORT: 5432
 
     steps:
       - name: Checkout code
