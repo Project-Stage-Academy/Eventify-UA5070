@@ -72,7 +72,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: api_test
         ports:
-          - "5432:5432"
+          - "6000:5432"
         options: >-
           --health-cmd "pg_isready -U postgres -d api_test"
           --health-interval 5s
@@ -81,10 +81,6 @@ jobs:
 
     env:
       RAILS_ENV: test
-      DATABASE_HOST: localhost
-      DATABASE_PORT: 5432
-      DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: postgres
 
     steps:
       - name: Checkout code
@@ -113,6 +109,7 @@ jobs:
         run: |
           bundle exec rails db:create
           bundle exec rails db:migrate
+          bundle exec rails db:seed
 
       - name: Run RSpec tests
         run: bundle exec rspec
