@@ -5,13 +5,16 @@ RSpec.describe "Api::V1::Events", type: :request do
   let(:headers) { auth_headers_for(user) }
 
   describe "GET /api/v1/events" do
+    before do
+      create_list(:event, 5)
+    end
+
     it "returns a list of events with pagination meta" do
       get "/api/v1/events", headers: headers
-
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
-
       expect(body["data"]).to be_an(Array)
+      expect(body["data"]).not_to be_empty
       expect(body["pagination"]).to be_present
     end
 
