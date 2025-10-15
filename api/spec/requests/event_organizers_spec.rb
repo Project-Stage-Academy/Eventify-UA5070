@@ -43,7 +43,7 @@ RSpec.describe "Api::V1::EventOrganizers", type: :request do
 
     context "when unauthorized" do
       it "returns forbidden" do
-        # користувач, який не є організатором
+        # user who is not an organizer
         unauthorized_token = JwtService.issue_tokens_for(another_user)[:access_token]
 
         post "/api/v1/events/#{event.id}/organizers",
