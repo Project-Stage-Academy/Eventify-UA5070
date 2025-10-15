@@ -50,7 +50,7 @@ events_data = [
     ticket_price: 100.0,
     status: :published,
     review_comment: nil,
-     organizers: [
+    organizers: [
       { user: bob, is_primary: true }
     ]
   },
