@@ -1,19 +1,18 @@
 class Event < ApplicationRecord
   # belongs_to :organizer, class_name: "User", optional: false
+  has_many :event_members, dependent: :destroy
+  has_many :members, through: :event_members, source: :user
 
-  enum :event_status, {
+  enum :status, {
     draft: 0,
-    published: 1,
-    cancelled: 2,
-    archived: 3
-  }
-
-  enum :review_status, {
-    pending_review: 0,
-    on_review: 1,
-    unverified: 2,
-    approved: 3,
-    rejected: 4
+    draft_on_review: 1,
+    published: 2,
+    rejected: 3,
+    published_unverified: 4,
+    published_on_review: 5,
+    published_rejected: 6,
+    archived: 7,
+    cancelled: 8
   }
 
   # Validations for text fields

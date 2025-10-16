@@ -5,6 +5,11 @@ RSpec.describe "Auth", type: :request do
     JSON.parse(response.body)
   end
 
+  before(:all) do
+    create(:role)
+    create(:role, :admin)
+  end
+
   describe "POST /api/v1/auth/register" do
     let(:endpoint) { "/api/v1/auth/register" }
 

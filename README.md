@@ -49,3 +49,4 @@ We use **issue-based branching** to keep development organized and traceable.
 3. Commit your changes with clear, descriptive messages.
 4. Push the branch and open a Pull Request that links to the issue (e.g., `Closes #12`).
 5. Wait for review and approval before merging.
+
