@@ -22,7 +22,11 @@ Rails.application.routes.draw do
         get :me, to: "users#me"
       end
 
-      resources :events, only: [ :index, :show, :create ]
+      resources :events, only: [ :index, :show, :create ] do
+        post :register, to: "event_members#create"
+      end
+
+      resources :event_members, only: [ :index, :show ]
 
       get :hello, to: "auth#hello"
     end
