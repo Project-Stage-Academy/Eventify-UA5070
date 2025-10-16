@@ -13,7 +13,7 @@ development:
       # Provides the hosts the default client can connect to. Must be an array
       # of host:port pairs. (required)
       hosts:
-        - localhost:27021
+        - "localhost:<%= ENV['MONGODB_PORT'] || raise('Missing required environment variable: MONGODB_PORT') %>"
       options:
         user: <%= ENV["MONGODB_USERNAME"] || raise("Missing required environment variable: MONGODB_USERNAME") %>
         password: <%= ENV["MONGODB_PASSWORD"] || raise("Missing required environment variable: MONGODB_PASSWORD") %>
@@ -288,7 +288,7 @@ test:
     default:
       database: api_test
       hosts:
-        - localhost:27021
+        - "localhost:<%= ENV['MONGODB_PORT'] || raise('Missing required environment variable: MONGODB_PORT') %>"
       options:
         user: <%= ENV["MONGODB_USERNAME"] %>
         password: <%= ENV["MONGODB_PASSWORD"] %>
