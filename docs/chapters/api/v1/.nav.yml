@@ -1,2 +1,3 @@
 nav:
   - Auth API: ./auth/api.md
+  - Events API: ./events/api.md
