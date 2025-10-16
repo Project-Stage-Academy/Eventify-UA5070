@@ -53,4 +53,22 @@ RSpec.describe LogEntry, type: :model do
       end
     end
   end
+
+  describe "user_id and event_id as MongoidTypes::PostgresId" do
+    let(:integer_id) { 1 }
+    let(:log_entry) { described_class.new(user_id: integer_id, event_id: integer_id, action: :event_member_created) }
+
+    it "correctly assigns and retrieves the integer ID" do
+      expect(log_entry.user_id).to eq(integer_id)
+      expect(log_entry.event_id).to eq(integer_id)
+    end
+
+    it "can be queried by the integer ID" do
+      log_entry.save!
+      found_model = described_class.where(user_id: integer_id, event_id: integer_id).first
+      expect(found_model).not_to be_nil
+      expect(found_model.user_id).to eq(integer_id)
+      expect(found_model.event_id).to eq(integer_id)
+    end
+  end
 end
