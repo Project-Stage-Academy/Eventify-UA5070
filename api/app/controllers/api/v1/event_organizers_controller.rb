@@ -5,13 +5,9 @@ class Api::V1::EventOrganizersController < ApplicationController
   def create
     authorize @event, :manage_organizers?
 
-    unless params[:user_id].present?
-      raise Api::Errors::EventOrganizersError::ValidationError.new(
-        meta: { errors: [ "user_id is required" ] }
-      )
-    end
+    user_id = organizer_params[:user_id]
 
-    @organizer = @event.event_organizers.new(user_id: params[:user_id])
+    @organizer = @event.event_organizers.new(user_id: user_id)
 
     if @organizer.save
       render json: { id: @organizer.user.id, name: @organizer.user.name }, status: :created
@@ -46,6 +42,15 @@ class Api::V1::EventOrganizersController < ApplicationController
   private
 
   def set_event
-    @event = Event.find(params[:event_id])
+    @event = Event.find_by(id: params[:event_id])
+    raise Api::Errors::EventOrganizersError::NotFound.new(
+      event_id: params[:event_id],
+      user_id: nil
+    ) unless @event
+  end
+
+  def organizer_params
+    params.require(:user_id)
+    params.permit(:user_id)
   end
 end

@@ -3,8 +3,8 @@ if ENV["SEED_RESET"] == "true"
   Event.delete_all
 end
 
-alice = User.find_by(email: "alice@example.com")
-bob   = User.find_by(email: "bob@example.com")
+alice   = User.find_by(email: "alice@example.com")
+bob     = User.find_by(email: "bob@example.com")
 charlie = User.find_by(email: "charlie@example.com")
 
 events_data = [
@@ -75,16 +75,14 @@ events_data = [
 events_data.each do |attrs|
   organizers = attrs.delete(:organizers)
 
-  event = Event.new(attrs)
-  event.save!(validate: false)
+  Event.transaction do
+    event = Event.create!(attrs)
 
-  organizers.each do |org|
-    raise "User not found: #{org.inspect}" if org[:user].nil?
-    EventOrganizer.create!(event: event, user: org[:user], is_primary: org[:is_primary] || false)
+    organizers.each do |org|
+      raise "User not found: #{org.inspect}" if org[:user].nil?
+      EventOrganizer.create!(event: event, user: org[:user], is_primary: org[:is_primary] || false)
+    end
   end
-
-  event.reload
-  event.save!
 end
 
 puts "Event seeds created."

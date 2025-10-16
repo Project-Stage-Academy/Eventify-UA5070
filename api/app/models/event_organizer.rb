@@ -14,9 +14,7 @@ class EventOrganizer < ApplicationRecord
   private
 
   def validate_last_organizer_removal
-    EventOrganizer.transaction do
-      event.event_organizers.lock!
-
+    event.with_lock do
       if event.event_organizers.count <= 1
         errors.add(:base, :last_organizer_removal_forbidden)
         throw(:abort)

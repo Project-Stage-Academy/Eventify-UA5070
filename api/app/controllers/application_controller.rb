@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::API
   include ErrorRendering
   include Authenticatable
-  include Pundit::Authorization
+  include Pundit
 
   before_action :authorize_request
 
