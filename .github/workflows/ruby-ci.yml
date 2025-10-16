@@ -78,6 +78,17 @@ jobs:
           --health-interval 5s
           --health-timeout 3s
           --health-retries 20
+      mongodb:
+        image: mongo:8.0
+        env:
+          MONGO_INITDB_ROOT_USERNAME: mongodb
+          MONGO_INITDB_ROOT_PASSWORD: mongodb
+          MONGO_INITDB_DATABASE: api_test
+        ports:
+          - "27017:27017"
+        options: >-
+          --health-cmd "mongosh --username=mongodb --password=mongodb --authenticationDatabase=admin --eval 'db.adminCommand(\"ping\")'"
+          --health-interval 10s --health-timeout 5s --health-retries 5
 
     env:
       RAILS_ENV: test
@@ -85,6 +96,9 @@ jobs:
       DATABASE_PORT: 5432
       DATABASE_USERNAME: postgres
       DATABASE_PASSWORD: postgres
+      MONGODB_USERNAME: mongodb
+      MONGODB_PASSWORD: mongodb
+      MONGODB_PORT: 27017
 
     steps:
       - name: Checkout code
@@ -117,4 +131,3 @@ jobs:
 
       - name: Run RSpec tests
         run: bundle exec rspec
-

@@ -8,9 +8,13 @@ default: &default
   port: <%= ENV.fetch("DATABASE_PORT") %>
 
 development:
-  <<: *default
-  database: api_development
-  port: 6000
+  primary:
+    <<: *default
+    database: api_development
+  queue:
+    <<: *default
+    migrations_paths: db/queue_migrate
+    database: api_development_queue
 
 test:
   <<: *default
