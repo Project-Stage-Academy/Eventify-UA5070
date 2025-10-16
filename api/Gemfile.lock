@@ -404,7 +404,7 @@ DEPENDENCIES
   database_cleaner-active_record
   debug
   dotenv-rails
-  factory_bot_rails
+  factory_bot_rails (~> 6.5)
   faker
   jwt
   kamal

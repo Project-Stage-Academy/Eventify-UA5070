@@ -39,4 +39,12 @@ RSpec.describe User, type: :model do
       expect(user.authenticate("wrongpass")).to be_falsey
     end
   end
+
+  describe "associations" do
+    it { is_expected.to have_many(:user_roles) }
+    it { is_expected.to have_many(:roles).through(:user_roles) }
+
+    it { is_expected.to have_many(:event_members) }
+    it { is_expected.to have_many(:joined_events).through(:event_members) }
+  end
 end

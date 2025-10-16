@@ -15,6 +15,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_14_093434) do
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
 
+  create_table "event_members", force: :cascade do |t|
+    t.bigint "event_id", null: false
+    t.bigint "user_id", null: false
+    t.string "ticket_qr_code", limit: 36, null: false
+    t.integer "rating", limit: 2
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "rating"], name: "index_rated_event_members_by_event", where: "(rating IS NOT NULL)"
+    t.index ["event_id"], name: "index_event_members_on_event_id"
+    t.index ["ticket_qr_code"], name: "index_event_members_on_ticket_qr_code", unique: true
+    t.index ["user_id"], name: "index_event_members_on_user_id"
+    t.check_constraint "rating IS NULL OR rating >= 1 AND rating <= 5", name: "rating_range"
+  end
+
   create_table "events", force: :cascade do |t|
     t.string "title", null: false
     t.text "description"
@@ -59,8 +74,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_14_093434) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.check_constraint "email::text = lower(btrim(email::text))", name: "users_email_is_lower_and_trimmed"
   end
 
+  add_foreign_key "event_members", "events"
+  add_foreign_key "event_members", "users"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
 end
