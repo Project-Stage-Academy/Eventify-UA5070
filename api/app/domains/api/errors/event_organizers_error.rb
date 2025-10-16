@@ -26,7 +26,7 @@ module Api
         def initialize(event_id:, meta: nil)
           super(
             code: :"event_organizer.cannot_remove_last",
-            status: :forbidden,
+            status: :unprocessable_entity,
             meta: (meta || {}).merge(event_id: event_id),
             i18n: { event_id: event_id }
           )

@@ -5,6 +5,12 @@ class Api::V1::EventOrganizersController < ApplicationController
   def create
     authorize @event, :manage_organizers?
 
+    unless params[:user_id].present?
+      raise Api::Errors::EventOrganizersError::ValidationError.new(
+        meta: { errors: [ "user_id is required" ] }
+      )
+    end
+
     @organizer = @event.event_organizers.new(user_id: params[:user_id])
 
     if @organizer.save

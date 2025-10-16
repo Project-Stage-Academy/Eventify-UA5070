@@ -4,16 +4,23 @@ class EventOrganizer < ApplicationRecord
 
   validates :user_id, presence: true
   validates :event_id, presence: true
-  validates :user_id, uniqueness: { scope: :event_id }
+  validates :user_id, uniqueness: {
+    scope: :event_id,
+    message: "is already an organizer for this event"
+  }
 
   before_destroy :validate_last_organizer_removal
 
   private
 
   def validate_last_organizer_removal
-    if event.event_organizers.reload.count <= 1
-      errors.add(:base, :last_organizer_removal_forbidden)
-      throw(:abort)
+    EventOrganizer.transaction do
+      event.event_organizers.lock!
+
+      if event.event_organizers.count <= 1
+        errors.add(:base, :last_organizer_removal_forbidden)
+        throw(:abort)
+      end
     end
   end
 end

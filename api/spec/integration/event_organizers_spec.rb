@@ -1,3 +1,4 @@
+# spec/integration/event_organizers_spec.rb
 require 'swagger_helper'
 
 RSpec.describe 'EventOrganizers API', type: :request do
@@ -11,9 +12,7 @@ RSpec.describe 'EventOrganizers API', type: :request do
       parameter name: :event_id, in: :path, type: :integer
       parameter name: :body, in: :body, schema: {
         type: :object,
-        properties: {
-          user_id: { type: :integer }
-        },
+        properties: { user_id: { type: :integer } },
         required: [ 'user_id' ]
       }
 
@@ -37,12 +36,14 @@ RSpec.describe 'EventOrganizers API', type: :request do
         run_test!
       end
 
-      response '422', 'unprocessable entity' do
+      response '422', 'unprocessable entity (duplicate organizer)' do
         before do
           create(:event_organizer, event: event, user: another_user)
         end
+
         run_test! do |response|
-          expect(JSON.parse(response.body)['errors']).to be_present
+          data = JSON.parse(response.body)
+          expect(data['error']['code']).to eq('event_organizer.validation_error')
         end
       end
     end
@@ -73,14 +74,26 @@ RSpec.describe 'EventOrganizers API', type: :request do
         end
       end
 
-      response '403', 'cannot remove last organizer or unauthorized' do
+      response '422', 'cannot remove last organizer' do
         let(:user_id) { user.id }
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['error']['code']).to eq('event_organizer.cannot_remove_last')
+        end
+      end
+
+      response '403', 'forbidden (not authorized)' do
+        let(:user_id) { user.id }
+        let(:Authorization) { "Bearer #{JwtService.issue_tokens_for(another_user)[:access_token]}" }
         run_test!
       end
 
       response '404', 'organizer not found' do
         let(:user_id) { 999 }
-        run_test!
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['error']['code']).to eq('event_organizer.not_found')
+        end
       end
     end
   end

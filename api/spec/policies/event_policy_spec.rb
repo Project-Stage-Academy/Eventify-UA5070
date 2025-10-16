@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe EventPolicy, type: :policy do
-  let(:user) { create(:user) }              # звичайний користувач
-  let(:other_user) { create(:user) }        # інший користувач
-  let(:admin) { create(:user) }             # адміністратор
-  let(:event) { create(:event) }            # тестова подія
+  let(:user) { create(:user) }
+  let(:other_user) { create(:user) }
+  let(:admin) { create(:user) }
+  let(:event) { create(:event) }
 
   before do
     admin.add_role!(:admin)
@@ -12,56 +12,56 @@ RSpec.describe EventPolicy, type: :policy do
 
   describe '#update?' do
     it 'allows admin to update any event' do
-      expect(EventPolicy.new(admin, event).update?).to eq(true)
+      expect(EventPolicy.new(admin, event).update?).to be_truthy
     end
 
     it 'allows organizer to update their event' do
       EventOrganizer.create!(event: event, user: user)
-      expect(EventPolicy.new(user, event).update?).to eq(true)
+      expect(EventPolicy.new(user, event).update?).to be_truthy
     end
 
     it 'denies non-organizer to update event' do
-      expect(EventPolicy.new(other_user, event).update?).to eq(false)
+      expect(EventPolicy.new(other_user, event).update?).to be_falsey
     end
   end
 
   describe '#destroy?' do
     it 'allows admin to destroy any event' do
-      expect(EventPolicy.new(admin, event).destroy?).to eq(true)
+      expect(EventPolicy.new(admin, event).destroy?).to be_truthy
     end
 
     it 'allows primary organizer to destroy event' do
       EventOrganizer.create!(event: event, user: user, is_primary: true)
-      expect(EventPolicy.new(user, event).destroy?).to eq(true)
+      expect(EventPolicy.new(user, event).destroy?).to be_truthy
     end
 
     it 'denies non-primary organizer to destroy event' do
       EventOrganizer.create!(event: event, user: user, is_primary: false)
-      expect(EventPolicy.new(user, event).destroy?).to eq(false)
+      expect(EventPolicy.new(user, event).destroy?).to be_falsey
     end
 
     it 'denies non-organizer to destroy event' do
-      expect(EventPolicy.new(other_user, event).destroy?).to eq(false)
+      expect(EventPolicy.new(other_user, event).destroy?).to be_falsey
     end
   end
 
   describe '#manage_organizers?' do
     it 'allows admin to manage organizers' do
-      expect(EventPolicy.new(admin, event).manage_organizers?).to eq(true)
+      expect(EventPolicy.new(admin, event).manage_organizers?).to be_truthy
     end
 
     it 'allows primary organizer to manage organizers' do
       EventOrganizer.create!(event: event, user: user, is_primary: true)
-      expect(EventPolicy.new(user, event).manage_organizers?).to eq(true)
+      expect(EventPolicy.new(user, event).manage_organizers?).to be_truthy
     end
 
     it 'denies non-primary organizer to manage organizers' do
       EventOrganizer.create!(event: event, user: user, is_primary: false)
-      expect(EventPolicy.new(user, event).manage_organizers?).to eq(false)
+      expect(EventPolicy.new(user, event).manage_organizers?).to be_falsey
     end
 
     it 'denies non-organizer to manage organizers' do
-      expect(EventPolicy.new(other_user, event).manage_organizers?).to eq(false)
+      expect(EventPolicy.new(other_user, event).manage_organizers?).to be_falsey
     end
   end
 end

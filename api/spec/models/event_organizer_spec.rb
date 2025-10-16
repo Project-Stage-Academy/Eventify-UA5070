@@ -14,6 +14,6 @@ RSpec.describe EventOrganizer, type: :model do
     duplicate = build(:event_organizer, event: event, user: user)
 
     expect(duplicate).not_to be_valid
-    expect(duplicate.errors[:user_id]).to include("has already been taken")
+    expect(duplicate.errors[:user_id]).to include("is already an organizer for this event")
   end
 end

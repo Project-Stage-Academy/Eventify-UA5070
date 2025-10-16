@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       get :hello, to: "auth#hello"
 
       resources :events, only: [ :index, :show, :create ] do
-        resources :organizers, only: [ :create, :destroy ], controller: "event_organizers"
+        resources :organizers, only: [ :create, :destroy ], controller: "event_organizers", param: :user_id
       end
     end
   end

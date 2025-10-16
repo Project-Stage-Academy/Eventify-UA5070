@@ -16,15 +16,22 @@ class EventService
     self.paginate(events, params)
   end
 
-  def self.create(params, user)
-    event = Event.new(params)
+ def self.create(params, user)
+  event = Event.new(params)
 
-    if event.save
-      EventOrganizer.create!(event: event, user: user, is_primary: true)
+  if event.save
+    organizer = EventOrganizer.new(event: event, user: user, is_primary: true)
 
-      Result.new(true, event, [])
-    else
-      Result.new(false, event, event.errors.full_messages)
+    unless organizer.save
+      event.destroy
+      return Result.new(false, nil, organizer.errors.full_messages)
     end
+
+    Result.new(true, event, [])
+  else
+    Result.new(false, nil, event.errors.full_messages)
+  end
+  rescue StandardError => e
+    Result.new(false, nil, [ e.message ])
   end
 end
