@@ -81,6 +81,10 @@ jobs:
 
     env:
       RAILS_ENV: test
+      DATABASE_HOST: localhost
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
 
     steps:
       - name: Checkout code
@@ -94,7 +98,7 @@ jobs:
 
       - name: Wait for Postgres
         run: |
-          until pg_isready -h localhost -p 6000; do
+          until pg_isready -h localhost -p 5432; do
             echo "Waiting for Postgres..."
             sleep 2
           done
