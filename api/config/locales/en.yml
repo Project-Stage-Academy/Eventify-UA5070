@@ -38,6 +38,10 @@ en:
               not_in_future: "The event's start date must be in the future"
             finish_date:
               after_start_date: "The event's finish date must be after its start date"
+        event_member:
+          attributes:
+            rating:
+              required_if_comment_present: "Rating is required if comment is present"
   errors:
     common:
       invalid_params: "Invalid parameters"
