@@ -7,7 +7,7 @@ info:
     Matches `Api::V1::AuthController` behavior.
 
 servers:
-  - url: http://localhost:3000
+  - url: http://localhost:3000/api/v1
     description: Local dev
 
 tags:

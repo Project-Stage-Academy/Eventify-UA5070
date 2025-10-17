@@ -1,6 +1,6 @@
 class JwtService
   ALGORITHM = "HS256"
-  ACCESS_TTL = 30.minutes
+  ACCESS_TTL = 1.days
   REFRESH_TTL = 7.days
 
   class ExpiredToken < StandardError; end
