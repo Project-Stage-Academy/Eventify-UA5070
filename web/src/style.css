@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+/* ——— keep your @font-face blocks exactly as you posted ——— */
+/* (optional but recommended) add font-display for nicer loading */
+@font-face { font-family: "e-Ukraine"; font-weight: 100; font-style: normal; font-display: swap; src: url("../fonts/e-Ukraine-woff/e-ukraine-thin_w.woff2") format("woff2"), url("../fonts/e-Ukraine-woff/e-ukraine-thin_w.woff") format("woff"); }
+@font-face { font-family: "e-Ukraine"; font-weight: 200; font-style: normal; font-display: swap; src: url("../fonts/e-Ukraine-woff/e-ukraine-ultralight_w.woff2") format("woff2"), url("../fonts/e-Ukraine-woff/e-ukraine-ultralight_w.woff") format("woff"); }
+@font-face { font-family: "e-Ukraine"; font-weight: 300; font-style: normal; font-display: swap; src: url("../fonts/e-Ukraine-woff/e-ukraine-light_w.woff2") format("woff2"), url("../fonts/e-Ukraine-woff/e-ukraine-light_w.woff") format("woff"); }
+@font-face { font-family: "e-Ukraine"; font-weight: 400; font-style: normal; font-display: swap; src: url("../fonts/e-Ukraine-woff/e-ukraine-regular_w.woff2") format("woff2"), url("../fonts/e-Ukraine-woff/e-ukraine-regular_w.woff") format("woff"); }
+@font-face { font-family: "e-Ukraine"; font-weight: 500; font-style: normal; font-display: swap; src: url("../fonts/e-Ukraine-woff/e-ukraine-medium_w.woff2") format("woff2"), url("../fonts/e-Ukraine-woff/e-ukraine-medium_w.woff") format("woff"); }
+@font-face { font-family: "e-Ukraine"; font-weight: 700; font-style: normal; font-display: swap; src: url("../fonts/e-Ukraine-woff/e-ukraine-bold_w.woff2") format("woff2"), url("../fonts/e-Ukraine-woff/e-ukraine-bold_w.woff") format("woff"); }
+
+/* expose your brand colors as CSS variables (easy to tweak/switch later) */
+:root {
+  --md-primary-fg-color: #be043b;
+  --md-primary-fg-color--light: #d1e8ff;
+  --md-primary-fg-color--dark: #001d36;
+}
+
+/* Tailwind v4 design tokens */
+@theme {
+  /* fonts */
+  --font-sans: "e-Ukraine", ui-sans-serif, system-ui, -apple-system,
+               "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-heading: "e-Ukraine", var(--font-sans);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* brand colors mapped to Tailwind tokens */
+  --color-primary: var(--md-primary-fg-color);
+  --color-primary-light: var(--md-primary-fg-color--light);
+  --color-primary-dark: var(--md-primary-fg-color--dark);
+
+  /* (optional) a few handy radii & spacing tokens */
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+}
