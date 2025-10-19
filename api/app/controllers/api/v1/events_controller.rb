@@ -27,7 +27,7 @@ class Api::V1::EventsController < ApplicationController
     end
   end
 
-  def update 
+  def update
     event = Event.find(params[:id])
     authorize event
     result = EventService.update(params[:id], event_params)
