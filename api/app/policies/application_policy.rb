@@ -5,3 +5,4 @@ class ApplicationPolicy
     @record = record
   end
 end
+
