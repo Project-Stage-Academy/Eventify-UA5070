@@ -27,7 +27,7 @@ class Api::V1::EventsController < ApplicationController
     end
   end
 
-  def update
+  def update 
     event = Event.find(params[:id])
     authorize event
     result = EventService.update(params[:id], event_params)
@@ -35,10 +35,10 @@ class Api::V1::EventsController < ApplicationController
     if result.success
       render json: { data: EventSerializer.new(result.event).as_json }, status: :ok
     else
-      raise Api::Errors::EventError::ValidationError.new(meta: { errors: result.errors })
+      render json: { errors: result.errors }, status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordNotFound
-    raise Api::Errors::EventError::NotFound.new(id: params[:id])
+    render json: { error: "Event not found", id: params[:id] }, status: :not_found
   end
 
   private
