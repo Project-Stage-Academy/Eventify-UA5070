@@ -12,7 +12,7 @@ class Api::V1::EventsController < Api::V1::BaseController
 
   def show
     event = Event.find(params[:id])
-    render json: { data: EventSerializer.new(event).as_json }
+    render json: { data: EventSerializer.new(event, view: :full).as_json }
   rescue ActiveRecord::RecordNotFound
     raise Api::Errors::EventError::NotFound.new(id: params[:id])
   end
@@ -21,7 +21,7 @@ class Api::V1::EventsController < Api::V1::BaseController
     result = EventService.create(event_params)
 
     if result.success
-      render json: { data: EventSerializer.new(result.event).as_json }, status: :created
+      render json: { data: EventSerializer.new(result.event, view: :full).as_json }, status: :created
     else
       raise Api::Errors::EventError::ValidationError.new(meta: { errors: result.errors })
     end

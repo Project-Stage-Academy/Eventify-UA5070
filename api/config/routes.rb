@@ -24,6 +24,7 @@ Rails.application.routes.draw do
 
       resources :events, only: [ :index, :show, :create ] do
         post :register, to: "event_members#create"
+        get :memberships, to: "event_members#index_on_event"
       end
 
       resources :event_members, only: [ :index, :show ] do
