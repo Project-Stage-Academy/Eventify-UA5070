@@ -1,4 +1,4 @@
-class Api::V1::EventsController < BaseController
+class Api::V1::EventsController < Api::V1::BaseController
   include Serialization
 
   def index
