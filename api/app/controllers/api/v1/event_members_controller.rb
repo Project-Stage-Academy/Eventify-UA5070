@@ -30,4 +30,23 @@ class Api::V1::EventMembersController < Api::V1::BaseController
   rescue ActiveRecord::RecordNotFound
     raise Api::Errors::EventMemberError::NotFound.new(id: params[:id])
   end
+
+  def rate
+    @event_member = EventMember.find(params[:event_member_id])
+    authorize @event_member
+
+    result = EventMemberService.rate(@event_member, rate_params, current_user)
+
+    if result.success
+      render json: { data: EventMemberSerializer.new(result.event_member, view: :full).as_json }, status: :ok
+    else
+      raise Api::Errors::EventMemberError::ValidationError.new(meta: { errors: result.errors })
+    end
+  end
+
+  private
+
+  def rate_params
+    params.expect(event_member: [ :rating, :comment ])
+  end
 end

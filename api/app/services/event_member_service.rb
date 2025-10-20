@@ -37,4 +37,12 @@ class EventMemberService
     errors = event_members.flat_map { |em| em.errors.full_messages }
     Result.new(false, event_members, errors.presence || [ e.message ])
   end
+
+  def self.rate(event_member, params, current_user)
+    if event_member.update(rating: params[:rating], comment: params[:comment])
+      Result.new(true, event_member, [])
+    else
+      Result.new(false, event_member, event_member.errors.full_messages)
+    end
+  end
 end

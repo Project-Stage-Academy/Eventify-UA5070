@@ -41,7 +41,7 @@ en:
         event_member:
           attributes:
             rating:
-              required_if_comment_present: "Rating is required if comment is present"
+              required_if_comment_present: "is required if comment is present"
   errors:
     common:
       invalid_params: "Invalid parameters"
