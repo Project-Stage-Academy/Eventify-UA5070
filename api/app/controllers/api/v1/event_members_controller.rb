@@ -21,5 +21,13 @@ class Api::V1::EventMembersController < Api::V1::BaseController
   end
 
   def show
+    @event_member = EventMember.find(params[:id])
+
+    authorize @event_member
+
+    render json: { data: EventMemberSerializer.new(@event_member, view: :full).as_json }
+
+  rescue ActiveRecord::RecordNotFound
+    raise Api::Errors::EventMemberError::NotFound.new(id: params[:id])
   end
 end

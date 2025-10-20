@@ -57,4 +57,6 @@ en:
     event:
       not_found: "Event not found"
       validation_error: "Validation failed for event"
-
+    event_member:
+      not_found: "Event member not found"
+      validation_error: "Validation failed for event member"
