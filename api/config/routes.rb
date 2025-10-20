@@ -26,7 +26,9 @@ Rails.application.routes.draw do
         post :register, to: "event_members#create"
       end
 
-      resources :event_members, only: [ :index, :show ]
+      resources :event_members, only: [ :index, :show ] do
+        patch :rate, to: "event_members#rate"
+      end
 
       get :hello, to: "auth#hello"
     end
