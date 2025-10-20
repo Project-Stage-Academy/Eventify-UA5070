@@ -21,10 +21,6 @@ module ErrorRendering
   end
 
   def render_forbidden(exception)
-    meta = {}
-    meta[:query] = exception.query if exception.respond_to?(:query)
-    meta[:record] = exception.record if exception.respond_to?(:record)
-
-    render_api_error(Api::Errors::CommonError::Forbidden.new(meta: meta.presence))
+    render_api_error(Api::Errors::CommonError::Forbidden.new)
   end
 end
