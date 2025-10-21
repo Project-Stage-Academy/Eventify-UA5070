@@ -17,32 +17,20 @@ class EventService
   end
 
   def self.create(params, user)
-    event = nil
+    event = Event.new(params)
+    organizer = EventOrganizer.new(event: event, user: user, is_primary: true)
 
     Event.transaction do
-      event = Event.new(params)
-
-      unless event.save
-        raise ActiveRecord::Rollback
-      end
-
-      organizer = EventOrganizer.new(event: event, user: user, is_primary: true)
-
-      unless organizer.save
-        raise ActiveRecord::Rollback
-      end
+      event.save!
+      organizer.save!
     end
 
-    if event&.persisted?
-      Result.new(true, event, [])
-    else
-      errors = (event&.errors&.full_messages || []) +
-               (event&.event_organizers&.first&.errors&.full_messages || [])
-      Result.new(false, nil, errors.uniq)
-    end
+    Result.new(true, event, [])
+  rescue ActiveRecord::RecordInvalid => e
+    errors = e.record.errors.full_messages
+    Result.new(false, nil, errors.uniq)
   rescue StandardError => e
     Rails.logger.error("EventService#create failed: #{e.class} - #{e.message}\n#{e.backtrace.join("\n")}")
-
     Result.new(false, nil, [ "An unexpected error occurred. Please try again later." ])
   end
 end

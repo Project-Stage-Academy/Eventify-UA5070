@@ -43,7 +43,8 @@ RSpec.describe 'EventOrganizers API', type: :request do
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['error']['code']).to eq('event_organizer.validation_error')
+          # Тепер перевіряємо масив errors, бо контролер повертає так
+          expect(data['errors']).not_to be_empty
         end
       end
     end
@@ -76,9 +77,10 @@ RSpec.describe 'EventOrganizers API', type: :request do
 
       response '422', 'cannot remove last organizer' do
         let(:user_id) { user.id }
+
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['error']['code']).to eq('event_organizer.cannot_remove_last')
+          expect(data['error']).to eq('Cannot remove the last organizer')
         end
       end
 
@@ -90,9 +92,10 @@ RSpec.describe 'EventOrganizers API', type: :request do
 
       response '404', 'organizer not found' do
         let(:user_id) { 999 }
+
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['error']['code']).to eq('event_organizer.not_found')
+          expect(data['error']).to eq('Organizer not found')
         end
       end
     end

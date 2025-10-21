@@ -32,13 +32,13 @@ RSpec.describe "Api::V1::EventOrganizers", type: :request do
         event.event_organizers.create!(user: another_user)
 
         post "/api/v1/events/#{event.id}/organizers",
-             params: { user_id: another_user.id },
-             headers: headers
+            params: { user_id: another_user.id },
+            headers: headers
 
         expect(response).to have_http_status(:unprocessable_entity)
 
         data = JSON.parse(response.body)
-        expect(data["error"]["code"]).to eq("event_organizer.validation_error")
+        expect(data["errors"]).to include("User is already an organizer for this event")
       end
     end
 
@@ -73,13 +73,16 @@ RSpec.describe "Api::V1::EventOrganizers", type: :request do
         expect(response).to have_http_status(:not_found)
 
         data = JSON.parse(response.body)
-        expect(data["error"]).to be_present
+        expect(data["error"]).to eq("Organizer not found")
       end
 
       it "does not allow deleting the last organizer" do
         delete "/api/v1/events/#{event.id}/organizers/#{user.id}", headers: headers
 
         expect(response).to have_http_status(:unprocessable_entity)
+
+        data = JSON.parse(response.body)
+        expect(data["error"]).to eq("Cannot remove the last organizer")
       end
     end
 
