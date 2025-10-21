@@ -37,7 +37,7 @@ class EventMemberService
           )
         end
 
-        event_members.each(&:save!)
+        EventMember.import(event_members)
       end
     end
 
