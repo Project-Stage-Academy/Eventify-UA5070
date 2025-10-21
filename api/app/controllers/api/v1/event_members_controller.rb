@@ -58,7 +58,7 @@ class Api::V1::EventMembersController < Api::V1::BaseController
   private
 
   def event_member_params
-    params.expect(event_member: [ :event_id, :number_of_tickets ])
+    params.permit(:event_id, :number_of_tickets)
   end
 
   def rate_params
