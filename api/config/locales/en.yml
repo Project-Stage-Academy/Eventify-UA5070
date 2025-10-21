@@ -60,3 +60,4 @@ en:
     event_member:
       not_found: "Event member not found"
       validation_error: "Validation failed for event member"
+      tickets_overflow: "Number of tickets exceeds available tickets for the event"

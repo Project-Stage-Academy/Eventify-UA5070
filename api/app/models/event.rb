@@ -30,6 +30,14 @@ class Event < ApplicationRecord
   validates :ticket_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
   validates :participant_capacity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
 
+  def joinable?
+    published? || published_unverified? || published_on_review? || published_rejected?
+  end
+
+  def available_tickets
+    participant_capacity - event_members.count
+  end
+
   private
 
   def validate_start_date

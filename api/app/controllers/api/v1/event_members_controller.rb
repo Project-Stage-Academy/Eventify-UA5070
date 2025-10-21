@@ -31,6 +31,17 @@ class Api::V1::EventMembersController < Api::V1::BaseController
     raise Api::Errors::EventMemberError::NotFound.new(id: params[:id])
   end
 
+  def create
+    result = EventMemberService.create(event_member_params, current_user)
+
+    if result.success
+      data = Array(result.event_member).map { |em| EventMemberSerializer.new(em, view: :full).as_json }
+      render json: { data: data }, status: :created
+    else
+      raise Api::Errors::EventMemberError::ValidationError.new(meta: { errors: result.errors })
+    end
+  end
+
   def rate
     @event_member = EventMember.find(params[:event_member_id])
     authorize @event_member
@@ -45,6 +56,10 @@ class Api::V1::EventMembersController < Api::V1::BaseController
   end
 
   private
+
+  def event_member_params
+    params.expect(event_member: [ :event_id, :number_of_tickets ])
+  end
 
   def rate_params
     params.expect(event_member: [ :rating, :comment ])
