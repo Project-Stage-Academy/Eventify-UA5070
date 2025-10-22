@@ -1,5 +1,7 @@
 class Event < ApplicationRecord
   # belongs_to :organizer, class_name: "User", optional: false
+  has_many :event_members, dependent: :destroy
+  has_many :members, through: :event_members, source: :user
 
   enum :status, {
     draft: 0,

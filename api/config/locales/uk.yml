@@ -8,3 +8,7 @@ uk:
               not_in_future: "Дата початку події має бути в майбутньому"
             finish_date:
               after_start_date: "Дата завершення має бути після дати початку події"
+        event_member:
+          attributes:
+            rating:
+              required_if_comment_present: "Рейтинг є обов'язковим, якщо присутній коментар"

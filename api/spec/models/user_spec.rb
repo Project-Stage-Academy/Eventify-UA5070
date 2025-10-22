@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe User, type: :model do
   describe "validations" do
     context "when blank" do
-      subject(:user) { described_class.new }
+      subject(:user) { build(:user, name: nil, email: nil, password: nil) }
 
       before { user.validate }
 
@@ -16,13 +16,8 @@ RSpec.describe User, type: :model do
     end
 
     context "email format & uniqueness" do
-      let!(:existing) do
-        described_class.create!(name: "A", email: "a@example.com", password: "secret123")
-      end
-
-      subject(:user) do
-        described_class.new(name: "B", email: "A@Example.com", password: "secret123")
-      end
+      let!(:existing) { create(:user, email: "a@example.com") }
+      subject(:user) { build(:user, email: "A@Example.com") }
 
       before { user.validate }
 
@@ -31,17 +26,25 @@ RSpec.describe User, type: :model do
         expect(user.errors[:email]).to include("has already been taken")
       end
     end
+  end
 
-    describe "#authenticate" do
-      let!(:user) { described_class.create!(name: "A", email: "x@y.com", password: "secret123") }
+  describe "#authenticate" do
+    let!(:user) { create(:user, password: "secret123") }
 
-      it "authenticates with the correct password" do
-        expect(user.authenticate("secret123")).to eq(user)
-      end
-
-      it "fails authentication with a wrong password" do
-        expect(user.authenticate("secret234")).to be_falsey
-      end
+    it "authenticates with the correct password" do
+      expect(user.authenticate("secret123")).to eq(user)
     end
+
+    it "fails authentication with a wrong password" do
+      expect(user.authenticate("wrongpass")).to be_falsey
+    end
+  end
+
+  describe "associations" do
+    it { is_expected.to have_many(:user_roles) }
+    it { is_expected.to have_many(:roles).through(:user_roles) }
+
+    it { is_expected.to have_many(:event_members) }
+    it { is_expected.to have_many(:joined_events).through(:event_members) }
   end
 end

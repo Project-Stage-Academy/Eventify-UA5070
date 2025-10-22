@@ -5,18 +5,25 @@ RSpec.describe "Api::V1::Events", type: :request do
   let(:headers) { auth_headers_for(user) }
 
   describe "GET /api/v1/events" do
+    before do
+      create_list(:event, 5)
+    end
+
     it "returns a list of events with pagination meta" do
       get "/api/v1/events", headers: headers
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body["data"]).to be_an(Array)
+      expect(body["data"]).not_to be_empty
       expect(body["pagination"]).to be_present
     end
 
     context "when no events exist" do
       before { Event.delete_all }
+
       it "returns an empty data array" do
         get "/api/v1/events", headers: headers
+
         expect(response).to have_http_status(:ok)
         body = JSON.parse(response.body)
         expect(body["data"]).to eq([])
@@ -26,8 +33,10 @@ RSpec.describe "Api::V1::Events", type: :request do
 
   describe "GET /api/v1/events/:id" do
     let!(:event) { create(:event) }
+
     it "returns the event when it exists" do
       get "/api/v1/events/#{event.id}", headers: headers
+
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body["data"]).to include("id" => event.id)
@@ -35,6 +44,7 @@ RSpec.describe "Api::V1::Events", type: :request do
 
     it "returns not found when the event does not exist" do
       get "/api/v1/events/999999", headers: headers
+
       expect(response).to have_http_status(:not_found)
       body = JSON.parse(response.body)
       expect(body["error"]).to be_present
@@ -61,6 +71,7 @@ RSpec.describe "Api::V1::Events", type: :request do
       expect {
         post "/api/v1/events", params: valid_params, headers: headers
       }.to change(Event, :count).by(1)
+
       expect(response).to have_http_status(:created)
       body = JSON.parse(response.body)
       expect(body["data"]).to include("title" => "New Event")
@@ -68,7 +79,9 @@ RSpec.describe "Api::V1::Events", type: :request do
 
     it "raises a validation error with invalid params" do
       invalid_params = { event: { title: "" } }
+
       post "/api/v1/events", params: invalid_params, headers: headers
+
       expect(response).to have_http_status(:unprocessable_entity).or have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body["error"]).to be_present
