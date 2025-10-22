@@ -123,7 +123,9 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
     let(:number_of_tickets) { 2 }
     let(:params) do
       {
-        number_of_tickets: number_of_tickets
+        event_member: {
+          number_of_tickets: number_of_tickets
+        }
       }
     end
 
@@ -142,7 +144,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
 
     context "with invalid params:" do
       it "nonexistent event returns validation errors" do
-        post "/api/v1/events/9999999/memberships", headers: headers, as: :json
+        post "/api/v1/events/9999999/memberships", params: params, headers: headers, as: :json
 
         expect(response).to have_http_status(:not_found)
         body = JSON.parse(response.body)
@@ -152,7 +154,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
       it "not joinable event returns validation error" do
         event.update(status: :draft_on_review)
 
-        post "/api/v1/events/#{event.id}/memberships", headers: headers, as: :json
+        post "/api/v1/events/#{event.id}/memberships", params: params, headers: headers, as: :json
 
         expect(response).to have_http_status(:unprocessable_entity)
         body = JSON.parse(response.body)

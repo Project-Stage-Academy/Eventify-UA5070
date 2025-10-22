@@ -18,8 +18,7 @@ class EventMemberService
     scope.preload(:event)
   end
 
-  def self.create(params, current_user)
-    event = extract_event(params)
+  def self.create(event, params, current_user)
     number_of_tickets = extract_number_of_tickets(params)
     event_members = []
 
@@ -57,13 +56,6 @@ class EventMemberService
   end
 
   private
-
-  def self.extract_event(params)
-    event = Event.find_by(id: params[:event_id])
-    raise Api::Errors::EventError::NotFound.new(id: params[:event_id]) if event.nil?
-
-    event
-  end
 
   def self.extract_number_of_tickets(params)
     num = params[:number_of_tickets].to_i

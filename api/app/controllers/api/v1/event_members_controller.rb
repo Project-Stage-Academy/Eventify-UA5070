@@ -32,7 +32,10 @@ class Api::V1::EventMembersController < Api::V1::BaseController
   end
 
   def create
-    result = EventMemberService.create(event_member_params, current_user)
+    @event = Event.find_by(id: params[:event_id])
+    raise Api::Errors::EventError::NotFound.new(id: params[:event_id]) if @event.nil?
+
+    result = EventMemberService.create(@event, event_member_params, current_user)
 
     if result.success
       data = Array(result.event_member).map { |em| EventMemberSerializer.new(em, view: :full).as_json }
@@ -58,7 +61,7 @@ class Api::V1::EventMembersController < Api::V1::BaseController
   private
 
   def event_member_params
-    params.permit(:event_id, :number_of_tickets)
+    params.expect(event_member: [ :number_of_tickets ])
   end
 
   def rate_params
