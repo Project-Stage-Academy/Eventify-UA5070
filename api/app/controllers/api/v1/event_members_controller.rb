@@ -42,8 +42,8 @@ class Api::V1::EventMembersController < Api::V1::BaseController
     end
   end
 
-  def rate
-    @event_member = EventMember.find(params[:event_member_id])
+  def update
+    @event_member = EventMember.find(params[:id])
     authorize @event_member
 
     result = EventMemberService.rate(@event_member, rate_params, current_user)

@@ -27,9 +27,7 @@ Rails.application.routes.draw do
         get :memberships, to: "event_members#index_on_event"
       end
 
-      resources :event_members, only: [ :index, :show ] do
-        patch :rate, to: "event_members#rate"
-      end
+      resources :event_members, only: [ :index, :show, :update ]
 
       get :hello, to: "auth#hello"
     end

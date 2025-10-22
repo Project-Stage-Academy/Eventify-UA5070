@@ -3,7 +3,7 @@ class EventMemberPolicy < ApplicationPolicy
     record.user == user || user.has_role?(:admin)
   end
 
-  def rate?
+  def update?
     record.user == user
   end
 end

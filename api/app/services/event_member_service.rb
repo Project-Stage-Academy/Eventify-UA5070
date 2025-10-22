@@ -25,7 +25,7 @@ class EventMemberService
 
     ActiveRecord::Base.transaction do
       event.with_lock do
-        raise Api::Errors::CommonError::Forbidden.new(id: event.id) unless event.joinable?
+        raise Api::Errors::CommonError::InvalidParams.new(id: event.id) unless event.joinable?
 
         check_tickets_availability(event, number_of_tickets)
 
