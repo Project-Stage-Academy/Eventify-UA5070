@@ -2,8 +2,6 @@ class EventMemberService
   extend Sortable
   extend Paginatable
 
-  Result = Struct.new(:success, :event_member, :errors)
-
   SORTABLE_COLUMNS = {
     **EventService::SORTABLE_COLUMNS,
     "event_id" => :event_id,
@@ -40,19 +38,7 @@ class EventMemberService
       end
     end
 
-    Result.new(true, event_members, [])
-
-  rescue ActiveRecord::RecordInvalid => e
-    errors = event_members.map { |em| em.errors.full_messages }
-    Result.new(false, event_members, errors.presence || [ e.message ])
-  end
-
-  def self.rate(event_member, params, current_user)
-    if event_member.update(rating: params[:rating], comment: params[:comment])
-      Result.new(true, event_member, [])
-    else
-      Result.new(false, event_member, event_member.errors.full_messages)
-    end
+    event_members
   end
 
   private

@@ -26,36 +26,24 @@ class Api::V1::EventMembersController < Api::V1::BaseController
     authorize @event_member
 
     render json: { data: EventMemberSerializer.new(@event_member, view: :full).as_json }
-
-  rescue ActiveRecord::RecordNotFound
-    raise Api::Errors::EventMemberError::NotFound.new(id: params[:id])
   end
 
   def create
-    @event = Event.find_by(id: params[:event_id])
-    raise Api::Errors::EventError::NotFound.new(id: params[:event_id]) if @event.nil?
+    @event = Event.find(params[:event_id])
 
-    result = EventMemberService.create(@event, event_member_params, current_user)
+    @event_members = EventMemberService.create(@event, event_member_params, current_user)
 
-    if result.success
-      data = Array(result.event_member).map { |em| EventMemberSerializer.new(em, view: :full).as_json }
-      render json: { data: data }, status: :created
-    else
-      raise Api::Errors::EventMemberError::ValidationError.new(meta: { errors: result.errors })
-    end
+    data = Array(@event_members).map { |em| EventMemberSerializer.new(em, view: :full).as_json }
+    render json: { data: data }, status: :created
   end
 
   def update
     @event_member = EventMember.find(params[:id])
     authorize @event_member
 
-    result = EventMemberService.rate(@event_member, rate_params, current_user)
+    @event_member.update!(rating: rate_params[:rating], comment: rate_params[:comment])
 
-    if result.success
-      render json: { data: EventMemberSerializer.new(result.event_member, view: :full).as_json }, status: :ok
-    else
-      raise Api::Errors::EventMemberError::ValidationError.new(meta: { errors: result.errors })
-    end
+    render json: { data: EventMemberSerializer.new(@event_member, view: :full).as_json }, status: :ok
   end
 
   private
