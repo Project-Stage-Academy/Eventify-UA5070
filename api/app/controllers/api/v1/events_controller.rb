@@ -1,7 +1,7 @@
 class Api::V1::EventsController < ApplicationController
   include Serialization
 
-  before_action :validate_id_param, except: :index
+  before_action :validate_id_param, only: [ :show, :update ]
 
   def index
     @events = EventService.fetch(params)
