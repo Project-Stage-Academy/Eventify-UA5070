@@ -19,7 +19,10 @@ RSpec.describe "Api::V1::Events", type: :request do
     end
 
     context "when no events exist" do
-      before { Event.delete_all }
+      before do
+        EventOrganizer.delete_all
+        Event.delete_all
+      end
 
       it "returns an empty data array" do
         get "/api/v1/events", headers: headers

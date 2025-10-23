@@ -1,13 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe EventPolicy, type: :policy do
+  let!(:user_role)  { create(:role, :user) }
+  let!(:admin_role) { create(:role, :admin) }
+
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
   let(:admin) { create(:user) }
   let(:event) { create(:event) }
 
   before do
-    admin.add_role!(:admin)
+    admin.add_role!(admin_role.name)
+    user.add_role!(user_role.name)
+    other_user.add_role!(user_role.name)
   end
 
   describe '#update?' do

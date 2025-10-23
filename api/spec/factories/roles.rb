@@ -1,9 +1,17 @@
 FactoryBot.define do
   factory :role do
-    name { Role.value(:user) }
+    name { "user" }
+
+    trait :user do
+      name { "user" }
+    end
 
     trait :admin do
-      name { Role.value(:admin) }
+      name { "admin" }
+    end
+
+    trait :organizer do
+      name { "organizer" }
     end
   end
 end
