@@ -58,10 +58,10 @@ RSpec.describe "EventMembers API", type: :request do
       produces "application/json"
       parameter name: :event_id, in: :path, type: :integer, required: true
 
-      response "200", "OK" do
-        let(:event) { create(:event) }
-        let(:event_id) { event.id }
+      let(:event) { create(:event) }
+      let(:event_id) { event.id }
 
+      response "200", "OK" do
         schema type: :object,
           properties: {
             data: {
@@ -137,6 +137,7 @@ RSpec.describe "EventMembers API", type: :request do
 
       response "401", "Unauthorized" do
         let(:Authorization) { nil }
+        let(:event_id) { create(:event).id }
 
         schema "$ref" => "#/components/schemas/error_object"
 
@@ -182,6 +183,7 @@ RSpec.describe "EventMembers API", type: :request do
       end
 
       response "401", "Unauthorized" do
+        let(:id) { create(:event_member).id }
         let(:Authorization) { nil }
 
         schema "$ref" => "#/components/schemas/error_object"
