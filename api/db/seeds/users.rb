@@ -1,4 +1,5 @@
 if ENV["SEED_RESET"] == "true"
+  UserRole.delete_all
   User.delete_all
 end
 

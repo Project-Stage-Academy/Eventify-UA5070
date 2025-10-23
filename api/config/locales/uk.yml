@@ -16,6 +16,11 @@ uk:
           messages:
             last_organizer_removal_forbidden: "Подія повинна мати принаймні одного організатора. Неможливо видалити останнього."
             organizer_removed: "Організатора успішно видалено."
+        event_member:
+          attributes:
+            rating:
+              required_if_comment_present: "Рейтинг є обов'язковим, якщо присутній коментар"
+
   errors:
     common:
       invalid_params: "Невірні параметри"

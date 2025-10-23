@@ -3,6 +3,8 @@ class User < ApplicationRecord
 
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
+  has_many :event_members, dependent: :destroy
+  has_many :joined_events, through: :event_members, source: :event
 
   has_many :event_organizers, dependent: :destroy
   has_many :organized_events, through: :event_organizers, source: :event

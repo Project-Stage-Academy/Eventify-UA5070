@@ -1,5 +1,7 @@
 # SEED_RESET=true rails db:seed
 if ENV["SEED_RESET"] == "true"
+  EventOrganizer.delete_all
+  EventMember.delete_all
   Event.delete_all
 end
 
@@ -75,12 +77,17 @@ events_data = [
 events_data.each do |attrs|
   organizers = attrs.delete(:organizers)
 
-  Event.transaction do
-    event = Event.create!(attrs)
+  event = Event.find_or_initialize_by(title: attrs[:title])
+  event.update!(attrs)
 
+  next unless organizers.present?
+
+  EventOrganizer.transaction do
     organizers.each do |org|
       raise "User not found: #{org.inspect}" if org[:user].nil?
-      EventOrganizer.create!(event: event, user: org[:user], is_primary: org[:is_primary] || false)
+      EventOrganizer.find_or_create_by!(event: event, user: org[:user]) do |eo|
+        eo.is_primary = org[:is_primary] || false
+      end
     end
   end
 end

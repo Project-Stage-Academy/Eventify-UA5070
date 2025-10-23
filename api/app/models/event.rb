@@ -1,5 +1,7 @@
 class Event < ApplicationRecord
   # belongs_to :organizer, class_name: "User", optional: false
+  has_many :event_members, dependent: :destroy
+  has_many :members, through: :event_members, source: :user
 
   has_many :event_organizers, dependent: :destroy
   has_many :organizers, through: :event_organizers, source: :user
