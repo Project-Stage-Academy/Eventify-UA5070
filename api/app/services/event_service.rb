@@ -30,6 +30,6 @@ class EventService
     Result.new(false, nil, e.record.errors.full_messages.uniq)
   rescue StandardError => e
     Rails.logger.error("EventService#create failed: #{e.class} - #{e.message}\n#{e.backtrace.join("\n")}")
-    Result.new(false, nil, ["An unexpected error occurred. Please try again later."])
+    Result.new(false, nil, [ "An unexpected error occurred. Please try again later." ])
   end
 end
