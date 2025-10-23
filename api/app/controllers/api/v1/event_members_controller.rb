@@ -26,6 +26,9 @@ class Api::V1::EventMembersController < Api::V1::BaseController
     authorize @event_member
 
     render json: { data: EventMemberSerializer.new(@event_member, view: :full).as_json }
+
+  rescue ActiveRecord::RecordNotFound
+    raise Api::Errors::EventMemberError::NotFound.new(id: params[:id])
   end
 
   def create
@@ -35,15 +38,24 @@ class Api::V1::EventMembersController < Api::V1::BaseController
 
     data = Array(@event_members).map { |em| EventMemberSerializer.new(em, view: :full).as_json }
     render json: { data: data }, status: :created
+
+  rescue ActiveRecord::RecordNotFound
+    raise Api::Errors::EventError::NotFound.new(id: params[:event_id])
   end
 
   def update
     @event_member = EventMember.find(params[:id])
+
     authorize @event_member
 
     @event_member.update!(rating: rate_params[:rating], comment: rate_params[:comment])
 
     render json: { data: EventMemberSerializer.new(@event_member, view: :full).as_json }, status: :ok
+
+  rescue ActiveRecord::RecordNotFound
+    raise Api::Errors::EventMemberError::NotFound.new(id: params[:id])
+  rescue ActiveRecord::RecordInvalid => e
+    raise Api::Errors::EventMemberError::ValidationError.new(meta: e.record.errors.full_messages)
   end
 
   private
