@@ -4,7 +4,6 @@ class EventMemberService
 
   SORTABLE_COLUMNS = {
     **EventService::SORTABLE_COLUMNS,
-    "event_id" => :event_id,
     "rating" => :rating
   }.freeze
 

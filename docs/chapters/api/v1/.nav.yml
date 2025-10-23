@@ -1,3 +1,4 @@
 nav:
   - Auth API: ./auth/api.md
   - Events API: ./events/api.md
+  - Event Members API: ./event_members/api.md

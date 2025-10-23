@@ -77,4 +77,6 @@ group :development, :test do
   gem "simplecov", require: false
 
   gem "database_cleaner-active_record"
+
+  gem "rswag-specs", "2.16.0"
 end

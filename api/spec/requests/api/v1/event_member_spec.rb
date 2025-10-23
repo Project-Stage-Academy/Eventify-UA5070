@@ -143,7 +143,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
     end
 
     context "with invalid params:" do
-      it "nonexistent event returns validation errors" do
+      it "nonexistent event returns not found error" do
         post "/api/v1/events/9999999/memberships", params: params, headers: headers, as: :json
 
         expect(response).to have_http_status(:not_found)
