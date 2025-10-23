@@ -12,6 +12,7 @@ RSpec.describe "Api::V1::Events", type: :request do
     it "returns a list of events with pagination meta" do
       get "/api/v1/events", headers: headers
       expect(response).to have_http_status(:ok)
+
       body = JSON.parse(response.body)
       expect(body["data"]).to be_an(Array)
       expect(body["data"]).not_to be_empty
@@ -61,8 +62,8 @@ RSpec.describe "Api::V1::Events", type: :request do
           title: "New Event",
           description: "Some description",
           location: "Kyiv",
-          start_date: 2.days.from_now,
-          finish_date: 3.days.from_now,
+          start_date: (Time.current + 2.days + 5.minutes).iso8601,
+          finish_date: (Time.current + 3.days + 10.minutes).iso8601,
           ticket_price: 10.5,
           participant_capacity: 100,
           status: "draft"
@@ -73,6 +74,7 @@ RSpec.describe "Api::V1::Events", type: :request do
     it "creates a new event with valid params" do
       expect {
         post "/api/v1/events", params: valid_params, headers: headers
+        puts "Response body: #{response.body}"
       }.to change(Event, :count).by(1)
 
       expect(response).to have_http_status(:created)
