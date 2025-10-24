@@ -15,6 +15,13 @@ class Event < ApplicationRecord
     cancelled: 8
   }
 
+  JOINABLE = [
+    :published,
+    :published_unverified,
+    :published_on_review,
+    :published_rejected
+  ].freeze
+
   # Validations for text fields
   validates :title, presence: true, length: { maximum: 128 }
   validates :description, length: { maximum: 500 }, allow_blank: true
@@ -31,7 +38,7 @@ class Event < ApplicationRecord
   validates :participant_capacity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
 
   def joinable?
-    published? || published_unverified? || published_on_review? || published_rejected?
+    JOINABLE.include?(status.to_sym)
   end
 
   def available_tickets
