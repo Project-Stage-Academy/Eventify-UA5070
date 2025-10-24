@@ -41,6 +41,8 @@ class Api::V1::EventMembersController < Api::V1::BaseController
 
   rescue ActiveRecord::RecordNotFound
     raise Api::Errors::EventError::NotFound.new(id: params[:event_id])
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+    raise Api::Errors::EventMemberError::ValidationError.new
   end
 
   def update
