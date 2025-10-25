@@ -36,6 +36,15 @@ class Api::V1::EventMembersController < Api::V1::BaseController
 
     @event_members = EventMemberService.create(@event, event_member_params, current_user)
 
+    LogEntryCreationJob.perform_later(
+      user_id: current_user.id,
+      event_id: @event.id,
+      action: :event_member_created,
+      metadata: {
+        ticket_qr_codes: @event_members.map(&:ticket_qr_code)
+      }
+    )
+
     data = Array(@event_members).map { |em| EventMemberSerializer.new(em, view: :full).as_json }
     render json: { data: data }, status: :created
 
