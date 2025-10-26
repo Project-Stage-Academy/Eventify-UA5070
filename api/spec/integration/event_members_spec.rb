@@ -9,6 +9,7 @@ RSpec.describe "EventMembers API", type: :request do
       tags "EventMembers"
       consumes "application/json"
       produces "application/json"
+      parameter "$ref" => "#/components/parameters/AuthorizationHeader"
       parameter name: :page, in: :query, required: false, description: "Page number for pagination",
         schema: { type: :integer, minimum: 1, default: 1 }
       parameter name: :per_page, in: :query, required: false, description: "Number of items per page",
@@ -56,6 +57,7 @@ RSpec.describe "EventMembers API", type: :request do
       tags "EventMembers"
       consumes "application/json"
       produces "application/json"
+      parameter "$ref" => "#/components/parameters/AuthorizationHeader"
       parameter name: :event_id, in: :path, type: :integer, required: true
 
       let(:event) { create(:event) }
@@ -87,6 +89,7 @@ RSpec.describe "EventMembers API", type: :request do
       tags "EventMembers"
       consumes "application/json"
       produces "application/json"
+      parameter "$ref" => "#/components/parameters/AuthorizationHeader"
       parameter name: :event_id, in: :path, type: :integer, required: true
       parameter name: :event_member, in: :body, schema: {
         type: :object,
@@ -151,6 +154,7 @@ RSpec.describe "EventMembers API", type: :request do
       tags "EventMembers"
       consumes "application/json"
       produces "application/json"
+      parameter "$ref" => "#/components/parameters/AuthorizationHeader"
       parameter name: :id, in: :path, type: :integer, required: true
 
       response "200", "OK" do
@@ -196,6 +200,7 @@ RSpec.describe "EventMembers API", type: :request do
       tags "EventMembers"
       consumes "application/json"
       produces "application/json"
+      parameter "$ref" => "#/components/parameters/AuthorizationHeader"
       parameter name: :id, in: :path, type: :integer, required: true
       parameter name: :event_member, in: :body, schema: {
         type: :object,

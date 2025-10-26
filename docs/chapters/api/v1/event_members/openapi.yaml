@@ -9,6 +9,7 @@ paths:
       tags:
         - EventMembers
       parameters:
+        - "$ref": "#/components/parameters/AuthorizationHeader"
         - name: page
           in: query
           required: false
@@ -79,6 +80,7 @@ paths:
       tags:
         - EventMembers
       parameters:
+        - "$ref": "#/components/parameters/AuthorizationHeader"
         - name: event_id
           in: path
           required: true
@@ -109,6 +111,7 @@ paths:
       tags:
         - EventMembers
       parameters:
+        - "$ref": "#/components/parameters/AuthorizationHeader"
         - name: event_id
           in: path
           required: true
@@ -169,6 +172,7 @@ paths:
       tags:
         - EventMembers
       parameters:
+        - "$ref": "#/components/parameters/AuthorizationHeader"
         - name: id
           in: path
           required: true
@@ -210,6 +214,7 @@ paths:
       tags:
         - EventMembers
       parameters:
+        - "$ref": "#/components/parameters/AuthorizationHeader"
         - name: id
           in: path
           required: true
@@ -275,6 +280,15 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  parameters:
+    AuthorizationHeader:
+      name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+        example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      description: "Bearer token. Required role: user"
   schemas:
     error_object:
       type: object

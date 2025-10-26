@@ -25,6 +25,18 @@ RSpec.configure do |config|
             bearerFormat: :JWT
           }
         },
+        parameters: {
+          AuthorizationHeader: {
+            name: :Authorization,
+            in: :header,
+            required: true,
+            schema: {
+              type: :string,
+              example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            },
+            description: 'Bearer token. Required role: user'
+          }
+        },
         schemas: {
           error_object: {
             type: :object,

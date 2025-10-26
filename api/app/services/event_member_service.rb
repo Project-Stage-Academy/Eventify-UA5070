@@ -34,7 +34,6 @@ class EventMemberService
         end
 
         EventMember.import!(event_members)
-        p event_members
       end
     end
 
