@@ -22,7 +22,7 @@ Rails.application.routes.draw do
         get :me, to: "users#me"
       end
 
-      resources :events, only: [ :index, :show, :create ] do
+      resources :events, only: [ :index, :show, :create, :update ] do
         post :memberships, to: "event_members#create"
         get :memberships, to: "event_members#index_on_event"
       end

@@ -23,7 +23,7 @@ class Event < ApplicationRecord
   ].freeze
 
   # Validations for text fields
-  validates :title, presence: true, length: { maximum: 128 }
+  validates :title, presence: true, length: { maximum: 128 }, uniqueness: true
   validates :description, length: { maximum: 500 }, allow_blank: true
 
   # Validations for required dates and location
@@ -36,6 +36,8 @@ class Event < ApplicationRecord
   # Validations for numeric fields
   validates :ticket_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
   validates :participant_capacity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: false
+
+  validates :status, inclusion: { in: statuses.keys }
 
   def joinable?
     JOINABLE.include?(status.to_sym)

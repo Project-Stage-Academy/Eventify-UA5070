@@ -1,13 +1,119 @@
+---
 openapi: 3.0.1
 info:
   title: Eventify API
   version: v1
-  description: Base spec
+  description: API documentation for Events
 paths:
-  /api/v1/events:
+  "/api/v1/events":
     get:
-      summary: List events
-      tags: [Events]
+      summary: Lists all events
+      tags:
+      - Events
+      security:
+      - bearerAuth: []
       responses:
-        "200":
-          description: OK
+        '200':
+          description: events found
+    post:
+      summary: Creates an event
+      tags:
+        - Events
+      security:
+        - bearerAuth: [ ]
+      parameters: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                      maxLength: 128
+                    description:
+                      type: string
+                      maxLength: 500
+                    location:
+                      type: string
+                    start_date:
+                      type: string
+                      format: date-time
+                      example: "2025-10-15T10:30:00Z"
+                    finish_date:
+                      type: string
+                      format: date-time
+                      example: "2025-10-16T12:45:00Z"
+                    ticket_price:
+                      type: number
+                      minimum: 0
+                    participant_capacity:
+                      type: integer
+                      minimum: 1
+                    status:
+                      type: string
+                      enum:
+                        - draft
+                        - draft_on_review
+                        - published
+                        - rejected
+                        - published_unverified
+                        - published_on_review
+                        - published_rejected
+                        - archived
+                        - cancelled
+                  required:
+                    - title
+                    - location
+                    - start_date
+                    - finish_date
+              required:
+                - event
+      responses:
+        '201':
+          description: event created
+        '422':
+          description: validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Validation failed"
+                      meta:
+                        type: object
+                        properties:
+                          errors:
+                            type: object
+                            additionalProperties:
+                              type: array
+                              items:
+                                type: string
+                example:
+                  error:
+                    code: "event.validation_error"
+                    title: "Validation failed for event"
+                    detail: "Validation failed for event"
+                    meta:
+                      errors:
+                        - "Title has already been taken"
+                        - "Start date The event's start date must be in the future"
+servers:
+- url: http://localhost:3000
+  description: Local server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+- bearerAuth: []
