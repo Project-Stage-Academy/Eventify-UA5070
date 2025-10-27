@@ -1,6 +1,9 @@
 class Api::V1::EventMembersController < Api::V1::BaseController
   include Serialization
 
+  before_action :validate_id_param, only: [ :show, :update ]
+  before_action -> { validate_id_param(id: :event_id) }, only: [ :index_on_event, :create ]
+
   def index
     @event_members = EventMemberService.fetch(params, current_user)
     unique_events = @event_members.map(&:event).compact.uniq { |e| e.id }

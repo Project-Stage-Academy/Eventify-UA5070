@@ -45,19 +45,6 @@ class Api::V1::EventsController < Api::V1::BaseController
 
   private
 
-  def validate_id_param
-    validation_result = Api::V1::IdParamSchema.call(params.to_unsafe_h)
-
-    unless validation_result.success?
-      raise Api::Errors::EventError::ValidationError.new(
-        meta: { errors: validation_result.errors.to_h }
-      )
-    end
-
-    params.merge!(validation_result.to_h)
-  end
-
-  # Strong params
   def event_params
     params.require(:event).permit(
       :title,
