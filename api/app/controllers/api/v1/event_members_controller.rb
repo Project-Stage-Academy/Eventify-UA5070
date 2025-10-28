@@ -5,7 +5,7 @@ class Api::V1::EventMembersController < Api::V1::BaseController
   before_action -> { validate_id_param(id: :event_id) }, only: [ :index, :create ]
 
   def index
-    @event_members = EventMemberService.fetch(params, current_user)
+    @event_members = EventMemberService.new(current_user).fetch(params)
 
     render json: { data: serialized_event_members(@event_members) }
   end
@@ -21,7 +21,7 @@ class Api::V1::EventMembersController < Api::V1::BaseController
   def create
     @event = Event.find(params[:event_id])
 
-    @event_members = EventMemberService.create(@event, event_member_params, current_user)
+    @event_members = EventMemberService.new(current_user).create!(@event, event_member_params)
 
     LogEntryCreationJob.perform_later(
       user_id: current_user.id,
@@ -36,8 +36,6 @@ class Api::V1::EventMembersController < Api::V1::BaseController
 
   rescue ActiveRecord::RecordNotFound
     raise Api::Errors::EventError::NotFound.new(id: params[:event_id])
-  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
-    raise Api::Errors::EventMemberError::ValidationError.new
   end
 
   def update
@@ -45,12 +43,9 @@ class Api::V1::EventMembersController < Api::V1::BaseController
 
     authorize @event_member
 
-    @event_member.update!(rating: rate_params[:rating], comment: rate_params[:comment])
+    @event_member = EventMemberService.new(current_user).update!(@event_member, rate_params)
 
     render json: { data: EventMemberSerializer.new(@event_member, view: :full).as_json }, status: :ok
-
-  rescue ActiveRecord::RecordInvalid => e
-    raise Api::Errors::EventMemberError::ValidationError.new(meta: e.record.errors.full_messages)
   end
 
   private
