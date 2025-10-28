@@ -5,45 +5,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
   let(:headers) { auth_headers_for(current_user) }
   let(:event) { create(:event) }
 
-  describe "GET /api/v1/event_members" do
-    before do
-      create_list(:event_member, 3, user: current_user)
-      create_list(:event_member, 3, event: event)
-    end
-
-    it "returns only the current user's event members with events and pagination meta" do
-      get "/api/v1/event_members", headers: headers
-
-      expect(response).to have_http_status(:ok)
-
-      body = JSON.parse(response.body)
-
-      expect(body["data"]).to be_an(Array)
-      expect(body["data"]).not_to be_empty
-
-      user_ids = body["data"].map { |em| EventMember.find_by(id: em["id"]).user_id }
-      expect(user_ids).to all(eq(current_user.id))
-
-      expect(body["included"]["events"]).to be_an(Array)
-      expect(body["included"]["events"]).not_to be_empty
-
-      expect(body["pagination"]).to be_present
-    end
-
-    context "when user has no event members" do
-      it "returns an empty data array" do
-        EventMember.where(user: current_user).delete_all
-
-        get "/api/v1/event_members", headers: headers
-
-        expect(response).to have_http_status(:ok)
-        body = JSON.parse(response.body)
-        expect(body["data"]).to eq([])
-      end
-    end
-  end
-
-  describe "GET /api/v1/events/:event_id/memberships" do
+  describe "GET /api/v1/events/:event_id/members" do
     before do
       create_list(:event_member, 3, user: current_user)
       create_list(:event_member, 3, event: event)
@@ -52,7 +14,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
     it "returns the current user's event members for the specified event" do
       create(:event_member, user: current_user, event: event)
 
-      get "/api/v1/events/#{event.id}/memberships", headers: headers
+      get "/api/v1/events/#{event.id}/members", headers: headers
 
       expect(response).to have_http_status(:ok)
 
@@ -70,7 +32,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
 
     context "when user has no event members for the specified event" do
       it "returns an empty data array" do
-        get "/api/v1/events/#{event.id}/memberships", headers: headers
+        get "/api/v1/events/#{event.id}/members", headers: headers
 
         expect(response).to have_http_status(:ok)
         body = JSON.parse(response.body)
@@ -119,7 +81,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
     end
   end
 
-  describe "POST /api/v1/events/:event_id/memberships" do
+  describe "POST /api/v1/events/:event_id/members" do
     let(:number_of_tickets) { 2 }
     let(:params) do
       {
@@ -133,7 +95,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
       event.update(status: :published)
 
       expect {
-        post "/api/v1/events/#{event.id}/memberships", params: params, headers: headers, as: :json
+        post "/api/v1/events/#{event.id}/members", params: params, headers: headers, as: :json
       }.to change(EventMember, :count).by(number_of_tickets)
 
       expect(response).to have_http_status(:created)
@@ -146,7 +108,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
       event.update(status: :published)
 
       expect {
-        post "/api/v1/events/#{event.id}/memberships", params: params, headers: headers, as: :json
+        post "/api/v1/events/#{event.id}/members", params: params, headers: headers, as: :json
       }.to have_enqueued_job(LogEntryCreationJob).with(
         user_id: current_user.id,
         event_id: event.id,
@@ -157,7 +119,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
 
     context "with invalid params:" do
       it "nonexistent event returns not found error" do
-        post "/api/v1/events/9999999/memberships", params: params, headers: headers, as: :json
+        post "/api/v1/events/9999999/members", params: params, headers: headers, as: :json
 
         expect(response).to have_http_status(:not_found)
         body = JSON.parse(response.body)
@@ -167,7 +129,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
       it "not joinable event returns validation error" do
         event.update(status: :draft_on_review)
 
-        post "/api/v1/events/#{event.id}/memberships", params: params, headers: headers, as: :json
+        post "/api/v1/events/#{event.id}/members", params: params, headers: headers, as: :json
 
         expect(response).to have_http_status(:unprocessable_entity)
         body = JSON.parse(response.body)
@@ -177,7 +139,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
       it "requesting more tickets than available returns validation error" do
         event.update(participant_capacity: 1)
 
-        post "/api/v1/events/#{event.id}/memberships", params: params, headers: headers, as: :json
+        post "/api/v1/events/#{event.id}/members", params: params, headers: headers, as: :json
 
         expect(response).to have_http_status(:unprocessable_entity)
         body = JSON.parse(response.body)

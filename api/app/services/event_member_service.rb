@@ -1,18 +1,6 @@
 class EventMemberService
-  extend Sortable
-  extend Paginatable
-
-  SORTABLE_COLUMNS = {
-    **EventService::SORTABLE_COLUMNS,
-    "rating" => :rating
-  }.freeze
-
   def self.fetch(params, current_user)
-    scope = current_user.event_members.joins(:event)
-    scope = sort(scope, params, SORTABLE_COLUMNS)
-    scope = paginate(scope, params)
-
-    scope.preload(:event)
+    EventMember.where(event_id: params[:event_id], user: current_user)
   end
 
   def self.create(event, params, current_user)

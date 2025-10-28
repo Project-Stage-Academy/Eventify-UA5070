@@ -4,55 +4,7 @@ RSpec.describe "EventMembers API", type: :request do
   let(:user) { create(:user) }
   let(:Authorization) { auth_headers_for(user)["Authorization"] }
 
-  path "/api/v1/event_members" do
-    get "List current user event memberships" do
-      tags "EventMembers"
-      consumes "application/json"
-      produces "application/json"
-      parameter "$ref" => "#/components/parameters/AuthorizationHeader"
-      parameter name: :page, in: :query, required: false, description: "Page number for pagination",
-        schema: { type: :integer, minimum: 1, default: 1 }
-      parameter name: :per_page, in: :query, required: false, description: "Number of items per page",
-        schema: { type: :integer, minimum: 1, maximum: 50, default: 10 }
-      parameter name: :sort, in: :query, required: false, description: "Sort column name",
-        schema: { type: :string, default: "rating" }
-      parameter name: :direction, in: :query, required: false, description: "Sort order",
-        schema: { type: :string, enum: %w[asc desc] }
-
-      response "200", "OK" do
-        schema type: :object,
-          properties: {
-            data: {
-              type: :array,
-              items: { "$ref" => "#/components/schemas/event_member" }
-            },
-            included: {
-              type: :object,
-              properties: {
-                events: {
-                  type: :array,
-                  items: { "$ref" => "#/components/schemas/event" }
-                }
-              }
-            },
-            pagination: { "$ref" => "#/components/schemas/pagination" }
-          },
-          required: %w[data included pagination]
-
-        run_test!
-      end
-
-      response "401", "Unauthorized" do
-        let(:Authorization) { nil }
-
-        schema "$ref" => "#/components/schemas/error_object"
-
-        run_test!
-      end
-    end
-  end
-
-  path "/api/v1/events/{event_id}/memberships" do
+  path "/api/v1/events/{event_id}/members" do
     get "List current user memberships for a specific event" do
       tags "EventMembers"
       consumes "application/json"
