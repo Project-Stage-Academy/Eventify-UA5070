@@ -1,21 +1,19 @@
 module Api
   module Errors
     module EventError
-      class ValidationError < BaseError
+      class ValidationError < ValidationBaseError
         def initialize(meta: nil)
           super(
-            code: :"event.validation_error",
-            status: :unprocessable_entity,
+            code_prefix: :event,
             meta: (meta || {})
           )
         end
       end
 
-      class NotFound < BaseError
+      class NotFound < NotFoundBase
         def initialize(id:, meta: nil)
           super(
-            code: :"event.not_found",
-            status: :not_found,
+            code_prefix: :event,
             meta: (meta || {}).merge(id: id),
             i18n: { id: id }
           )

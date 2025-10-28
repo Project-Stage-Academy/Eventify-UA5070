@@ -1,21 +1,21 @@
 module Api
   module Errors
     module EventMemberError
-      class ValidationError < BaseError
+      BASE = :event_member
+
+      class ValidationError < ValidationBaseError
         def initialize(meta: nil)
           super(
-            code: :"event_member.validation_error",
-            status: :unprocessable_entity,
+            code_prefix: BASE,
             meta: (meta || {})
           )
         end
       end
 
-      class NotFound < BaseError
+      class NotFound < NotFoundBase
         def initialize(id:, meta: nil)
           super(
-            code: :"event_member.not_found",
-            status: :not_found,
+            code_prefix: BASE,
             meta: (meta || {}).merge(id: id),
             i18n: { id: id }
           )
@@ -23,9 +23,11 @@ module Api
       end
 
       class TicketsOverflow < BaseError
+        CODE = :"#{BASE}.tickets_overflow"
+
         def initialize(event_id:, requested:, available:, meta: nil)
           super(
-            code: :"event_member.tickets_overflow",
+            code: CODE,
             status: :unprocessable_entity,
             meta: (meta || {}).merge(
               event_id: event_id,
