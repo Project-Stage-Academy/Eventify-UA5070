@@ -1,6 +1,6 @@
 class EventService
-  extend Sortable
-  extend Paginatable
+  include Sortable
+  include Paginatable
 
   def initialize(params)
     @params = params
