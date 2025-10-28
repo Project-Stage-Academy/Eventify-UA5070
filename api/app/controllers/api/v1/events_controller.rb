@@ -12,6 +12,15 @@ class Api::V1::EventsController < Api::V1::BaseController
    }
   end
 
+  def joined
+    @events = EventService.fetch_joined(params, current_user)
+
+    render json: {
+      data: serialized_events(@events),
+      pagination: pagination_meta(@events)
+    }
+  end
+
   def show
     event = Event.find(params[:id])
     render json: { data: EventSerializer.new(event, view: :full).as_json }

@@ -23,6 +23,7 @@ Rails.application.routes.draw do
       end
 
       resources :events, only: [ :index, :show, :create, :update ] do
+        get :joined, on: :collection
         resources :event_members, only: [ :create, :index ], path: :members
       end
 

@@ -31,6 +31,44 @@ RSpec.describe "Api::V1::Events", type: :request do
     end
   end
 
+  describe "GET /api/v1/events/joined" do
+    let!(:joined_events) { create_list(:event, 3) }
+
+    before do
+      create_list(:event_member, 2)
+    end
+
+    it "returns a list of events the current user has joined with pagination meta" do
+      joined_events.each do |event|
+        create(:event_member, user: user, event: event)
+      end
+
+      get "/api/v1/events/joined", headers: headers
+
+      expect(response).to have_http_status(:ok)
+
+      body = JSON.parse(response.body)
+      expect(body["data"]).to be_an(Array)
+      expect(body["data"].size).to eq(joined_events.size)
+
+      returned_event_ids = body["data"].map { |e| e["id"] }
+      expect(returned_event_ids).to match_array(joined_events.map(&:id))
+
+      expect(body["pagination"]).to be_present
+    end
+
+    context "when the user has not joined any events" do
+      it "returns an empty data array" do
+        get "/api/v1/events/joined", headers: headers
+
+        expect(response).to have_http_status(:ok)
+
+        body = JSON.parse(response.body)
+        expect(body["data"]).to eq([])
+      end
+    end
+  end
+
   describe "GET /api/v1/events/:id" do
     let!(:event) { create(:event) }
 

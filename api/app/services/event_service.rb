@@ -16,6 +16,13 @@ class EventService
     self.paginate(events, params)
   end
 
+  def self.fetch_joined(params, user)
+    events = user.joined_events.distinct
+    events = self.sort(events, params, SORTABLE_COLUMNS)
+
+    self.paginate(events, params)
+  end
+
   def self.create(params)
     event = Event.new(params)
 
