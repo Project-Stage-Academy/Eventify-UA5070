@@ -4,7 +4,7 @@ class Api::V1::EventsController < Api::V1::BaseController
   before_action :validate_id_param, only: [ :show, :update ]
 
   def index
-    @events = EventService.fetch(params)
+    @events = EventService.new(params).fetch
 
     render json: {
       data: serialized_events(@events),
@@ -13,7 +13,7 @@ class Api::V1::EventsController < Api::V1::BaseController
   end
 
   def joined
-    @events = EventService.fetch_joined(params, current_user)
+    @events = EventService.new(params).fetch_joined(current_user)
 
     render json: {
       data: serialized_events(@events),
@@ -22,14 +22,13 @@ class Api::V1::EventsController < Api::V1::BaseController
   end
 
   def show
-    event = Event.find(params[:id])
-    render json: { data: EventSerializer.new(event, view: :full).as_json }
-  rescue ActiveRecord::RecordNotFound
-    raise Api::Errors::EventError::NotFound.new(id: params[:id])
+    find_event!
+
+    render json: { data: EventSerializer.new(@event, view: :full).as_json }
   end
 
   def create
-    result = EventService.create(event_params)
+    result = EventService.new(event_params).create
 
     if result.success
       render json: { data: EventSerializer.new(result.event, view: :full).as_json }, status: :created
@@ -39,17 +38,17 @@ class Api::V1::EventsController < Api::V1::BaseController
   end
 
   def update
-    event = Event.find(params[:id])
-    authorize event
-    result = EventService.update(params[:id], event_params)
+    find_event!
+
+    authorize @event
+
+    result = EventService.new(event_params).update(@event)
 
     if result.success
       render json: { data: EventSerializer.new(result.event).as_json }, status: :ok
     else
       render json: { errors: result.errors }, status: :unprocessable_entity
     end
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "Event not found", id: params[:id] }, status: :not_found
   end
 
   private
@@ -69,5 +68,12 @@ class Api::V1::EventsController < Api::V1::BaseController
       :proposed_desc,
       :proposed_location
     )
+  end
+
+  def find_event!
+    @event = Event.find(params[:id])
+
+  rescue ActiveRecord::RecordNotFound
+    raise Api::Errors::EventError::NotFound.new(id: params[:id])
   end
 end
