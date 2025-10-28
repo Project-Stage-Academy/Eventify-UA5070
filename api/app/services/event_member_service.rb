@@ -51,6 +51,7 @@ class EventMemberService
 
   def self.check_tickets_availability(event, requested)
     available = event.available_tickets
+
     if available < requested
       raise Api::Errors::EventMemberError::TicketsOverflow.new(
         event_id: event.id,
