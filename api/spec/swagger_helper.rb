@@ -7,20 +7,32 @@ RSpec.configure do |config|
     'v1/swagger.yaml' => {
       openapi: '3.0.1',
       info: {
-        title: 'API V1',
-        version: 'v1'
+        title: 'Eventify API',
+        version: 'v1',
+        description: 'API documentation for Events'
       },
       paths: {},
       servers: [
         {
-          url: 'http://localhost:3000',
+          url: ENV.fetch('SWAGGER_SERVER_URL', 'http://localhost:3000'),
+          description: 'Local server',
           variables: {
             defaultHost: {
               default: 'localhost:3000'
             }
           }
         }
-      ]
+      ],
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: :http,
+            scheme: :bearer,
+            bearerFormat: :JWT
+          }
+        }
+      },
+      security: [ { bearerAuth: [] } ]
     }
   }
 

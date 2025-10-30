@@ -92,5 +92,27 @@ RSpec.describe "Api::V1::Events", type: :request do
       expect(body["error"]).to be_present
       expect(body.dig("error", "meta", "errors")).to be_present
     end
+
+    context "when the title is not unique" do
+      before { create(:event, title: "Unique Event") }
+      it "returns a validation error" do
+        post "/api/v1/events", params: { event: valid_params[:event].merge(title: "Unique Event") }, headers: headers
+        expect(response).to have_http_status(:unprocessable_entity)
+        body = JSON.parse(response.body)
+        expect(body["error"]).to be_present
+        expect(body["error"]["meta"]["errors"]).to include("Title has already been taken")
+      end
+    end
+
+    context "when start_date is in the past" do
+      it "returns a validation error" do
+        post "/api/v1/events", params: { event: valid_params[:event].merge(start_date: 2.days.ago) }, headers: headers
+        puts JSON.pretty_generate(JSON.parse(response.body))
+        expect(response).to have_http_status(:unprocessable_entity)
+        body = JSON.parse(response.body)
+        expect(body["error"]).to be_present
+        expect(body["error"]["meta"]["errors"]).to include("Start date The event's start date must be in the future")
+      end
+    end
   end
 end

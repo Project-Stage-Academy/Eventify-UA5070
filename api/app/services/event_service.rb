@@ -32,4 +32,13 @@ class EventService
     Rails.logger.error("EventService#create failed: #{e.class} - #{e.message}\n#{e.backtrace.join("\n")}")
     Result.new(false, nil, [ "An unexpected error occurred. Please try again later." ])
   end
+
+  def self.update(id, attrs)
+    event = Event.find(id)
+    if event.update(attrs)
+      Result.new(success: true, event: event)
+    else
+      Result.new(success: false, errors: event.errors.full_messages)
+    end
+  end
 end
