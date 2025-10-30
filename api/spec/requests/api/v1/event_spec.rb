@@ -6,7 +6,9 @@ RSpec.describe "Api::V1::Events", type: :request do
 
   describe "GET /api/v1/events" do
     before do
-      create_list(:event, 5)
+      5.times do |i|
+        create(:event, title: "Event #{i}")
+      end
     end
 
     it "returns a list of events with pagination meta" do

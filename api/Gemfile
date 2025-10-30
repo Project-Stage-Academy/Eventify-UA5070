@@ -38,8 +38,6 @@ gem "kamal", require: false
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
 
-gem "pundit"
-
 gem "dry-schema"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
@@ -47,7 +45,6 @@ gem "dry-schema"
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 # gem "rack-cors"
-
 
 gem "kaminari"
 gem "rswag-api", "2.16.0"
@@ -74,8 +71,6 @@ group :development, :test do
   gem "rspec-rails", "~> 8.0"
 
   gem "faker"
-
-  gem "rswag-specs"
 
   gem "pundit-matchers"
 
