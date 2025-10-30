@@ -59,7 +59,7 @@ class Api::V1::EventMembersController < Api::V1::BaseController
   end
 
   def find_event_member!
-  @event_member = EventMember.find(params[:id])
+    @event_member = EventMember.find(params[:id])
 
   rescue ActiveRecord::RecordNotFound
     raise Api::Errors::EventMemberError::NotFound.new(id: params[:id])

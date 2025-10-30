@@ -4,6 +4,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
   let(:current_user) { create(:user) }
   let(:headers) { auth_headers_for(current_user) }
   let(:event) { create(:event) }
+  let(:body) { JSON.parse(response.body) }
 
   describe "GET /api/v1/events/:event_id/members" do
     before do
@@ -11,31 +12,43 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
       create_list(:event_member, 3, event: event)
     end
 
-    it "returns the current user's event members for the specified event" do
-      create(:event_member, user: current_user, event: event)
+    context "when the request is valid" do
+      let(:returned_ids) { body["data"].map { |em| em["id"] } }
+      let(:returned_user_ids) { EventMember.where(id: returned_ids).pluck(:user_id) }
+      let(:returned_event_ids) { EventMember.where(id: returned_ids).pluck(:event_id) }
 
-      get "/api/v1/events/#{event.id}/members", headers: headers
+      before do
+        create(:event_member, user: current_user, event: event)
 
-      expect(response).to have_http_status(:ok)
+        get "/api/v1/events/#{event.id}/members", headers: headers
+      end
 
-      body = JSON.parse(response.body)
+      it "returns OK" do
+        expect(response).to have_http_status(:ok)
+      end
 
-      expect(body["data"]).to be_an(Array)
-      expect(body["data"]).not_to be_empty
+      it "returns array of event members" do
+        expect(body["data"]).to be_an(Array)
+        expect(body["data"]).not_to be_empty
+      end
 
-      user_ids = body["data"].map { |em| EventMember.find_by(id: em["id"]).user_id }
-      expect(user_ids).to all(eq(current_user.id))
+      it "returns event members only for the current user" do
+        expect(returned_user_ids).to all(eq(current_user.id))
+      end
 
-      event_ids = body["data"].map { |em| EventMember.find_by(id: em["id"]).event_id }
-      expect(event_ids).to all(eq(event.id))
+      it "returns event members only for the specified event" do
+        expect(returned_event_ids).to all(eq(event.id))
+      end
     end
 
     context "when user has no event members for the specified event" do
-      it "returns an empty data array" do
-        get "/api/v1/events/#{event.id}/members", headers: headers
+      before { get "/api/v1/events/#{event.id}/members", headers: headers }
 
+      it "returns OK" do
         expect(response).to have_http_status(:ok)
-        body = JSON.parse(response.body)
+      end
+
+      it "returns an empty data array" do
         expect(body["data"]).to eq([])
       end
     end
@@ -44,19 +57,22 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
   describe "GET /api/v1/event_members/:id" do
     let!(:event_member) { create(:event_member, user: current_user, event: event) }
 
-    it "returns the event member when it exists and belongs to the user" do
-      get "/api/v1/event_members/#{event_member.id}", headers: headers
+    context "when event member exists and belongs to the user" do
+      before { get "/api/v1/event_members/#{event_member.id}", headers: headers }
 
-      expect(response).to have_http_status(:ok)
-      body = JSON.parse(response.body)
-      expect(body["data"]).to include("id" => event_member.id)
+      it "returns OK" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns the event member" do
+        expect(body["data"]).to include("id" => event_member.id)
+      end
     end
 
     it "returns not found when the event member does not exist" do
       get "/api/v1/event_members/999999", headers: headers
 
       expect(response).to have_http_status(:not_found)
-      body = JSON.parse(response.body)
       expect(body["error"]).to be_present
     end
 
@@ -66,17 +82,22 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
         get "/api/v1/event_members/#{other_user_event_member.id}", headers: headers
 
         expect(response).to have_http_status(:forbidden)
-        body = JSON.parse(response.body)
         expect(body["error"]).to be_present
       end
 
-      it "returns the event member if the current user is an admin" do
-        current_user.add_role!(:admin)
-        get "/api/v1/event_members/#{event_member.id}", headers: auth_headers_for(current_user)
+      context "when the current user is an admin" do
+        before do
+          current_user.add_role!(:admin)
+          get "/api/v1/event_members/#{event_member.id}", headers: auth_headers_for(current_user)
+        end
 
-        expect(response).to have_http_status(:ok)
-        body = JSON.parse(response.body)
-        expect(body["data"]).to include("id" => event_member.id)
+        it "returns OK" do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it "returns the event member" do
+          expect(body["data"]).to include("id" => event_member.id)
+        end
       end
     end
   end
@@ -91,58 +112,64 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
       }
     end
 
-    it "creates event members for the current user" do
-      event.update(status: :published)
-
-      expect {
-        post "/api/v1/events/#{event.id}/members", params: params, headers: headers, as: :json
-      }.to change(EventMember, :count).by(number_of_tickets)
-
-      expect(response).to have_http_status(:created)
-      body = JSON.parse(response.body)
-      expect(body["data"]).to be_an(Array)
-      expect(body["data"].size).to eq(number_of_tickets)
+    def request(event_id: event.id)
+      post "/api/v1/events/#{event_id}/members", params: params, headers: headers, as: :json
     end
 
-    it "enqueues a log entry creation job" do
-      event.update(status: :published)
+    context "when the request is valid" do
+      before do
+        event.update(status: :published)
+        request
+      end
 
-      expect {
-        post "/api/v1/events/#{event.id}/members", params: params, headers: headers, as: :json
-      }.to have_enqueued_job(LogEntryCreationJob).with(
-        user_id: current_user.id,
-        event_id: event.id,
-        action: :event_member_created,
-        metadata: hash_including(:ticket_qr_codes)
-      )
+      it "returns created status" do
+        expect(response).to have_http_status(:created)
+      end
+
+      it "creates the event members" do
+        expect { request }.to change(EventMember, :count).by(number_of_tickets)
+      end
+
+      it "returns the created event members" do
+        expect(body["data"]).to be_an(Array)
+        expect(body["data"].size).to eq(number_of_tickets)
+      end
+
+      it "enqueues a log entry creation job" do
+        expect {
+          request
+        }.to have_enqueued_job(LogEntryCreationJob).with(
+          user_id: current_user.id,
+          event_id: event.id,
+          action: :event_member_created,
+          metadata: hash_including(:ticket_qr_codes)
+        )
+      end
     end
 
     context "with invalid params:" do
       it "nonexistent event returns not found error" do
-        post "/api/v1/events/9999999/members", params: params, headers: headers, as: :json
+        request(event_id: 9999999)
 
         expect(response).to have_http_status(:not_found)
-        body = JSON.parse(response.body)
         expect(body["error"]).to be_present
       end
 
       it "not joinable event returns validation error" do
         event.update(status: :draft_on_review)
 
-        post "/api/v1/events/#{event.id}/members", params: params, headers: headers, as: :json
+        request
 
         expect(response).to have_http_status(:unprocessable_entity)
-        body = JSON.parse(response.body)
         expect(body["error"]).to be_present
       end
 
       it "requesting more tickets than available returns validation error" do
         event.update(participant_capacity: 1)
 
-        post "/api/v1/events/#{event.id}/members", params: params, headers: headers, as: :json
+        request
 
         expect(response).to have_http_status(:unprocessable_entity)
-        body = JSON.parse(response.body)
         expect(body["error"]).to be_present
       end
     end
@@ -150,21 +177,40 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
 
   describe "PATCH /api/v1/event_members/:id" do
     let!(:event_member) { create(:event_member, user: current_user) }
+    let(:rating) { 4 }
+    let(:comment) { "Test comment" }
     let(:params)  do
       {
         event_member: {
-          rating: 4,
+          rating: rating,
+          comment: comment
+        }
+      }
+    end
+    let(:invalid_params) do
+      {
+        event_member: {
           comment: "Test comment"
         }
       }
     end
 
-    it "allows the user to rate and comment on their event member" do
-      patch "/api/v1/event_members/#{event_member.id}", params: params, headers: headers, as: :json
+    context "when the request is valid" do
+      before { patch "/api/v1/event_members/#{event_member.id}", params: params, headers: headers, as: :json }
 
-      expect(response).to have_http_status(:ok)
-      body = JSON.parse(response.body)
-      expect(body["data"]["id"]).to eq(event_member.id)
+      it "returns OK" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "updates the event member's rating and comment" do
+        event_member.reload
+        expect(event_member.rating).to eq(rating)
+        expect(event_member.comment).to eq(comment)
+      end
+
+      it "returns the updated event member" do
+        expect(body["data"]["id"]).to eq(event_member.id)
+      end
     end
 
     context "with invalid params:" do
@@ -172,7 +218,6 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
         patch "/api/v1/event_members/#{create(:event_member).id}", params: params, headers: headers, as: :json
 
         expect(response).to have_http_status(:forbidden)
-        body = JSON.parse(response.body)
         expect(body["error"]).to be_present
       end
 
@@ -180,17 +225,13 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
         patch "/api/v1/event_members/9999999", params: params, headers: headers, as: :json
 
         expect(response).to have_http_status(:not_found)
-        body = JSON.parse(response.body)
         expect(body["error"]).to be_present
       end
 
       it "returns validation error for comment without rating" do
-        invalid_params = { event_member: { comment: "Test comment" } }
-
         patch "/api/v1/event_members/#{event_member.id}", params: invalid_params, headers: headers, as: :json
 
         expect(response).to have_http_status(:unprocessable_entity)
-        body = JSON.parse(response.body)
         expect(body["error"]).to be_present
       end
     end
