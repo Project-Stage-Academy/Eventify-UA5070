@@ -43,7 +43,6 @@ RSpec.describe 'EventOrganizers API', type: :request do
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          # Тепер перевіряємо масив errors, бо контролер повертає так
           expect(data['errors']).not_to be_empty
         end
       end
@@ -67,9 +66,11 @@ RSpec.describe 'EventOrganizers API', type: :request do
 
       response '200', 'organizer removed' do
         let(:user_id) { another_user.id }
+
         before do
           create(:event_organizer, event: event, user: another_user)
         end
+        
         run_test! do |response|
           expect(event.event_organizers.where(user_id: another_user.id)).to be_empty
         end

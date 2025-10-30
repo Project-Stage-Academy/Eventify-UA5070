@@ -16,29 +16,46 @@ RSpec.describe "Api::V1::EventOrganizers", type: :request do
 
   describe "POST /api/v1/events/:event_id/organizers" do
     context "when authorized" do
-      it "adds a new organizer successfully" do
+      it "returns status created" do
         post "/api/v1/events/#{event.id}/organizers",
              params: { user_id: another_user.id },
              headers: headers
 
         expect(response).to have_http_status(:created)
+      end
+
+      it "returns correct user id in JSON" do
+        post "/api/v1/events/#{event.id}/organizers",
+             params: { user_id: another_user.id },
+             headers: headers
 
         json = JSON.parse(response.body)
         expect(json["id"]).to eq(another_user.id)
+      end
+
+      it "adds the user to event organizers" do
+        post "/api/v1/events/#{event.id}/organizers",
+             params: { user_id: another_user.id },
+             headers: headers
+
         expect(event.event_organizers.pluck(:user_id)).to include(another_user.id)
       end
 
-      it "does not allow adding the same organizer twice" do
-        event.event_organizers.create!(user: another_user)
+      context "when organizer already exists" do
+        before do
+          event.event_organizers.create!(user: another_user)
+        end
 
-        post "/api/v1/events/#{event.id}/organizers",
-            params: { user_id: another_user.id },
-            headers: headers
+        it "does not allow adding the same organizer twice" do
+          post "/api/v1/events/#{event.id}/organizers",
+               params: { user_id: another_user.id },
+               headers: headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_entity)
 
-        data = JSON.parse(response.body)
-        expect(data["errors"]).to include("User is already an organizer for this event")
+          data = JSON.parse(response.body)
+          expect(data["errors"]).to include("User is already an organizer for this event")
+        end
       end
     end
 
