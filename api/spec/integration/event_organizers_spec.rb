@@ -70,7 +70,7 @@ RSpec.describe 'EventOrganizers API', type: :request do
         before do
           create(:event_organizer, event: event, user: another_user)
         end
-        
+
         run_test! do |response|
           expect(event.event_organizers.where(user_id: another_user.id)).to be_empty
         end
