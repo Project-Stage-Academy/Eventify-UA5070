@@ -1,15 +1,19 @@
 module Api
   module Errors
     module UserError
-      class NotFound < BaseError
+      BASE = :user
+
+      class NotFound < NotFoundBase
         def initialize(meta: nil, **)
-          super(code: :"user.not_found", status: :not_found, meta: meta)
+          super(code_prefix: BASE, meta: meta)
         end
       end
 
       class EmailTaken < BaseError
+        CODE = :"#{BASE}.email_taken"
+
         def initialize(meta: nil, **)
-          super(code: :"user.email_taken", status: :unprocessable_entity, meta: meta)
+          super(code: CODE, status: :unprocessable_entity, meta: meta)
         end
       end
     end

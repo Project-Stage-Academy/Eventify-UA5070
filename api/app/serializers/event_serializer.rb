@@ -1,24 +1,33 @@
 class EventSerializer
-  def initialize(event)
+  def initialize(event, view: :default)
     @event = event
+    @view = view
   end
 
   def as_json(*)
-    {
+    base = {
       id: @event.id,
       title: @event.title,
-      description: @event.description,
       location: @event.location,
-      coordinates: @event.coordinates,
       start_date: @event.start_date,
       finish_date: @event.finish_date,
-      participant_capacity: @event.participant_capacity,
       ticket_price: @event.ticket_price,
-      status: @event.status,
-      proposed_title: @event.proposed_title,
-      proposed_desc: @event.proposed_desc,
-      proposed_location: @event.proposed_location,
-      review_comment: @event.review_comment
+      status: @event.status
     }
+
+    case @view
+    when :full
+      base.merge({
+        description: @event.description,
+        coordinates: @event.coordinates,
+        participant_capacity: @event.participant_capacity,
+        proposed_title: @event.proposed_title,
+        proposed_desc: @event.proposed_desc,
+        proposed_location: @event.proposed_location,
+        review_comment: @event.review_comment
+      })
+    else
+      base
+    end
   end
 end

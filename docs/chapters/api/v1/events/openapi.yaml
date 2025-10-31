@@ -211,6 +211,65 @@ paths:
                 serverError:
                   value:
                     error: Internal server error
+  /api/v1/events/joined:
+    get:
+      summary: Get events the user has joined
+      description: Fetch a list of events that the authenticated user has joined.
+      tags:
+        - Events
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - name: page
+          in: query
+          description: Page number (1-based)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: per_page
+          in: query
+          description: Items per page (max 50)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+        - name: sort
+          in: query
+          description: Sort column (`start_date`, `id`, `title`)
+          required: false
+          schema:
+            type: string
+            example: start_date
+        - name: direction
+          in: query
+          description: Sort direction (`asc` or `desc`)
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+      responses:
+        "200":
+          description: OK — paginated list of events
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EventPublic"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          description: Unauthorized
   /api/v1/events/{id}:
     get:
       summary: Get single event by ID

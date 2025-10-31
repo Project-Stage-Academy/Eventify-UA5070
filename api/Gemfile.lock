@@ -53,6 +53,8 @@ GEM
       activemodel (= 8.0.3)
       activesupport (= 8.0.3)
       timeout (>= 0.4.0)
+    activerecord-import (2.2.0)
+      activerecord (>= 4.2)
     activerecord-postgis-adapter (11.0.0)
       activerecord (~> 8.0.0)
       rgeo-activerecord (~> 8.0.0)
@@ -439,6 +441,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  activerecord-import (~> 2.2)
   activerecord-postgis-adapter
   bcrypt (~> 3.1.7)
   bootsnap
@@ -455,7 +458,7 @@ DEPENDENCIES
   mongoid (~> 9.0)
   pg
   puma (>= 5.0)
-  pundit
+  pundit (~> 2.5)
   rails (~> 8.0)
   rspec-rails (~> 8.0)
   rswag-api (= 2.16.0)
