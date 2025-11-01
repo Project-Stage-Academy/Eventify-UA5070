@@ -14,7 +14,7 @@ srand(DETERMINISTIC_SEED)
 
 ActiveRecord::Base.transaction do
   load Rails.root.join("db/seeds/roles.rb")
-  load Rails.root.join("db/seeds/events.rb")
   load Rails.root.join("db/seeds/users.rb")
+  load Rails.root.join("db/seeds/events.rb")
   load Rails.root.join("db/seeds/event_members.rb")
 end

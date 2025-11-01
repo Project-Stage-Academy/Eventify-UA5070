@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1024 1024"
+     preserveAspectRatio="xMidYMid meet"
+     role="img" aria-label="Pinned star icon">
+
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D90429"/>
+      <stop offset="100%" stop-color="#6A0572"/>
+    </linearGradient>
+  </defs>
+
+  <!--
+    Original shapes were centered roughly at (160, 260) with bbox ≈ 128×200.
+    We translate that center to (0,0), scale up to nearly fill 1024, then recenter at (512,512).
+    Scale 4.8 -> height ≈ 960, width ≈ 614, leaving comfortable margins.
+  -->
+  <g transform="translate(512,512) scale(4.8) translate(-160,-260)"
+     fill="url(#g)" stroke="#4A0010" stroke-linejoin="round" stroke-linecap="round">
+
+    <!-- Pin -->
+    <path stroke-width="14"
+          d="M160,160 C120,160 96,192 96,224 c0,32 16,56 32,80 l32,56 32,-56 c16,-24 32,-48 32,-80 c0,-32 -24,-64 -64,-64 z"/>
+
+    <!-- 5-point star centered within the pin -->
+    <polygon
+      stroke="#4A0010"
+      stroke-width="14"
+      points="
+        160,194
+        169.0,212.0
+        188.5,214.7
+        174.3,228.6
+        177.7,248.3
+        160,239
+        142.3,248.3
+        145.8,228.6
+        131.5,214.7
+        151.2,211.9
+      " />
+  </g>
+</svg>

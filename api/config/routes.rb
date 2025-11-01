@@ -18,8 +18,8 @@ Rails.application.routes.draw do
         post :login, to: "auth#login"
       end
 
-      scope :users do
-        get :me, to: "users#me"
+      scope :account do
+        get :me, to: "account#me"
       end
 
       resources :events, only: [ :index, :show, :create, :update ] do
