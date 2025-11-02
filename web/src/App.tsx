@@ -11,6 +11,7 @@ import HomePage from "./pages/Home/Home.page";
 import HeroPage from "./pages/Hero/Hero.page";
 import { AuthContext } from "./context/AuthContext";
 import ErrorBoundary from "./components/util/ErrorBoundary";
+import EventDetailsPage from "./pages/EventDetails/EventDetailsPage"
 
 class RequireAuth extends React.Component {
   static contextType = AuthContext;
@@ -31,6 +32,7 @@ export default class App extends React.Component {
             <Route element={<RequireAuth />}>
               <Route path="/app" element={<AppLayout />}>
                 <Route index element={<HomePage />} />
+                <Route path="events/:id" element={<EventDetailsPage/>} />
               </Route>
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
