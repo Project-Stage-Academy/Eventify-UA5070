@@ -61,7 +61,7 @@ events_data = [
     finish_date: 15.days.from_now + 3.hours,
     participant_capacity: 75,
     ticket_price: 20.0,
-    status: :draft,
+    status: :published_unverified,
     review_comment: nil
   }
 ]

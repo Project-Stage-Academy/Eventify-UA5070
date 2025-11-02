@@ -7,7 +7,7 @@ export type Event = {
   start_date: string;
   finish_date: string;
   location: string;
-  ticket_price: number;
+  ticket_price: string;
   status: string;
   image_url?: string;
 };
