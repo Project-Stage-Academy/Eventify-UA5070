@@ -2,6 +2,7 @@ import type { Event } from "../../services/EventService";
 
 type Props = {
   event: Event;
+  onBuyClick: () => void;
 };
 
 const formatDate = (dateString: string) =>
@@ -34,7 +35,7 @@ const getStatusBadge = (status: string) => {
 
 
 
-export default function EventDetails({ event }: Props) {
+export default function EventDetails({ event, onBuyClick }: Props) {
   const defaultImage = "https://placehold.co/300x300?text=No+Image";
   const imageUrl = event.image_url || defaultImage;
 
@@ -88,6 +89,7 @@ export default function EventDetails({ event }: Props) {
             py-3 px-6 rounded-lg 
             hover:bg-gray-800 transition-colors duration-200
             text-lg"
+            onClick={onBuyClick}
         >
           Join Event
         </button>

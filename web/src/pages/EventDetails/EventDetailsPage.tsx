@@ -4,6 +4,7 @@ import { getEvent } from "../../services/EventService";
 import type { Event } from "../../services/EventService";
 import { AuthContext } from "../../context/AuthContext";
 import EventDetails from "../../components/event/EventDetails";
+import TicketModal from "../../components/event/TicketModal";
 
 export default function EventDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -11,6 +12,7 @@ export default function EventDetailsPage() {
   const [event, setEvent] = useState<Event | null>(null);
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (!id || !token) return;
@@ -40,5 +42,16 @@ export default function EventDetailsPage() {
   if (error) return <p>Error: {error}</p>;
   if (!event) return <p>No event found.</p>;
 
-  return <EventDetails event={event} />;;
+  return(
+    <main>
+      <EventDetails event={event} onBuyClick={() => setIsModalOpen(true)} />
+
+      {isModalOpen && (
+        <TicketModal
+          event={event}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
+    </main>
+  )
 }
