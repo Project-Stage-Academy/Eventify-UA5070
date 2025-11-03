@@ -33,8 +33,6 @@ const getStatusBadge = (status: string) => {
   }
 };
 
-
-
 export default function EventDetails({ event, onBuyClick }: Props) {
   const defaultImage = "https://placehold.co/300x300?text=No+Image";
   const imageUrl = event.image_url || defaultImage;
@@ -43,9 +41,7 @@ export default function EventDetails({ event, onBuyClick }: Props) {
 
   return (
     <main className="max-w-6xl mx-auto bg-white rounded-2xl border border-gray-200 p-6 md:p-10">
-      {/* Image + content */}
       <section className="flex flex-col md:flex-row gap-8">
-        {/* Image */}
         <div className="w-full md:w-1/3">
           <img
             src={event.image_url || defaultImage}
@@ -54,9 +50,10 @@ export default function EventDetails({ event, onBuyClick }: Props) {
           />
         </div>
 
-        {/* Event info */}
         <div className="w-full md:w-2/3 flex flex-col">
-          <span className={`inline-block ${badge.className} text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide mb-3 self-start`}>
+          <span
+            className={`inline-block ${badge.className} text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide mb-3 self-start`}
+          >
             {badge.label}
           </span>
 
@@ -76,12 +73,13 @@ export default function EventDetails({ event, onBuyClick }: Props) {
           </div>
 
           <p className="text-2xl font-bold text-gray-900 mt-auto">
-            {event.ticket_price === "0.0" ? "Price: Free" : `Price: ${event.ticket_price} UAH`}
+            {event.ticket_price === "0.0"
+              ? "Price: Free"
+              : `Price: ${event.ticket_price} UAH`}
           </p>
         </div>
       </section>
 
-      {/* Button below both sections */}
       <div className="mt-8">
         <button
           className="
@@ -89,20 +87,20 @@ export default function EventDetails({ event, onBuyClick }: Props) {
             py-3 px-6 rounded-lg 
             hover:bg-gray-800 transition-colors duration-200
             text-lg"
-            onClick={onBuyClick}
+          onClick={onBuyClick}
         >
           Join Event
         </button>
       </div>
 
-      {/* Description */}
       <section className="mt-10 border-t border-gray-200 pt-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">About the Event</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          About the Event
+        </h2>
         <div className="max-w-full text-gray-700 leading-relaxed">
           <p>{event.description}</p>
         </div>
       </section>
     </main>
-
   );
 }

@@ -16,10 +16,10 @@ export default function TicketModal({ event, onClose }: Props) {
     setQuantity(safeValue);
   };
 
-   const handlePurchase = () =>{
+  const handlePurchase = () => {
     console.log(`Buying ${quantity} ticket(s) for ${event.title}`);
     onClose();
-  }
+  };
 
   return (
     <div
@@ -34,7 +34,6 @@ export default function TicketModal({ event, onClose }: Props) {
         className="w-[min(92vw,560px)] bg-white border border-gray-200 rounded-2xl p-8 relative"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        {/* Close button */}
         <button
           onClick={onClose}
           aria-label="Close"

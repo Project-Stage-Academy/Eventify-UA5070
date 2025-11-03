@@ -16,8 +16,8 @@ export async function getEvent(id: string, token: string): Promise<Event> {
   const response = await fetch(`${env.apiUrl}/v1/events/${id}`, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   if (!response.ok) {
@@ -25,8 +25,7 @@ export async function getEvent(id: string, token: string): Promise<Event> {
     throw new Error(errorData.message || "Failed to fetch event");
   }
 
-   const json = await response.json();
+  const json = await response.json();
 
- 
   return json.data as Event;
 }
