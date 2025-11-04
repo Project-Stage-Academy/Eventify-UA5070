@@ -1,6 +1,6 @@
   services:
     postgres:
-      image: postgis/postgis:18-3.6
+      image: cimg/postgres:18.0-postgis
       container_name: eventify-postgres
       restart: unless-stopped
       environment:

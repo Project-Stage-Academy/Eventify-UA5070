@@ -2,12 +2,12 @@
 
 /* ——— keep your @font-face blocks exactly as you posted ——— */
 /* (optional but recommended) add font-display for nicer loading */
-@font-face { font-family: "e-Ukraine"; font-weight: 100; font-style: normal; font-display: swap; src: url("../fonts/e-Ukraine-woff/e-ukraine-thin_w.woff2") format("woff2"), url("../fonts/e-Ukraine-woff/e-ukraine-thin_w.woff") format("woff"); }
-@font-face { font-family: "e-Ukraine"; font-weight: 200; font-style: normal; font-display: swap; src: url("../fonts/e-Ukraine-woff/e-ukraine-ultralight_w.woff2") format("woff2"), url("../fonts/e-Ukraine-woff/e-ukraine-ultralight_w.woff") format("woff"); }
-@font-face { font-family: "e-Ukraine"; font-weight: 300; font-style: normal; font-display: swap; src: url("../fonts/e-Ukraine-woff/e-ukraine-light_w.woff2") format("woff2"), url("../fonts/e-Ukraine-woff/e-ukraine-light_w.woff") format("woff"); }
-@font-face { font-family: "e-Ukraine"; font-weight: 400; font-style: normal; font-display: swap; src: url("../fonts/e-Ukraine-woff/e-ukraine-regular_w.woff2") format("woff2"), url("../fonts/e-Ukraine-woff/e-ukraine-regular_w.woff") format("woff"); }
-@font-face { font-family: "e-Ukraine"; font-weight: 500; font-style: normal; font-display: swap; src: url("../fonts/e-Ukraine-woff/e-ukraine-medium_w.woff2") format("woff2"), url("../fonts/e-Ukraine-woff/e-ukraine-medium_w.woff") format("woff"); }
-@font-face { font-family: "e-Ukraine"; font-weight: 700; font-style: normal; font-display: swap; src: url("../fonts/e-Ukraine-woff/e-ukraine-bold_w.woff2") format("woff2"), url("../fonts/e-Ukraine-woff/e-ukraine-bold_w.woff") format("woff"); }
+@font-face { font-family: "e-Ukraine"; font-weight: 100; font-style: normal; font-display: swap; src: url("../public/fonts/e-Ukraine-woff/e-ukraine-thin_w.woff2") format("woff2"), url("../public/fonts/e-Ukraine-woff/e-ukraine-thin_w.woff") format("woff"); }
+@font-face { font-family: "e-Ukraine"; font-weight: 200; font-style: normal; font-display: swap; src: url("../public/fonts/e-Ukraine-woff/e-ukraine-ultralight_w.woff2") format("woff2"), url("../public/fonts/e-Ukraine-woff/e-ukraine-ultralight_w.woff") format("woff"); }
+@font-face { font-family: "e-Ukraine"; font-weight: 300; font-style: normal; font-display: swap; src: url("../public/fonts/e-Ukraine-woff/e-ukraine-light_w.woff2") format("woff2"), url("../public/fonts/e-Ukraine-woff/e-ukraine-light_w.woff") format("woff"); }
+@font-face { font-family: "e-Ukraine"; font-weight: 400; font-style: normal; font-display: swap; src: url("../public/fonts/e-Ukraine-woff/e-ukraine-regular_w.woff2") format("woff2"), url("../public/fonts/e-Ukraine-woff/e-ukraine-regular_w.woff") format("woff"); }
+@font-face { font-family: "e-Ukraine"; font-weight: 500; font-style: normal; font-display: swap; src: url("../public/fonts/e-Ukraine-woff/e-ukraine-medium_w.woff2") format("woff2"), url("../public/fonts/e-Ukraine-woff/e-ukraine-medium_w.woff") format("woff"); }
+@font-face { font-family: "e-Ukraine"; font-weight: 700; font-style: normal; font-display: swap; src: url("../public/fonts/e-Ukraine-woff/e-ukraine-bold_w.woff2") format("woff2"), url("../public/fonts/e-Ukraine-woff/e-ukraine-bold_w.woff") format("woff"); }
 
 /* expose your brand colors as CSS variables (easy to tweak/switch later) */
 :root {
