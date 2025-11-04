@@ -1,4 +1,4 @@
-import type { Event } from "../../services/EventService";
+import { formatPrice, type Event } from "../../services/EventService";
 
 type Props = {
   event: Event;
@@ -70,12 +70,15 @@ export default function EventDetails({ event, onBuyClick }: Props) {
             <p>
               <strong>End:</strong> {formatDate(event.finish_date)}
             </p>
+            <p>
+              <strong>Maximum attendees:</strong> {event.participant_capacity}
+            </p>
           </div>
 
           <p className="text-2xl font-bold text-gray-900 mt-auto">
             {event.ticket_price === "0.0"
               ? "Price: Free"
-              : `Price: ${event.ticket_price} UAH`}
+              : `Price: ${formatPrice(event.ticket_price)} UAH`}
           </p>
         </div>
       </section>

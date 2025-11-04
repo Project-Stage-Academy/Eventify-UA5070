@@ -1,5 +1,6 @@
-import { useState } from "react";
-import type { Event } from "../../services/EventService";
+import { useContext, useState } from "react";
+import { formatPrice, parsePrice, registerEvent, type Event } from "../../services/EventService";
+import { AuthContext } from "../../context/AuthContext";
 
 type Props = {
   event: Event;
@@ -8,6 +9,7 @@ type Props = {
 
 export default function TicketModal({ event, onClose }: Props) {
   const [quantity, setQuantity] = useState(1);
+  const { token } = useContext(AuthContext)
 
   const maxTickets = 10;
 
@@ -16,9 +18,19 @@ export default function TicketModal({ event, onClose }: Props) {
     setQuantity(safeValue);
   };
 
-  const handlePurchase = () => {
-    console.log(`Buying ${quantity} ticket(s) for ${event.title}`);
-    onClose();
+  async function handleRegister() {
+     if (!token) {
+      alert("You must be logged in to register");
+      return;
+    }
+    try {
+        await registerEvent(event.id, token, quantity);
+        alert("Tickets registered successfully!");
+        onClose();
+      } catch (error) {
+        console.error("Registration error:", error);
+        alert(error instanceof Error ? error.message : "Failed to register tickets");
+    }
   };
 
   return (
@@ -55,7 +67,12 @@ export default function TicketModal({ event, onClose }: Props) {
 
         <p className="text-gray-700 mb-2">
           Price per ticket:{" "}
-          <span className="font-semibold">{event.ticket_price} UAH</span>
+          <span className="font-semibold">{formatPrice(event.ticket_price)} UAH</span>
+        </p>
+
+         <p className="text-gray-700 mb-2">
+          Total price:{" "}
+          <span className="font-semibold">{formatPrice(parsePrice(event.ticket_price) * quantity)} UAH</span>
         </p>
 
         <label className="block text-gray-800 font-medium mb-2">
@@ -78,12 +95,12 @@ export default function TicketModal({ event, onClose }: Props) {
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition"
+            className="px-6 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition"
           >
             Cancel
           </button>
           <button
-            onClick={handlePurchase}
+            onClick={()=>{handleRegister()}}
             className="px-6 py-2 rounded-lg bg-black text-white font-semibold hover:bg-gray-800 transition"
           >
             Confirm
