@@ -66,4 +66,34 @@ RSpec.describe Event, type: :model do
     it { is_expected.to have_many(:event_members) }
     it { is_expected.to have_many(:members).through(:event_members) }
   end
+
+  describe '#joinable?' do
+    let(:non_joinable_statuses) { described_class.statuses.keys.map(&:to_sym) - described_class::JOINABLE }
+
+    it 'returns true for joinable statuses' do
+      described_class::JOINABLE.each do |status|
+        expect(build(:event, status:)).to be_joinable
+      end
+    end
+
+    it 'returns false for non-joinable statuses' do
+      non_joinable_statuses.each do |status|
+        expect(build(:event, status:)).not_to be_joinable
+      end
+    end
+  end
+
+  describe "#available_tickets" do
+    let(:capacity) { 50 }
+    let(:booked) { 20 }
+    let(:event) { build(:event, participant_capacity: capacity) }
+
+    before do
+      create_list(:event_member, booked, event: event)
+    end
+
+    it "calculates available tickets correctly" do
+      expect(event.available_tickets).to eq(capacity - booked)
+    end
+  end
 end

@@ -1,6 +1,10 @@
 class EventService
-  extend Sortable
-  extend Paginatable
+  include Sortable
+  include Paginatable
+
+  def initialize(params)
+    @params = params
+  end
 
   Result = Struct.new(:success, :event, :errors)
 
@@ -10,19 +14,35 @@ class EventService
     "id" => :id
   }.freeze
 
-  def self.fetch(params)
+  def fetch
     events = Event.all
-    events = self.sort(events, params, SORTABLE_COLUMNS)
-    self.paginate(events, params)
+    events = sort(events, @params, SORTABLE_COLUMNS)
+
+    paginate(events, @params)
   end
 
-  def self.create(params)
-    event = Event.new(params)
+  def fetch_joined(user)
+    events = user.joined_events.distinct
+    events = sort(events, @params, SORTABLE_COLUMNS)
+
+    paginate(events, @params)
+  end
+
+  def create
+    event = Event.new(@params)
 
     if event.save
       Result.new(true, event, [])
     else
       Result.new(false, event, event.errors.full_messages)
+    end
+  end
+
+  def update(event)
+    if event.update(@params)
+      Result.new(success: true, event: event)
+    else
+      Result.new(success: false, errors: event.errors.full_messages)
     end
   end
 end

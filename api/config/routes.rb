@@ -22,7 +22,12 @@ Rails.application.routes.draw do
         get :me, to: "account#me"
       end
 
-      resources :events, only: [ :index, :show, :create ]
+      resources :events, only: [ :index, :show, :create, :update ] do
+        get :joined, on: :collection
+        resources :event_members, only: [ :create, :index ], path: :members
+      end
+
+      resources :event_members, only: [ :show, :update ]
 
       get :hello, to: "auth#hello"
     end
