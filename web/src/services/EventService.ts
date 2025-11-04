@@ -18,7 +18,7 @@ export function parsePrice(priceString: string): number {
 }
 
 export function formatPrice(price: string | number): string {
-  const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+  const numPrice = typeof price === "string" ? parseFloat(price) : price;
   return numPrice.toFixed(2);
 }
 
@@ -40,26 +40,28 @@ export async function getEvent(id: string, token: string): Promise<Event> {
   return json.data as Event;
 }
 
-
-export async function registerEvent(id: string, token: string , ticketNum: number) {
+export async function registerEvent(
+  id: string,
+  token: string,
+  ticketNum: number
+) {
   const response = await fetch(`${env.apiUrl}/v1/events/${id}/members`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      event_member:{
-        number_of_tickets: ticketNum
-      }
-    })
+      event_member: {
+        number_of_tickets: ticketNum,
+      },
+    }),
   });
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || "Failed to register for event");
   }
-  
-  return await response.json();
 
+  return await response.json();
 }

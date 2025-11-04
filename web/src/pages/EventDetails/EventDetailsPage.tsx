@@ -8,9 +8,9 @@ import TicketModal from "../../components/event/TicketModal";
 
 export default function EventDetailsPage() {
   const { id } = useParams<{ id: string }>();
-  const { token } = useContext(AuthContext); 
+  const { token } = useContext(AuthContext);
   const [event, setEvent] = useState<Event | null>(null);
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -18,18 +18,17 @@ export default function EventDetailsPage() {
     if (!id || !token) return;
 
     async function load() {
-    try {
-      const data = await getEvent(id!, token!);
-      setEvent(data);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
+      try {
+        const data = await getEvent(id!, token!);
+        setEvent(data);
+      } catch (err) {
+        setError((err as Error).message);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
 
-  load();
- 
+    load();
   }, [id]);
 
   useEffect(() => {
@@ -42,16 +41,13 @@ export default function EventDetailsPage() {
   if (error) return <p>Error: {error}</p>;
   if (!event) return <p>No event found.</p>;
 
-  return(
+  return (
     <main>
       <EventDetails event={event} onBuyClick={() => setIsModalOpen(true)} />
 
       {isModalOpen && (
-        <TicketModal
-          event={event}
-          onClose={() => setIsModalOpen(false)}
-        />
+        <TicketModal event={event} onClose={() => setIsModalOpen(false)} />
       )}
     </main>
-  )
+  );
 }

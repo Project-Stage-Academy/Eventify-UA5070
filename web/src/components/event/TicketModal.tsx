@@ -1,5 +1,10 @@
 import { useContext, useState } from "react";
-import { formatPrice, parsePrice, registerEvent, type Event } from "../../services/EventService";
+import {
+  formatPrice,
+  parsePrice,
+  registerEvent,
+  type Event,
+} from "../../services/EventService";
 import { AuthContext } from "../../context/AuthContext";
 
 type Props = {
@@ -9,7 +14,7 @@ type Props = {
 
 export default function TicketModal({ event, onClose }: Props) {
   const [quantity, setQuantity] = useState(1);
-  const { token } = useContext(AuthContext)
+  const { token } = useContext(AuthContext);
 
   const maxTickets = 10;
 
@@ -19,19 +24,21 @@ export default function TicketModal({ event, onClose }: Props) {
   };
 
   async function handleRegister() {
-     if (!token) {
+    if (!token) {
       alert("You must be logged in to register");
       return;
     }
     try {
-        await registerEvent(event.id, token, quantity);
-        alert("Tickets registered successfully!");
-        onClose();
-      } catch (error) {
-        console.error("Registration error:", error);
-        alert(error instanceof Error ? error.message : "Failed to register tickets");
+      await registerEvent(event.id, token, quantity);
+      alert("Tickets registered successfully!");
+      onClose();
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert(
+        error instanceof Error ? error.message : "Failed to register tickets"
+      );
     }
-  };
+  }
 
   return (
     <div
@@ -52,12 +59,16 @@ export default function TicketModal({ event, onClose }: Props) {
 
         <p className="text-gray-700 mb-2">
           Price per ticket:{" "}
-          <span className="font-semibold">{formatPrice(event.ticket_price)} UAH</span>
+          <span className="font-semibold">
+            {formatPrice(event.ticket_price)} UAH
+          </span>
         </p>
 
-         <p className="text-gray-700 mb-2">
+        <p className="text-gray-700 mb-2">
           Total price:{" "}
-          <span className="font-semibold">{formatPrice(parsePrice(event.ticket_price) * quantity)} UAH</span>
+          <span className="font-semibold">
+            {formatPrice(parsePrice(event.ticket_price) * quantity)} UAH
+          </span>
         </p>
 
         <label className="block text-gray-800 font-medium mb-2">
@@ -85,7 +96,9 @@ export default function TicketModal({ event, onClose }: Props) {
             Cancel
           </button>
           <button
-            onClick={()=>{handleRegister()}}
+            onClick={() => {
+              handleRegister();
+            }}
             className="px-6 py-2 rounded-lg bg-black text-white font-semibold hover:bg-gray-800 transition"
           >
             Confirm
