@@ -46,21 +46,6 @@ export default function TicketModal({ event, onClose }: Props) {
         className="w-[min(92vw,560px)] bg-white border border-gray-200 rounded-2xl p-8 relative"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          className="absolute top-4 right-4 rounded-lg p-2 hover:bg-gray-100"
-        >
-          <svg viewBox="0 0 24 24" className="w-5 h-5" aria-hidden="true">
-            <path
-              d="M6 6l12 12M18 6L6 18"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
-
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
           Buy Tickets for {event.title}
         </h2>
