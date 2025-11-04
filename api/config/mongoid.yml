@@ -1,3 +1,9 @@
+<% message = "Missing required environment variable: " %>
+<% mongo_host = ENV['MONGODB_HOST'] || raise("#{message}MONGODB_HOST") %>
+<% mongo_port = ENV['MONGODB_PORT'] || raise("#{message}MONGODB_PORT") %>
+<% mongo_username = ENV["MONGODB_USERNAME"] || raise("#{message}MONGODB_USERNAME") %>
+<% mongo_password = ENV["MONGODB_PASSWORD"] || raise("#{message}MONGODB_PASSWORD") %>
+
 development:
   # Configure available database clients. (required)
   clients:
@@ -13,10 +19,10 @@ development:
       # Provides the hosts the default client can connect to. Must be an array
       # of host:port pairs. (required)
       hosts:
-        - "localhost:<%= ENV['MONGODB_PORT'] || raise('Missing required environment variable: MONGODB_PORT') %>"
+        - "<%= mongo_host %>:<%= mongo_port %>"
       options:
-        user: <%= ENV["MONGODB_USERNAME"] || raise("Missing required environment variable: MONGODB_USERNAME") %>
-        password: <%= ENV["MONGODB_PASSWORD"] || raise("Missing required environment variable: MONGODB_PASSWORD") %>
+        user: <%= mongo_username %>
+        password: <%= mongo_password %>
         # Note that all options listed below are Ruby driver client options (the mongo gem).
         # Please refer to the driver documentation of the version of the mongo gem you are using
         # for the most up-to-date list of options.
@@ -282,16 +288,15 @@ development:
     # validate the paramters and raise an error if they are invalid.
     # validate_update_replace: false
 
-
 test:
   clients:
     default:
       database: api_test
       hosts:
-        - "localhost:<%= ENV['MONGODB_PORT'] || raise('Missing required environment variable: MONGODB_PORT') %>"
+        - "<%= mongo_host %>:<%= mongo_port %>"
       options:
-        user: <%= ENV["MONGODB_USERNAME"] %>
-        password: <%= ENV["MONGODB_PASSWORD"] %>
+        user: <%= mongo_username %>
+        password: <%= mongo_password %>
         auth_source: admin
         read:
           mode: :primary
