@@ -30,7 +30,7 @@ export function Input({
     return (
         <div className="flex flex-col gap-1">
             { label && (
-                <label htmlFor="{inputId}" className="text-sm font-medium text-slate-700">
+                <label htmlFor={inputId} className="text-sm font-medium text-slate-700">
                     {label}
                 </label>
             )}
