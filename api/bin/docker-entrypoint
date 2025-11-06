@@ -9,6 +9,7 @@ fi
 # If running the rails server then create or migrate existing database
 if [[ "${*}" == *"rails"* ]] && [[ "${*}" == *"server"* ]]; then
   ./bin/rails db:prepare
+  trap "rm -f /api/tmp/pids/server.pid" EXIT INT TERM
 fi
 
 exec "${@}"
