@@ -63,8 +63,10 @@ services:
     volumes:
       - ./api:/api
     depends_on:
-      - postgres
-      - mongodb
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
     networks:
       - ci_network
   web:
