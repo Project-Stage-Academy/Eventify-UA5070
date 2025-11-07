@@ -47,6 +47,22 @@ class Event < ApplicationRecord
     participant_capacity - event_members.count
   end
 
+  MIN_RATING_COUNT_FOR_AVERAGE = 5
+
+  def update_rating_fields!
+    with_lock do
+      rated_members = event_members.where.not(rating: nil)
+      rating_count = rated_members.count
+
+      self.rating_count = rating_count
+      self.average_rating = rating_count >= MIN_RATING_COUNT_FOR_AVERAGE ? rated_members.average(:rating) : nil
+      save!
+    end
+
+  rescue ActiveRecord::RecordInvalid => e
+    raise Api::Errors::EventError::ValidationError.new(id: id, meta: { errors: e.record.errors.full_messages })
+  end
+
   private
 
   def validate_start_date
