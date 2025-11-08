@@ -53,7 +53,7 @@ class EventMemberService
   def update!(event_member, params)
     event_member.update!(rating: params[:rating], comment: params[:comment])
 
-    event_member.event.update_rating_fields!
+    event_member.event.update_rating_fields
 
     event_member
 

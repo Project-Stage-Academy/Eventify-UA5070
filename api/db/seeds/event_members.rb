@@ -25,6 +25,6 @@ users.sample(10).each_with_index do |user, i|
   end
 end
 
-events.each(&:update_rating_fields!)
+events.each(&:update_rating_fields)
 
 puts "EventMember seeds created."

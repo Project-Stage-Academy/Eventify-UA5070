@@ -52,18 +52,18 @@ class Event < ApplicationRecord
 
   MIN_RATING_COUNT_FOR_AVERAGE = 5
 
-  def update_rating_fields!
+  def update_rating_fields
     with_lock do
       rated_members = event_members.where.not(rating: nil)
       rating_count = rated_members.count
 
       self.rating_count = rating_count
       self.average_rating = rating_count >= MIN_RATING_COUNT_FOR_AVERAGE ? rated_members.average(:rating) : nil
-      save!
-    end
 
-  rescue ActiveRecord::RecordInvalid => e
-    raise Api::Errors::EventError::ValidationError.new(id: id, meta: { errors: e.record.errors.full_messages })
+      unless save
+        Rails.logger.error("Failed to update rating fields for Event ID #{id}: #{errors.full_messages.join(', ')}")
+      end
+    end
   end
 
   private
