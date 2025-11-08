@@ -45,21 +45,8 @@ paths:
             minimum: 1
             maximum: 50
             default: 10
-        - name: sort
-          in: query
-          description: Sort column (`start_date`, `id`, `title`)
-          required: false
-          schema:
-            type: string
-            example: start_date
-        - name: direction
-          in: query
-          description: Sort direction (`asc` or `desc`)
-          required: false
-          schema:
-            type: string
-            enum: [asc, desc]
-            default: asc
+        - $ref: "#/components/parameters/EventSort"
+        - $ref: "#/components/parameters/Direction"
       responses:
         "200":
           description: OK — paginated list of events
@@ -236,21 +223,8 @@ paths:
             minimum: 1
             maximum: 50
             default: 10
-        - name: sort
-          in: query
-          description: Sort column (`start_date`, `id`, `title`)
-          required: false
-          schema:
-            type: string
-            example: start_date
-        - name: direction
-          in: query
-          description: Sort direction (`asc` or `desc`)
-          required: false
-          schema:
-            type: string
-            enum: [asc, desc]
-            default: asc
+        - $ref: "#/components/parameters/EventSort"
+        - $ref: "#/components/parameters/Direction"
       responses:
         "200":
           description: OK — paginated list of events
@@ -495,3 +469,27 @@ components:
         type: string
         example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
       description: "Bearer token. Required role: user"
+    EventSort:
+      name: sort
+      in: query
+      description: Sort column
+      required: false
+      schema:
+        type: string
+        enum:
+          - start_date
+          - id
+          - title
+          - rating
+          - rating_count
+    Direction:
+      name: direction
+      in: query
+      description: "Sort direction (asc or desc, default: asc)"
+      required: false
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+        default: asc
