@@ -1,10 +1,25 @@
 class EventMemberService
+  include Sortable
+  include Paginatable
+
   def initialize(user)
     @user = user
   end
 
+  SORTABLE_COLUMNS = {
+    "rating" => :rating,
+    "date" => :updated_at
+  }.freeze
+
   def fetch(params)
     EventMember.where(event_id: params[:event_id], user: @user)
+  end
+
+  def fetch_reviews(params)
+    members_with_review = EventMember.where(event_id: params[:event_id]).where.not(rating: nil)
+    members_with_review = sort(members_with_review, params, SORTABLE_COLUMNS)
+
+    paginate(members_with_review, params)
   end
 
   def create!(event, params)
