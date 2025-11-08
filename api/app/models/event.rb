@@ -39,6 +39,9 @@ class Event < ApplicationRecord
 
   validates :status, inclusion: { in: statuses.keys }
 
+  validates :average_rating, numericality: { in: 1..5 }, allow_nil: true
+  validates :rating_count, numericality: { greater_than_or_equal_to: 0 }
+
   def joinable?
     JOINABLE.include?(status.to_sym)
   end
