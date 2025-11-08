@@ -13,7 +13,10 @@ class Api::V1::EventMembersController < Api::V1::BaseController
   def reviews
     @event_members = EventMemberService.new(current_user).fetch_reviews(params)
 
-    render json: { data: serialized_event_members(@event_members, view: :review) }
+    render json: {
+      data: serialized_event_members(@event_members, view: :review),
+      pagination: pagination_meta(@event_members)
+    }
   end
 
   def show

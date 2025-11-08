@@ -35,6 +35,27 @@ RSpec.configure do |config|
               example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
             },
             description: 'Bearer token. Required role: user'
+          },
+          Page: {
+            name: :page,
+            in: :query,
+            required: false,
+            schema: { type: :integer, default: 1, minimum: 1 },
+            description: 'Page number for pagination (default: 1)'
+          },
+          PerPage: {
+            name: :per_page,
+            in: :query,
+            required: false,
+            schema: { type: :integer, default: 10, minimum: 1, maximum: 50 },
+            description: 'Number of items per page for pagination (default: 10, max: 50)'
+          },
+          Direction: {
+            name: :direction,
+            in: :query,
+            required: false,
+            schema: { type: :string, enum: %w[asc desc], default: 'asc' },
+            description: 'Sort direction (asc or desc, default: asc)'
           }
         },
         schemas: {
@@ -73,6 +94,16 @@ RSpec.configure do |config|
               event_id: { type: :integer }
             },
             required: %w[id ticket_qr_code rating comment event_id]
+          },
+          member_review: {
+            type: :object,
+            properties: {
+              username: { type: :string },
+              rating: { type: :integer },
+              comment: { type: :string, nullable: true },
+              date: { type: :string, format: "date" }
+            },
+            required: %w[username rating comment date]
           },
           event: {
             type: :object,

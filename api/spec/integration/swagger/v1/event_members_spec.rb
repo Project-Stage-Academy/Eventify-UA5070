@@ -101,6 +101,41 @@ RSpec.describe "EventMembers API", type: :request do
     end
   end
 
+  path "/api/v1/events/{event_id}/members/reviews" do
+    get "List reviews for a specific event" do
+      tags "EventMembers"
+      consumes "application/json"
+      produces "application/json"
+      parameter "$ref" => "#/components/parameters/AuthorizationHeader"
+      parameter name: :event_id, in: :path, type: :integer, required: true
+      parameter "$ref" => "#/components/parameters/Page"
+      parameter "$ref" => "#/components/parameters/PerPage"
+      parameter name: :sort, in: :query, required: false,
+        schema: {
+          type: :string,
+          enum: %w[rating date]
+        },
+        description: 'Sort by rating or date'
+      parameter "$ref" => "#/components/parameters/Direction"
+
+      let(:event_id) { create(:event).id }
+
+      response "200", "OK" do
+        schema type: :object,
+          properties: {
+            data: {
+              type: :array,
+              items: { "$ref" => "#/components/schemas/member_review" }
+            },
+            pagination: { "$ref" => "#/components/schemas/pagination" }
+          },
+          required: %w[data]
+
+        run_test!
+      end
+    end
+  end
+
   path "/api/v1/event_members/{id}" do
     get "Show event member" do
       tags "EventMembers"
