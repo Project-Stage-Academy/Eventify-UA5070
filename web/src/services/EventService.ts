@@ -60,7 +60,13 @@ export async function registerEvent(
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || "Failed to register for event");
+
+    const message =
+      errorData?.error?.detail ||
+      errorData?.error?.title ||
+      "Failed to register for event";
+
+    throw new Error(message);
   }
 
   return await response.json();

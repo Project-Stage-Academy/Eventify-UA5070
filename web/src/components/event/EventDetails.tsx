@@ -1,4 +1,5 @@
 import { formatPrice, type Event } from "../../services/EventService";
+import { Button } from "../ui/Button";
 
 type Props = {
   event: Event;
@@ -44,7 +45,7 @@ export default function EventDetails({ event, onBuyClick }: Props) {
       <section className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/3">
           <img
-            src={event.image_url || defaultImage}
+            src={imageUrl}
             alt={event.title}
             className="w-full aspect-square object-cover rounded-xl"
           />
@@ -84,16 +85,10 @@ export default function EventDetails({ event, onBuyClick }: Props) {
       </section>
 
       <div className="mt-8">
-        <button
-          className="
-            w-full bg-black text-white font-bold 
-            py-3 px-6 rounded-lg 
-            hover:bg-gray-800 transition-colors duration-200
-            text-lg"
-          onClick={onBuyClick}
-        >
+        <Button variant="secondary" className="w-full text-lg py-3" onClick={onBuyClick}>
           Join Event
-        </button>
+        </Button>
+
       </div>
 
       <section className="mt-10 border-t border-gray-200 pt-8">

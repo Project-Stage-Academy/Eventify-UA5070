@@ -1,53 +1,85 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getEvent } from "../../services/EventService";
 import type { Event } from "../../services/EventService";
-import { AuthContext } from "../../context/AuthContext";
 import EventDetails from "../../components/event/EventDetails";
 import TicketModal from "../../components/event/TicketModal";
+import { ErrorPopup } from "@/components/ui/ErrorPopup";
+import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
 
 export default function EventDetailsPage() {
   const { id } = useParams<{ id: string }>();
-  const { token } = useContext(AuthContext);
+  // TODO: Replace with real auth when login/register is ready
+  const token = import.meta.env.VITE_DEV_TOKEN;
   const [event, setEvent] = useState<Event | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [errorPopupOpen, setErrorPopupOpen] = useState(false);
 
   useEffect(() => {
-    if (!id || !token) return;
+    if (!id || !token) {
+      setLoading(false);
+      return;
+    }
 
     async function load() {
       try {
         const data = await getEvent(id!, token!);
+        if (!data) {
+          setError("Event not found");
+          return;
+        }
         setEvent(data);
       } catch (err) {
-        setError((err as Error).message);
+        const msg = (err as Error).message || "Failed to load event";
+        setError(msg);
+        setErrorPopupOpen(true);
       } finally {
         setLoading(false);
       }
     }
 
     load();
-  }, [id]);
+  }, [id, token]);
 
-  useEffect(() => {
-    if (event) {
-      console.log("Event updated:", event);
-    }
-  }, [event]);
+  // --- Loading state ---
+  if (loading) {
+    return <LoadingOverlay open={true} message="Loading event..." />;
+  }
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
-  if (!event) return <p>No event found.</p>;
+  // --- No event found ---
+  if (!loading && !event && !error) {
+    return (
+      <main className="flex flex-col items-center justify-center min-h-[60vh] text-slate-600">
+        <p className="text-lg font-medium">Event not found</p>
+      </main>
+    );
+  }
 
   return (
     <main>
-      <EventDetails event={event} onBuyClick={() => setIsModalOpen(true)} />
+      {event && (
+        <EventDetails event={event} onBuyClick={() => setIsModalOpen(true)} />
+      )}
 
       {isModalOpen && (
-        <TicketModal event={event} onClose={() => setIsModalOpen(false)} />
+        <TicketModal
+          authToken={token}
+          event={event!}
+          onClose={() => setIsModalOpen(false)}
+          onError={(message) => {
+            setError(message);
+            setErrorPopupOpen(true);
+          }}
+        />
       )}
+
+      <ErrorPopup
+        open={errorPopupOpen}
+        onClose={() => setErrorPopupOpen(false)}
+        message={error ?? undefined}
+      />
     </main>
   );
 }

@@ -1,21 +1,19 @@
-import { useContext, useState } from "react";
-import {
-  formatPrice,
-  parsePrice,
-  registerEvent,
-  type Event,
-} from "../../services/EventService";
-import { AuthContext } from "../../context/AuthContext";
+import { useState } from "react";
+import { Button } from "../ui/Button";
+import { Input } from "../ui/Input";
+import { Modal } from "../ui/Modal";
+import { formatPrice, parsePrice, registerEvent, type Event } from "../../services/EventService";
 
 type Props = {
   event: Event;
   onClose: () => void;
+  authToken: string;
+  onError: (error: string) => void
 };
 
-export default function TicketModal({ event, onClose }: Props) {
+export default function TicketModal({ event, onClose, authToken, onError }: Props) {
   const [quantity, setQuantity] = useState(1);
-  const { token } = useContext(AuthContext);
-
+  const [loading, setLoading] = useState(false);
   const maxTickets = 10;
 
   const handleChange = (value: number) => {
@@ -24,87 +22,48 @@ export default function TicketModal({ event, onClose }: Props) {
   };
 
   async function handleRegister() {
-    if (!token) {
-      alert("You must be logged in to register");
-      return;
-    }
+    setLoading(true);
     try {
-      await registerEvent(event.id, token, quantity);
-      alert("Tickets registered successfully!");
+      await registerEvent(event.id, authToken, quantity);
       onClose();
-    } catch (error) {
-      console.error("Registration error:", error);
-      alert(
-        error instanceof Error ? error.message : "Failed to register tickets"
-      );
+    } catch (err: any) {
+      console.error("Registration error:", err);
+      onError(err.message || "Failed to register for the event.");
+    }
+    finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 grid place-items-center bg-black/50 backdrop-blur"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        className="w-[min(92vw,560px)] bg-white border border-gray-200 rounded-2xl p-8 relative"
-        onMouseDown={(e) => e.stopPropagation()}
-      >
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          Buy Tickets for {event.title}
-        </h2>
-
-        <p className="text-gray-700 mb-2">
+    <Modal open={true} onClose={onClose} title={`Buy Tickets for ${event.title}`}>
+      <div className="space-y-4">
+        <p className="text-gray-700">
           Price per ticket:{" "}
-          <span className="font-semibold">
-            {formatPrice(event.ticket_price)} UAH
-          </span>
+          <span className="font-semibold">{formatPrice(event.ticket_price)} UAH</span>
         </p>
-
-        <p className="text-gray-700 mb-2">
+        <p className="text-gray-700">
           Total price:{" "}
           <span className="font-semibold">
             {formatPrice(parsePrice(event.ticket_price) * quantity)} UAH
           </span>
         </p>
 
-        <label className="block text-gray-800 font-medium mb-2">
-          Number of tickets:
-        </label>
-
-        <input
+        <Input
           type="number"
           min={1}
           max={maxTickets}
+          label="Number of tickets"
           value={quantity}
           onChange={(e) => handleChange(Number(e.target.value))}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          helperText={`You can buy up to ${maxTickets} tickets.`}
         />
 
-        <p className="text-sm text-gray-500 mt-1 mb-6">
-          You can buy up to {maxTickets} tickets.
-        </p>
-
         <div className="flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-6 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={() => {
-              handleRegister();
-            }}
-            className="px-6 py-2 rounded-lg bg-black text-white font-semibold hover:bg-gray-800 transition"
-          >
-            Confirm
-          </button>
+          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+          <Button variant="primary" onClick={handleRegister} loading={loading}>Confirm</Button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }
