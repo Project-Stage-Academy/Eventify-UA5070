@@ -22,6 +22,11 @@ class Event < ApplicationRecord
     :published_rejected
   ].freeze
 
+  REVIEWABLE = [
+    :draft_on_review,
+    :published_on_review
+  ].freeze
+
   # Validations for text fields
   validates :title, presence: true, length: { maximum: 128 }, uniqueness: true
   validates :description, length: { maximum: 500 }, allow_blank: true
@@ -41,6 +46,10 @@ class Event < ApplicationRecord
 
   def joinable?
     JOINABLE.include?(status.to_sym)
+  end
+
+  def reviewable?
+    REVIEWABLE.include?(status.to_sym)
   end
 
   def available_tickets
