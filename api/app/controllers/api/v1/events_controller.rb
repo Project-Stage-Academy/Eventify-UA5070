@@ -28,7 +28,7 @@ class Api::V1::EventsController < Api::V1::BaseController
   end
 
   def create
-    result = EventService.new(event_params, current_user).create
+    result = EventService.new(event_params).create(current_user)
 
     if result.success
       render json: { data: EventSerializer.new(result.event, view: :full).as_json }, status: :created

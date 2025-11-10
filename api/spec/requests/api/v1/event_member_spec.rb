@@ -1,6 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::EventMembers", type: :request do
+  before(:all) do
+    [ 'user', 'admin', 'organizer' ].each do |role_name|
+      Role.find_or_create_by!(name: role_name)
+    end
+  end
+
   let(:current_user) { create(:user) }
   let(:headers) { auth_headers_for(current_user) }
   let(:event) { create(:event) }
@@ -19,7 +25,6 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
 
       before do
         create(:event_member, user: current_user, event: event)
-
         get "/api/v1/events/#{event.id}/members", headers: headers
       end
 
@@ -78,6 +83,7 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
 
     context "when the event member belongs to another user" do
       let!(:other_user_event_member) { create(:event_member) }
+
       it "returns forbidden if current user is not an admin" do
         get "/api/v1/event_members/#{other_user_event_member.id}", headers: headers
 
@@ -86,8 +92,13 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
       end
 
       context "when the current user is an admin" do
+        let(:current_user) do
+          user = create(:user)
+          user.add_role!(:admin)
+          user
+        end
+
         before do
-          current_user.add_role!(:admin)
           get "/api/v1/event_members/#{event_member.id}", headers: auth_headers_for(current_user)
         end
 
@@ -157,7 +168,6 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
 
       it "not joinable event returns validation error" do
         event.update(status: :draft_on_review)
-
         request
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -166,7 +176,6 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
 
       it "requesting more tickets than available returns validation error" do
         event.update(participant_capacity: 1)
-
         request
 
         expect(response).to have_http_status(:unprocessable_entity)

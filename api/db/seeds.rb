@@ -12,4 +12,3 @@ ActiveRecord::Base.transaction do
   load Rails.root.join("db/seeds/events.rb")
   load Rails.root.join("db/seeds/event_members.rb")
 end
-

@@ -12,8 +12,6 @@ gem "puma", ">= 5.0"
 
 gem "activerecord-postgis-adapter"
 
-gem "pundit"
-
 # gem "jbuilder"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]

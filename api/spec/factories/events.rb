@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :event do
-    title { "Test Event" }
+    sequence(:title) { |n| "Test Event #{n}" }
     description { "Default event description" }
     location { "Kyiv" }
     coordinates { "POINT(30.5238 50.4547)" }

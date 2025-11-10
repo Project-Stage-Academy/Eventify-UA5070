@@ -133,7 +133,11 @@ RSpec.describe "EventMembers API", type: :request do
       response "403", "Forbidden (current user is not an admin and belongs to another user)" do
         let(:id) { create(:event_member).id }
 
-        schema "$ref" => "#/components/schemas/error_object"
+        schema type: :object,
+              properties: {
+                error: { type: :string }
+              },
+              required: %w[error]
 
         run_test!
       end
@@ -185,7 +189,11 @@ RSpec.describe "EventMembers API", type: :request do
       response "403", "Forbidden (belongs to another user)" do
         let(:id) { create(:event_member).id }
 
-        schema "$ref" => "#/components/schemas/error_object"
+        schema type: :object,
+              properties: {
+                error: { type: :string }
+              },
+              required: %w[error]
 
         run_test!
       end

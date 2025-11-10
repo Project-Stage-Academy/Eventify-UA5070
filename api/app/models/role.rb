@@ -1,5 +1,5 @@
 class Role < ApplicationRecord
-  NAMES = { user: "user", admin: "admin" }.freeze
+  NAMES = { user: "user", admin: "admin", organizer: "organizer" }.freeze
 
   has_many :user_roles, dependent: :destroy
   has_many :users, through: :user_roles
