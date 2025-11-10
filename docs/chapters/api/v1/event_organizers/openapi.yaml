@@ -14,17 +14,22 @@ tags:
   - name: EventOrganizers
     description: Organizers of events
 
+security:
+  - bearerAuth: []
+
 paths:
   /api/v1/events/{event_id}/organizers:
     post:
       summary: Add an organizer to an event
-      tags: [EventOrganizers]
-      security:
-        - bearerAuth: []
+      description: Adds a user as an organizer for a specific event.
+      tags:
+        - EventOrganizers
       parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
         - name: event_id
           in: path
           required: true
+          description: ID of the event to which the organizer will be added
           schema:
             type: integer
       requestBody:
@@ -36,36 +41,40 @@ paths:
               properties:
                 user_id:
                   type: integer
+                  description: ID of the user to be added as organizer
               required:
                 - user_id
       responses:
         "201":
-          description: Organizer added
+          description: Organizer added successfully
         "403":
-          description: Forbidden
+          description: Forbidden — insufficient permissions
         "422":
-          description: Unprocessable entity
+          description: Unprocessable entity — invalid input
 
   /api/v1/events/{event_id}/organizers/{user_id}:
     delete:
       summary: Remove an organizer from an event
-      tags: [EventOrganizers]
-      security:
-        - bearerAuth: []
+      description: Removes a specific user from the list of event organizers.
+      tags:
+        - EventOrganizers
       parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
         - name: event_id
           in: path
           required: true
+          description: ID of the event
           schema:
             type: integer
         - name: user_id
           in: path
           required: true
+          description: ID of the organizer to be removed
           schema:
             type: integer
       responses:
         "200":
-          description: Organizer removed
+          description: Organizer removed successfully
         "403":
           description: Cannot remove last organizer or unauthorized
         "404":
@@ -77,3 +86,13 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
+  parameters:
+    AuthorizationHeader:
+      name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+        example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      description: "Bearer token. Required role: user"
