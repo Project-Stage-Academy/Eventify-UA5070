@@ -30,9 +30,7 @@ Rails.application.routes.draw do
       resources :event_members, only: [ :show, :update ]
 
       get :hello, to: "auth#hello"
-    end
 
-    namespace :v1 do
       namespace :admin do
         resources :events, only: [:index, :show] do
           collection do

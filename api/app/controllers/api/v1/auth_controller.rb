@@ -9,7 +9,7 @@ module Api
         render json: {
           access_token: result[:tokens][:access_token],
           refresh_token: result[:tokens][:refresh_token],
-          user: UserSerializer.new(result[:user])
+          user:  UserSerializer.render_as_hash(result[:user])
         }, status: :created
       end
 

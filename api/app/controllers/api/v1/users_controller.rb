@@ -4,7 +4,7 @@ module Api
       before_action -> { require_role!(Role::NAMES[:user]) }, only: :me
 
       def me
-        render json: UserSerializer.new(current_user), status: :ok
+        render json: UserSerializer.render_as_hash(current_user), status: :ok
       end
     end
   end
