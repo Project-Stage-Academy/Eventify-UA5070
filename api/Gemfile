@@ -44,12 +44,16 @@ gem "dry-schema"
 # gem "image_processing", "~> 1.2"
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
-# gem "rack-cors"
+
+gem "rack-cors", require: "rack/cors"
 
 gem "kaminari"
 gem "rswag-api", "2.16.0"
 gem "rswag-ui", "2.16.0"
-gem "rswag-specs", "2.16.0"
+
+gem "pundit", "~> 2.5"
+
+gem "activerecord-import", "~> 2.2"
 
 group :development, :test do
   gem "dotenv-rails"
@@ -79,4 +83,6 @@ group :development, :test do
   gem "simplecov", require: false
 
   gem "database_cleaner-active_record"
+
+  gem "rswag-specs", "2.16.0"
 end

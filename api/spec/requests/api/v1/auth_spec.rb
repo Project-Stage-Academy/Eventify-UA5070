@@ -113,8 +113,8 @@ RSpec.describe "Auth", type: :request do
     end
   end
 
-  describe "GET /api/v1/users/me" do
-    let(:endpoint) { "/api/v1/users/me" }
+  describe "GET /api/v1/account/me" do
+    let(:endpoint) { "/api/v1/account/me" }
     let!(:user)    { User.create!(name: "Mia", email: "mia@example.com", password: "password123") }
     let(:tokens)   { JwtService.issue_tokens_for(user) }
 

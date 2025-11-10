@@ -1,6 +1,10 @@
 class EventService
-  extend Sortable
-  extend Paginatable
+  include Sortable
+  include Paginatable
+
+  def initialize(params)
+    @params = params
+  end
 
   Result = Struct.new(:success, :event, :errors)
 
@@ -10,14 +14,20 @@ class EventService
     "id" => :id
   }.freeze
 
-  def self.fetch(params)
+  def fetch
     events = Event.all
-    events = sort(events, params, SORTABLE_COLUMNS)
-    paginate(events, params)
+    events = sort(events, @params, SORTABLE_COLUMNS)
+    paginate(events, @params)
   end
 
-  def self.create(params, user)
-    event = Event.new(params)
+  def fetch_joined(user)
+    events = user.joined_events.distinct
+    events = sort(events, @params, SORTABLE_COLUMNS)
+    paginate(events, @params)
+  end
+
+  def create(user)
+    event = Event.new(@params)
 
     Event.transaction do
       event.save!
@@ -30,12 +40,11 @@ class EventService
     Result.new(false, nil, e.record.errors.full_messages.uniq)
   rescue StandardError => e
     Rails.logger.error("EventService#create failed: #{e.class} - #{e.message}\n#{e.backtrace.join("\n")}")
-    Result.new(false, nil, [ "An unexpected error occurred. Please try again later." ])
+    Result.new(false, nil, ["An unexpected error occurred. Please try again later."])
   end
 
-  def self.update(id, attrs)
-    event = Event.find(id)
-    if event.update(attrs)
+  def update(event)
+    if event.update(@params)
       Result.new(true, event, [])
     else
       Result.new(false, nil, event.errors.full_messages)

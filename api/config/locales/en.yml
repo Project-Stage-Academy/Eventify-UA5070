@@ -21,7 +21,7 @@ en:
         event_member:
           attributes:
             rating:
-              required_if_comment_present: "Rating is required if comment is present"
+              required_if_comment_present: "is required if comment is present"
 
   errors:
     common:
@@ -40,3 +40,7 @@ en:
     event:
       not_found: "Event not found"
       validation_error: "Validation failed for event"
+    event_member:
+      not_found: "Event member not found"
+      validation_error: "Validation failed for event member"
+      tickets_overflow: "Number of tickets exceeds available tickets for the event"
