@@ -6,4 +6,8 @@ class EventMemberPolicy < ApplicationPolicy
   def update?
     record.user == user
   end
+
+  def destroy?
+    user.has_role?(:admin)
+  end
 end

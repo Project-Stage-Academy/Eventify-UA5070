@@ -42,6 +42,10 @@ class Api::V1::EventsController < Api::V1::BaseController
 
     authorize @event
 
+    if event_params[:status].present?
+      authorize @event, :update_status?
+    end
+
     result = EventService.new(event_params).update(@event)
 
     if result.success
