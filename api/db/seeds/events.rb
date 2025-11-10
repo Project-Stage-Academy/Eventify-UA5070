@@ -83,10 +83,21 @@ events_data.each do |attrs|
   next unless organizers.present?
 
   EventOrganizer.transaction do
+    organizer_users = organizers.map { |org| org[:user] }
+    existing_eos = EventOrganizer.where(event: event, user: organizer_users).index_by { |eo| eo.user_id }
+
     organizers.each do |org|
       raise "User not found: #{org.inspect}" if org[:user].nil?
-      EventOrganizer.find_or_create_by!(event: event, user: org[:user]) do |eo|
-        eo.is_primary = org[:is_primary] || false
+
+      eo = existing_eos[org[:user].id]
+      if eo
+        eo.update!(is_primary: org[:is_primary] || false)
+      else
+        EventOrganizer.create!(
+          event: event,
+          user: org[:user],
+          is_primary: org[:is_primary] || false
+        )
       end
     end
   end

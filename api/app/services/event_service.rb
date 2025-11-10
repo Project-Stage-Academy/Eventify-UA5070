@@ -36,9 +36,9 @@ class EventService
   def self.update(id, attrs)
     event = Event.find(id)
     if event.update(attrs)
-      Result.new(success: true, event: event)
+      Result.new(true, event, [])
     else
-      Result.new(success: false, errors: event.errors.full_messages)
+      Result.new(false, nil, event.errors.full_messages)
     end
   end
 end

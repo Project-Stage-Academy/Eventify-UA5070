@@ -76,7 +76,6 @@ RSpec.describe "Api::V1::Events", type: :request do
     it "creates a new event with valid params" do
       expect {
         post "/api/v1/events", params: valid_params, headers: headers
-        puts "Response body: #{response.body}"
       }.to change(Event, :count).by(1)
 
       expect(response).to have_http_status(:created)
@@ -109,7 +108,6 @@ RSpec.describe "Api::V1::Events", type: :request do
     context "when start_date is in the past" do
       it "returns a validation error" do
         post "/api/v1/events", params: { event: valid_params[:event].merge(start_date: 2.days.ago) }, headers: headers
-        puts JSON.pretty_generate(JSON.parse(response.body))
         expect(response).to have_http_status(:unprocessable_entity)
         body = JSON.parse(response.body)
         expect(body["error"]).to be_present

@@ -1,4 +1,3 @@
-# spec/integration/event_organizers_spec.rb
 require 'swagger_helper'
 
 RSpec.describe 'EventOrganizers API', type: :request do

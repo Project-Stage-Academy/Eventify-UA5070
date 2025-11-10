@@ -15,12 +15,7 @@ RSpec.configure do |config|
       servers: [
         {
           url: ENV.fetch('SWAGGER_SERVER_URL', 'http://localhost:3000'),
-          description: 'Local server',
-          variables: {
-            defaultHost: {
-              default: 'localhost:3000'
-            }
-          }
+          description: 'Local server'
         }
       ],
       components: {

@@ -17,31 +17,26 @@ class Api::V1::EventOrganizersController < ApplicationController
   def destroy
     authorize @event, :manage_organizers?
 
-    EventOrganizer.transaction do
-      organizer = @event.event_organizers.find_by(user_id: params[:user_id])
+    organizer = @event.event_organizers.find_by(user_id: params[:user_id])
 
-      unless organizer
-        render json: { error: "Organizer not found" }, status: :not_found
-        return
-      end
-
-      if @event.event_organizers.count <= 1
-        render json: { error: "Cannot remove the last organizer" }, status: :unprocessable_entity
-        return
-      end
-
-      organizer.lock!
-      organizer.destroy!
+    unless organizer
+      render json: { error: "Organizer not found" }, status: :not_found
+      return
     end
 
-    head :ok
+    begin
+      organizer.destroy!
+      head :ok
+    rescue ActiveRecord::RecordNotDestroyed
+      render json: { error: "Cannot remove the last organizer" }, status: :unprocessable_entity
+    end
   end
 
   private
 
   def set_event
     @event = Event.find_by(id: params[:event_id])
-    raise Api::Errors::EventOrganizersError::NotFound.new(
+    raise Api::Errors::EventError::NotFound.new(
       event_id: params[:event_id],
       user_id: nil
     ) unless @event
