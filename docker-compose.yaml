@@ -1,49 +1,90 @@
-  services:
-    postgres:
-      image: cimg/postgres:18.0-postgis
-      container_name: eventify-postgres
-      restart: unless-stopped
-      environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: app_development
-      ports:
-        - "6000:5432"
-      volumes:
-        - postgres_data:/var/lib/postgresql/data
-      networks:
-        - ci_network
-      healthcheck:
-        test: ["CMD-SHELL", "pg_isready -U postgres -d app_development"]
-        interval: 5s
-        timeout: 3s
-        retries: 20
-    mongodb:
-      image: mongo:8.0
-      container_name: eventify-mongodb
-      restart: unless-stopped
-      ports:
-        - "27021:27017"
-      volumes:
-        - mongo_data:/data/db
-      networks:
-        - ci_network
-      environment:
-        MONGO_INITDB_ROOT_USERNAME: mongodb
-        MONGO_INITDB_ROOT_PASSWORD: mongodb
-        MONGO_INITDB_DATABASE: app_development
-      healthcheck:
-        test: ["CMD", "mongosh", "--username=mongodb", "--password=mongodb", 
-          "--authenticationDatabase=admin", "--eval", "db.adminCommand('ping')"]
-        interval: 10s
-        timeout: 5s
-        retries: 5
-      
+services:
+  postgres:
+    image: cimg/postgres:18.0-postgis
+    container_name: eventify-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app_development
+    ports:
+      - "6000:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ci_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d app_development"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  mongodb:
+    image: mongo:8.0
+    container_name: eventify-mongodb
+    restart: unless-stopped
+    ports:
+      - "27021:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - ci_network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongodb
+      MONGO_INITDB_ROOT_PASSWORD: mongodb
+      MONGO_INITDB_DATABASE: app_development
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--username=mongodb",
+          "--password=mongodb",
+          "--authenticationDatabase=admin",
+          "--eval",
+          "db.adminCommand('ping')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    env_file:
+      - ./api/.env
+      - ./api/.env.development
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./api:/api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    networks:
+      - ci_network
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web:/web
+      - /web/node_modules
+    networks:
+      - ci_network
 
-  volumes:
-    postgres_data:
-    mongo_data:
+volumes:
+  postgres_data:
+  mongo_data:
 
-  networks:
-    ci_network:
-      driver: bridge
+networks:
+  ci_network:
+    driver: bridge
