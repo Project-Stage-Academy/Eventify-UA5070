@@ -98,6 +98,7 @@ jobs:
       DATABASE_PASSWORD: postgres
       MONGODB_USERNAME: mongodb
       MONGODB_PASSWORD: mongodb
+      MONGODB_HOST: localhost
       MONGODB_PORT: 27017
 
     steps:
