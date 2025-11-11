@@ -21,7 +21,7 @@ class Api::V1::Admin::EventMembersController < Api::V1::Admin::AdminBaseControll
   private
 
   def rate_params
-    params.expect(event_member: [:rating, :comment])
+    params.expect(event_member: [ :rating, :comment ])
   end
 
   def find_event_member!

@@ -41,7 +41,7 @@ class Api::V1::EventsController < Api::V1::BaseController
     find_event!
 
     authorize @event
-    
+
     authorize @event, :update_status? if event_params[:status].present?
 
 

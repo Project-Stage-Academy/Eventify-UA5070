@@ -2,14 +2,14 @@ class Api::V1::Admin::EventsController < Api::V1::Admin::AdminBaseController
   def index
     events = Event
                .left_joins(:event_members)
-               .select('events.*, COUNT(event_members.id) AS member_count')
-               .group('events.id')
+               .select("events.*, COUNT(event_members.id) AS member_count")
+               .group("events.id")
                .order(created_at: :asc)
 
     render json: { data: EventSerializer.render_as_hash(events, view: :full) }, status: :ok
   end
   def review
-    events = Event.where(status: [:draft_on_review, :published_on_review])
+    events = Event.where(status: [ :draft_on_review, :published_on_review ])
 
     render json: {
       data: EventSerializer.render_as_hash(events, view: :full)

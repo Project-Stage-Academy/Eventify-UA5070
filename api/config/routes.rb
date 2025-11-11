@@ -32,7 +32,7 @@ Rails.application.routes.draw do
       get :hello, to: "auth#hello"
 
       namespace :admin do
-        resources :events, only: [:index, :show] do
+        resources :events, only: [ :index, :show ] do
           collection do
             get :review, to: "events#review"
           end
@@ -41,7 +41,7 @@ Rails.application.routes.draw do
             put :review, to: "events#update_review"
           end
         end
-        resources :event_members, only: [:update, :destroy]
+        resources :event_members, only: [ :update, :destroy ]
       end
     end
   end
