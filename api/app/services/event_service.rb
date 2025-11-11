@@ -11,7 +11,9 @@ class EventService
   SORTABLE_COLUMNS = {
     "title" => :title,
     "start_date" => :start_date,
-    "id" => :id
+    "id" => :id,
+    "rating" => :average_rating,
+    "rating_count" => :rating_count
   }.freeze
 
   def fetch
