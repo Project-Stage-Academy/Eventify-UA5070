@@ -1,0 +1,393 @@
+openapi: 3.1.0
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/v1/events/{event_id}/members":
+    get:
+      summary: List current user memberships for a specific event
+      tags:
+        - EventMembers
+      parameters:
+        - "$ref": "#/components/parameters/AuthorizationHeader"
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/event_member"
+                required:
+                  - data
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/error_object"
+    post:
+      summary: Create memberships (tickets) for current user
+      tags:
+        - EventMembers
+      parameters:
+        - "$ref": "#/components/parameters/AuthorizationHeader"
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/event_member"
+                required:
+                  - data
+        "404":
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/error_object"
+        "422":
+          description: Unprocessable (not joinable or insufficient capacity)
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/error_object"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/error_object"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event_member:
+                  type: object
+                  properties:
+                    number_of_tickets:
+                      type: integer
+                      example: 2
+                      minimum: 1
+                  required:
+                    - number_of_tickets
+              required:
+                - event_member
+  "/api/v1/events/{event_id}/members/reviews":
+    get:
+      summary: List reviews for a specific event
+      tags:
+        - EventMembers
+      parameters:
+        - "$ref": "#/components/parameters/AuthorizationHeader"
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - "$ref": "#/components/parameters/Page"
+        - "$ref": "#/components/parameters/PerPage"
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - rating
+              - date
+          description: Sort by rating or date
+        - "$ref": "#/components/parameters/Direction"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/member_review"
+                  pagination:
+                    "$ref": "#/components/schemas/pagination"
+                required:
+                  - data
+  "/api/v1/event_members/{id}":
+    get:
+      summary: Show event member
+      tags:
+        - EventMembers
+      parameters:
+        - "$ref": "#/components/parameters/AuthorizationHeader"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/event_member"
+                required:
+                  - data
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/error_object"
+        "403":
+          description: Forbidden (current user is not an admin and belongs to another
+            user)
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/error_object"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/error_object"
+    patch:
+      summary: Update rating and review comment
+      tags:
+        - EventMembers
+      parameters:
+        - "$ref": "#/components/parameters/AuthorizationHeader"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/event_member"
+                required:
+                  - data
+        "403":
+          description: Forbidden (belongs to another user)
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/error_object"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/error_object"
+        "422":
+          description: Unprocessable (comment without rating)
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/error_object"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event_member:
+                  type: object
+                  properties:
+                    rating:
+                      type: integer
+                      example: 4
+                      minimum: 1
+                      maximum: 5
+                    comment:
+                      type: string
+                      example: Great event
+              required:
+                - event_member
+servers:
+  - url: http://localhost:3000
+    description: Local server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    AuthorizationHeader:
+      name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+        example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      description: "Bearer token. Required role: user"
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+      description: "Page number for pagination (default: 1)"
+    PerPage:
+      name: per_page
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 10
+        minimum: 1
+        maximum: 50
+      description: "Number of items per page for pagination (default: 10, max: 50)"
+    Direction:
+      name: direction
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+        default: asc
+      description: "Sort direction (asc or desc, default: asc)"
+  schemas:
+    error_object:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            title:
+              type: string
+            detail:
+              type: string
+            meta:
+              type: object
+              nullable: true
+          required:
+            - code
+            - title
+            - detail
+      required:
+        - error
+    pagination:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        total_pages:
+          type: integer
+        total_count:
+          type: integer
+      required:
+        - current_page
+        - total_pages
+        - total_count
+    event_member:
+      type: object
+      properties:
+        id:
+          type: integer
+        ticket_qr_code:
+          type: string
+        rating:
+          type: integer
+          nullable: true
+        comment:
+          type: string
+          nullable: true
+        event_id:
+          type: integer
+      required:
+        - id
+        - ticket_qr_code
+        - rating
+        - comment
+        - event_id
+    member_review:
+      type: object
+      properties:
+        username:
+          type: string
+        rating:
+          type: integer
+        comment:
+          type: string
+          nullable: true
+        date:
+          type: string
+          format: date
+      required:
+        - username
+        - rating
+        - comment
+        - date
+    event:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        location:
+          type: string
+        start_date:
+          type: string
+          format: date-time
+        finish_date:
+          type: string
+          format: date-time
+        ticket_price:
+          type: string
+        status:
+          type: string
+      required:
+        - id
+        - title
+        - location
+        - start_date
+        - finish_date
+        - ticket_price
+        - status
+security:
+  - bearerAuth: []

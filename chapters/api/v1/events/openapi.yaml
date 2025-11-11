@@ -1,0 +1,495 @@
+openapi: 3.1.0
+info:
+  title: Events API
+  version: "1.0.0"
+  description: |
+    Events endpoints for listing, creating, and viewing events.
+    Matches `Api::V1::EventsController` behavior.
+
+servers:
+  - url: http://localhost:3000
+    description: Local dev
+
+tags:
+  - name: Events
+
+security:
+  - bearerAuth: [] 
+  
+paths:
+  /api/v1/events:
+    get:
+      summary: List events with pagination and sorting
+      description: >
+        Returns events wrapped in a data array and a pagination object.
+        Supports pagination (page, per_page) and sorting (sort, direction).
+        per_page is capped at 50 on the server side.
+      tags:
+        - Events
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - name: page
+          in: query
+          description: Page number (1-based)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: per_page
+          in: query
+          description: Items per page (max 50)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+        - $ref: "#/components/parameters/EventSort"
+        - $ref: "#/components/parameters/Direction"
+      responses:
+        "200":
+          description: OK — paginated list of events
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EventPublic"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+              examples:
+                pagedExample:
+                  summary: Example response for `?per_page=3&page=1`
+                  value:
+                    data:
+                      - id: 33
+                        title: Ruby on Rails Workshop
+                        description: Intensive workshop on building web applications with Ruby on Rails.
+                        location: Kyiv, Ukraine
+                        coordinates: "POINT (30.5238 50.4547)"
+                        start_date: "2025-10-08T12:37:07.615Z"
+                        finish_date: "2025-10-08T15:37:07.615Z"
+                        participant_capacity: 30
+                        ticket_price: "50.0"
+                        status: published_unverified
+                        proposed_title: null
+                        proposed_desc: null
+                        proposed_location: null
+                        review_comment: null
+                      - id: 34
+                        title: Frontend Meetup
+                        description: "Meetup for frontend enthusiasts: React, Vue, Angular."
+                        location: Lviv, Ukraine
+                        coordinates: "POINT (24.0316 49.8397)"
+                        start_date: "2025-10-11T12:37:07.615Z"
+                        finish_date: "2025-10-11T16:37:07.615Z"
+                        participant_capacity: 50
+                        ticket_price: "0.0"
+                        status: draft_on_review
+                        proposed_title: null
+                        proposed_desc: null
+                        proposed_location: null
+                        review_comment: null
+                      - id: 35
+                        title: AI & Machine Learning Seminar
+                        description: Seminar on modern artificial intelligence techniques.
+                        location: Berlin, Germany
+                        coordinates: "POINT (13.405 52.52)"
+                        start_date: "2025-10-16T12:37:07.615Z"
+                        finish_date: "2025-10-16T14:37:07.615Z"
+                        participant_capacity: 100
+                        ticket_price: "100.0"
+                        status: published
+                        proposed_title: null
+                        proposed_desc: null
+                        proposed_location: null
+                        review_comment: null
+                    pagination:
+                      current_page: 1
+                      total_pages: 3
+                      total_count: 9
+        "500":
+          description: Unexpected server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                serverError:
+                  value:
+                    error: Internal server error
+    post:
+      summary: Create a new event
+      description: Creates a new event with the provided details.
+      tags:
+        - Events
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventPublic"
+            examples:
+              createExample:
+                value:
+                  title: "Ruby on Rails Workshop"
+                  description: "Intensive workshop on building web applications with Ruby on Rails."
+                  location: "Kyiv, Ukraine"
+                  coordinates: "POINT (30.5238 50.4547)"
+                  start_date: "2025-10-08T12:37:07.615Z"
+                  finish_date: "2025-10-08T15:37:07.615Z"
+                  participant_capacity: 30
+                  ticket_price: 50.0
+                  status: draft
+      responses:
+        "201":
+          description: Event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventPublic"
+              examples:
+                createdExample:
+                  value:
+                    id: 36
+                    title: "Ruby on Rails Workshop"
+                    description: "Intensive workshop on building web applications with Ruby on Rails."
+                    location: "Kyiv, Ukraine"
+                    coordinates: "POINT (30.5238 50.4547)"
+                    start_date: "2025-10-08T12:37:07.615Z"
+                    finish_date: "2025-10-08T15:37:07.615Z"
+                    participant_capacity: 30
+                    ticket_price: 50.0
+                    status: draft
+                    created_at: "2025-07-01T12:34:56Z"
+                    updated_at: "2025-07-01T12:34:56Z"
+        "422":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                validationError:
+                  value:
+                    error:
+                      code: "event.validation_error"
+                      title: "Validation failed for event"
+                      detail: "Validation failed for event"
+                      meta:
+                        errors:
+                          - "Title can't be blank"
+        "500":
+          description: Unexpected server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                serverError:
+                  value:
+                    error: Internal server error
+  /api/v1/events/joined:
+    get:
+      summary: Get events the user has joined
+      description: Fetch a list of events that the authenticated user has joined.
+      tags:
+        - Events
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - name: page
+          in: query
+          description: Page number (1-based)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: per_page
+          in: query
+          description: Items per page (max 50)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+        - $ref: "#/components/parameters/EventSort"
+        - $ref: "#/components/parameters/Direction"
+      responses:
+        "200":
+          description: OK — paginated list of events
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - pagination
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EventPublic"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          description: Unauthorized
+  /api/v1/events/{id}:
+    get:
+      summary: Get single event by ID
+      description: Returns details for a specific event.
+      tags:
+        - Events
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier of the event
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK — event found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventPublic"
+              examples:
+                eventExample:
+                  value:
+                    id: 33
+                    title: Ruby on Rails Workshop
+                    description: Intensive workshop on building web applications with Ruby on Rails.
+                    location: Kyiv, Ukraine
+                    coordinates: "POINT (30.5238 50.4547)"
+                    start_date: "2025-10-08T12:37:07.615Z"
+                    finish_date: "2025-10-08T15:37:07.615Z"
+                    participant_capacity: 30
+                    ticket_price: "50.0"
+                    status: published_unverified
+                    proposed_title: null
+                    proposed_desc: null
+                    proposed_location: null
+                    review_comment: null
+                    created_at: "2025-07-01T12:34:56Z"
+                    updated_at: "2025-07-02T08:22:10Z"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                notFound:
+                  value:
+                    error:
+                      code: "event.not_found"
+                      title: "Event not found"
+                      detail: "Event not found"
+                      meta: null
+        "500":
+          description: Unexpected server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                serverError:
+                  value:
+                    error: Internal server error
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    EventPublic:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - title
+        - location
+        - start_date
+        - status
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "Unique identifier of the event"
+          example: 33
+        title:
+          type: string
+          description: "Title of the event"
+          example: "Ruby on Rails Workshop"
+        description:
+          type: string
+          description: "Event description"
+          nullable: true
+          example: "Intensive workshop on building web applications with Ruby on Rails."
+        location:
+          type: string
+          description: "Physical location of the event"
+          example: "Kyiv, Ukraine"
+        coordinates:
+          type: string
+          description: "Latitude and longitude of the event in WKT format"
+          example: "POINT (30.5238 50.4547)"
+        start_date:
+          type: string
+          format: date-time
+          description: "Event start date/time"
+          example: "2025-10-08T12:37:07.615Z"
+        finish_date:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Event end date/time"
+          example: "2025-10-08T15:37:07.615Z"
+        participant_capacity:
+          type: integer
+          minimum: 0
+          nullable: true
+          description: "Max number of participants"
+          example: 30
+        ticket_price:
+          type: number
+          format: float
+          minimum: 0
+          nullable: true
+          description: "Ticket price for the event"
+          example: 50.0
+        status:
+          type: string
+          description: "Enum field representing event status"
+          enum:
+            - published_unverified
+            - draft_on_review
+            - published
+            - draft
+            - archived
+          example: published_unverified
+        review_comment:
+          type: string
+          nullable: true
+          description: "Admin review comment if any"
+          example: null
+        proposed_title:
+          type: string
+          maxLength: 128
+          nullable: true
+          description: "Proposed new title if edited"
+          example: null
+        proposed_desc:
+          type: string
+          nullable: true
+          description: "Proposed new description if edited"
+          example: null
+        proposed_location:
+          type: string
+          nullable: true
+          description: "Proposed new location if edited"
+          example: null
+        created_at:
+          type: string
+          format: date-time
+          description: "Record creation timestamp"
+          example: "2025-07-01T12:34:56Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: "Record last updated timestamp"
+          example: "2025-07-02T08:22:10Z"
+
+    Pagination:
+      type: object
+      additionalProperties: false
+      required:
+        - current_page
+        - total_pages
+        - total_count
+      properties:
+        current_page:
+          type: integer
+          description: "Current page number (1-based)"
+          example: 1
+        total_pages:
+          type: integer
+          description: "Total number of pages available"
+          example: 3
+        total_count:
+          type: integer
+          description: "Total number of items across all pages"
+          example: 9
+        
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required: [code, title, detail]
+          properties:
+            code:
+              type: string
+              description: Machine-readable error code (e.g. "invalid_request")
+            title:
+              type: string
+              description: Short human-readable summary of the error
+            detail:
+              type: string
+              description: Longer human-readable explanation
+            meta:
+              type: object
+              nullable: true
+              description: Optional extra details about the error
+  parameters:
+    AuthorizationHeader:
+      name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+        example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      description: "Bearer token. Required role: user"
+    EventSort:
+      name: sort
+      in: query
+      description: Sort column
+      required: false
+      schema:
+        type: string
+        enum:
+          - start_date
+          - id
+          - title
+          - rating
+          - rating_count
+    Direction:
+      name: direction
+      in: query
+      description: "Sort direction (asc or desc, default: asc)"
+      required: false
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+        default: asc

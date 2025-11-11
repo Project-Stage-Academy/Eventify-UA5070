@@ -1,0 +1,87 @@
+openapi: 3.1.0
+info:
+  title: Account API
+  version: "1.0.0"
+  description: |
+    Account endpoints for managing user account data.
+    Matches `Api::V1::AccountController` behavior.
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local dev
+
+tags:
+  - name: Account
+    description: Account management
+    
+paths:
+  "/account/me":
+    get:
+      operationId: getAccountData
+      summary: Get user account data
+      description: Returns user account data
+      tags: [Account]
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          description: "Bearer token. Required role: user"
+      responses:
+        "200":
+          description: Successfully returns user account data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDetails"                
+        "401":
+          description: Unauthorized.
+
+components:
+  schemas:
+    UserRole:
+      description: User role
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+          example: user
+
+    UserDetails:
+      description: User details
+      type: object
+      required: [id, name, email, roles]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+          example: "Steve"
+        email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 128
+          example: "steve.jobs@apple.com"
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserRole"
+          example:
+            - id: 1
+              name: user
+            - id: 2
+              name: admin
