@@ -25,7 +25,7 @@ export default function EventDetailsPage() {
 
     async function load() {
       try {
-        const data = await getEvent(id!, token!);
+        const data = await getEvent(id, token);
         if (!data) {
           setError("Event not found");
           return;
