@@ -15,7 +15,7 @@ class Api::V1::EventMembersController < Api::V1::BaseController
 
     authorize @event_member
 
-    render json: { data: EventMemberSerializer.render_as_hash(@event_member, view: :full) }
+    render json: EventMemberSerializer.render(@event_member, view: :full, root: :data)
   end
 
   def create
@@ -45,7 +45,7 @@ class Api::V1::EventMembersController < Api::V1::BaseController
 
     @event_member = EventMemberService.new(current_user).update!(@event_member, rate_params)
 
-    render json: { data: EventMemberSerializer.render_as_hash(@event_member, view: :full) }, status: :ok
+    render json: EventMemberSerializer.render(@event_member, view: :full, root: :data), status: :ok
   end
 
   private

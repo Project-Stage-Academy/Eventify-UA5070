@@ -2,7 +2,7 @@ module Serialization
   extend ActiveSupport::Concern
 
   def serialized_events(events, view: :default)
-    events.map { |event| EventSerializer.render_as_hash(event, view: view).as_json }
+    events.map { |event| EventSerializer.render_as_hash(event, view: view) }
   end
 
   def serialized_event_members(event_members, view: :default)

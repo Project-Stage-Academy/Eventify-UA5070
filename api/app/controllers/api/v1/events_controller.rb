@@ -24,14 +24,14 @@ class Api::V1::EventsController < Api::V1::BaseController
   def show
     find_event!
 
-    render json: { data: EventSerializer.render_as_hash(@event, view: :full) }
+    render json: EventSerializer.render(@event, view: :full, root: :data)
   end
 
   def create
     result = EventService.new(event_params).create
 
     if result.success
-      render json: { data: EventSerializer.render_as_hash(result.event, view: :full) }, status: :created
+      render json: EventSerializer.render(result.event, view: :full, root: :data), status: :created
     else
       raise Api::Errors::EventError::ValidationError.new(meta: { errors: result.errors })
     end
@@ -48,7 +48,7 @@ class Api::V1::EventsController < Api::V1::BaseController
     result = EventService.new(event_params).update(@event)
 
     if result.success
-      render json: { data: EventSerializer.render_as_hash(result.event) }, status: :ok
+      render json: EventSerializer.render(result.event, root: :data), status: :ok
     else
       render json: { errors: result.errors }, status: :unprocessable_entity
     end

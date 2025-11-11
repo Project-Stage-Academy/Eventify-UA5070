@@ -5,7 +5,7 @@ class Api::V1::Admin::EventMembersController < Api::V1::Admin::AdminBaseControll
     authorize @event_member, :update_rating?
 
     if @event_member.update(rate_params)
-      render json: { data: EventMemberSerializer.render_as_hash(@event_member, view: :full) }, status: :ok
+      render json: EventMemberSerializer.render(@event_member, view: :full, root: :data), status: :ok
     else
       render json: { errors: @event_member.errors.full_messages }, status: :unprocessable_entity
     end

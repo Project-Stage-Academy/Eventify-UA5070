@@ -6,14 +6,12 @@ class Api::V1::Admin::EventsController < Api::V1::Admin::AdminBaseController
                .group("events.id")
                .order(created_at: :asc)
 
-    render json: { data: EventSerializer.render_as_hash(events, view: :full) }, status: :ok
+    render json: EventSerializer.render(events, view: :full, root: :data), status: :ok
   end
   def review
     events = Event.where(status: [ :draft_on_review, :published_on_review ])
 
-    render json: {
-      data: EventSerializer.render_as_hash(events, view: :full)
-    }, status: :ok
+    render json: EventSerializer.render(events, view: :full, root: :data), status: :ok
   end
 
   def update_review
