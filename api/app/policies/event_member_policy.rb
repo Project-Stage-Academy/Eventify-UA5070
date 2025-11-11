@@ -7,6 +7,10 @@ class EventMemberPolicy < ApplicationPolicy
     record.user == user
   end
 
+  def update_rating?
+    record.user == user || user.has_role?(:admin)
+  end
+
   def destroy?
     user.has_role?(:admin)
   end

@@ -1,8 +1,8 @@
-class Api::V1::Admin::EventMembersController < Api::V1::BaseController
+class Api::V1::Admin::EventMembersController < Api::V1::Admin::AdminBaseController
   before_action :find_event_member!
 
   def update
-    authorize @event_member
+    authorize @event_member, :update_rating?
 
     if @event_member.update(rate_params)
       render json: { data: EventMemberSerializer.render_as_hash(@event_member, view: :full) }, status: :ok

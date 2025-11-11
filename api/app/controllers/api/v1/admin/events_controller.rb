@@ -1,4 +1,4 @@
-class Api::V1::Admin::EventsController < Api::V1::BaseController
+class Api::V1::Admin::EventsController < Api::V1::Admin::AdminBaseController
   def index
     events = Event
                .left_joins(:event_members)
