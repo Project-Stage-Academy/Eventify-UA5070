@@ -12,8 +12,10 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "js-cookie": "^3.0.5",
+    "lucide-react": "^0.553.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-paginate": "^8.3.0",
     "react-router-dom": "^7.9.4",
     "tailwindcss": "^4.1.14"
   },

@@ -8,6 +8,7 @@ class EventSerializer
     base = {
       id: @event.id,
       title: @event.title,
+      description: @event.description,
       location: @event.location,
       start_date: @event.start_date,
       finish_date: @event.finish_date,
@@ -20,7 +21,6 @@ class EventSerializer
     case @view
     when :full
       base.merge({
-        description: @event.description,
         coordinates: @event.coordinates,
         participant_capacity: @event.participant_capacity,
         proposed_title: @event.proposed_title,
