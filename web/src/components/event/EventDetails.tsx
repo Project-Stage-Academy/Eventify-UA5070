@@ -6,7 +6,7 @@ type Props = {
   onBuyClick: () => void;
 };
 
-const formatDate = (dateString: string) =>
+export const formatDate = (dateString: string) =>
   new Date(dateString).toLocaleString("en-GB", {
     day: "2-digit",
     month: "short",
@@ -41,7 +41,7 @@ export default function EventDetails({ event, onBuyClick }: Props) {
   const badge = getStatusBadge(event.status);
 
   return (
-    <main className="max-w-6xl mx-auto bg-white rounded-2xl border border-gray-200 p-6 md:p-10">
+    <main className="max-w-5xl mx-auto my-10 bg-white rounded-2xl border border-gray-200 p-6 md:p-10">
       <section className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/3">
           <img

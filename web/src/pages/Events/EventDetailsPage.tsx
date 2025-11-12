@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getEvent } from "../../services/EventService";
+import { fetchEvent } from "../../services/EventService";
 import type { Event } from "../../services/EventService";
 import EventDetails from "../../components/event/EventDetails";
 import TicketModal from "../../components/event/TicketModal";
@@ -17,15 +17,11 @@ export default function EventDetailsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorPopupOpen, setErrorPopupOpen] = useState(false);
 
-  useEffect(() => {
-    if (!id || !token) {
-      setLoading(false);
-      return;
-    }
 
-    async function load() {
+  async function loadEvent() {
       try {
-        const data = await getEvent(id, token);
+        console.log(token)
+        const data = await fetchEvent(id!, token!);
         if (!data) {
           setError("Event not found");
           return;
@@ -40,15 +36,15 @@ export default function EventDetailsPage() {
       }
     }
 
-    load();
+  useEffect(() => {
+    if (!id || !token) {
+      setLoading(false);
+      return;
+    }
+
+    loadEvent();
   }, [id, token]);
 
-  // --- Loading state ---
-  if (loading) {
-    return <LoadingOverlay open={true} message="Loading event..." />;
-  }
-
-  // --- No event found ---
   if (!loading && !event && !error) {
     return (
       <main className="flex flex-col items-center justify-center min-h-[60vh] text-slate-600">
@@ -80,6 +76,8 @@ export default function EventDetailsPage() {
         onClose={() => setErrorPopupOpen(false)}
         message={error ?? undefined}
       />
+
+      <LoadingOverlay open={loading} message="Loading event..." />
     </main>
   );
 }

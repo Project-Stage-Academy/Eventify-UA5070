@@ -22,7 +22,7 @@ export function formatPrice(price: string | number): string {
   return numPrice.toFixed(2);
 }
 
-export async function getEvent(id: string, token: string): Promise<Event> {
+export async function fetchEvent(id: string, token: string): Promise<Event> {
   const response = await fetch(`${env.apiUrl}/v1/events/${id}`, {
     method: "GET",
     headers: {

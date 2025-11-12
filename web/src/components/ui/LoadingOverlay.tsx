@@ -1,19 +1,11 @@
-import { Modal } from "@/components/ui/Modal";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
-type LoadingOverlayProps = {
-  open: boolean;
-  message?: string;
-};
+export function LoadingOverlay({ open, message }: { open: boolean; message?: string }) {
+  if (!open) return null;
 
-export function LoadingOverlay({ open, message }: LoadingOverlayProps) {
   return (
-    <Modal open={open} onClose={() => {}} title={undefined}>
-      <div className="flex flex-col items-center gap-3 py-6">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-300 border-t-slate-600" />
-        {message && (
-          <p className="text-sm font-medium text-slate-700">{message}</p>
-        )}
-      </div>
-    </Modal>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm">
+      <LoadingSpinner message={message} />
+    </div>
   );
 }
