@@ -5,7 +5,14 @@ class Api::V1::EventOrganizersController < ApplicationController
     authorize @event, :manage_organizers?
 
     user_id = organizer_params[:user_id]
-    @organizer = @event.event_organizers.new(user_id: user_id)
+    user = User.find_by(id: user_id)
+
+    unless user
+      render json: { error: I18n.t("errors.user.not_found") }, status: :not_found
+      return
+    end
+
+    @organizer = @event.event_organizers.new(user: user)
 
     if @organizer.save
       render json: { id: @organizer.user.id, name: @organizer.user.name }, status: :created
@@ -20,15 +27,15 @@ class Api::V1::EventOrganizersController < ApplicationController
     organizer = @event.event_organizers.find_by(user_id: params[:user_id])
 
     unless organizer
-      render json: { error: "Organizer not found" }, status: :not_found
+      render json: { error: I18n.t("errors.common.organizer_not_found") }, status: :not_found
       return
     end
 
     begin
       organizer.destroy!
-      head :ok
+      render json: { message: I18n.t("activerecord.errors.models.event_organizer.messages.organizer_removed") }, status: :ok
     rescue ActiveRecord::RecordNotDestroyed
-      render json: { error: "Cannot remove the last organizer" }, status: :unprocessable_entity
+      render json: { error: I18n.t("activerecord.errors.models.event_organizer.messages.last_organizer_removal_forbidden") }, status: :unprocessable_entity
     end
   end
 

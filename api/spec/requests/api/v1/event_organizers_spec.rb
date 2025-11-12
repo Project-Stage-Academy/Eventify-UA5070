@@ -90,7 +90,7 @@ RSpec.describe "Api::V1::EventOrganizers", type: :request do
         expect(response).to have_http_status(:not_found)
 
         data = JSON.parse(response.body)
-        expect(data["error"]).to eq("Organizer not found")
+        expect(data["error"]).to eq(I18n.t("errors.common.organizer_not_found"))
       end
 
       it "does not allow deleting the last organizer" do
@@ -99,7 +99,7 @@ RSpec.describe "Api::V1::EventOrganizers", type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
 
         data = JSON.parse(response.body)
-        expect(data["error"]).to eq("Cannot remove the last organizer")
+        expect(data["error"]).to eq(I18n.t("activerecord.errors.models.event_organizer.messages.last_organizer_removal_forbidden"))
       end
     end
 

@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::EventMembers", type: :request do
-  before(:all) do
-    [ 'user', 'admin', 'organizer' ].each do |role_name|
+  before(:each) do
+    [ 'user', 'admin' ].each do |role_name|
       Role.find_or_create_by!(name: role_name)
     end
   end

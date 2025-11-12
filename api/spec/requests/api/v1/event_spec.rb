@@ -104,8 +104,8 @@ RSpec.describe "Api::V1::Events", type: :request do
           title: "New Event",
           description: "Some description",
           location: "Kyiv",
-          start_date: (Time.current + 2.days + 5.minutes).iso8601,
-          finish_date: (Time.current + 3.days + 10.minutes).iso8601,
+          start_date: (2.days.from_now + 5.minutes).iso8601,
+          finish_date: (3.days.from_now + 10.minutes).iso8601,
           ticket_price: 10.5,
           participant_capacity: 100,
           status: "draft"

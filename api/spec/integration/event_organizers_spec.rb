@@ -80,7 +80,7 @@ RSpec.describe 'EventOrganizers API', type: :request do
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['error']).to eq('Cannot remove the last organizer')
+          expect(data['error']).to eq(I18n.t("activerecord.errors.models.event_organizer.messages.last_organizer_removal_forbidden"))
         end
       end
 
@@ -95,7 +95,7 @@ RSpec.describe 'EventOrganizers API', type: :request do
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['error']).to eq('Organizer not found')
+          expect(data['error']).to eq(I18n.t("errors.common.organizer_not_found"))
         end
       end
     end

@@ -9,6 +9,10 @@ alice   = User.find_by(email: "alice@example.com")
 bob     = User.find_by(email: "bob@example.com")
 charlie = User.find_by(email: "charlie@example.com")
 
+raise "Alice user not found"   if alice.nil?
+raise "Bob user not found"     if bob.nil?
+raise "Charlie user not found" if charlie.nil?
+
 events_data = [
   {
     title: "Ruby on Rails Workshop",
@@ -84,10 +88,10 @@ events_data.each do |attrs|
 
   EventOrganizer.transaction do
     organizer_users = organizers.map { |org| org[:user] }
-    existing_eos = EventOrganizer.where(event: event, user: organizer_users).index_by { |eo| eo.user_id }
+    existing_eos = EventOrganizer.where(event: event, user: organizer_users).index_by(&:user_id)
 
     organizers.each do |org|
-      raise "User not found: #{org.inspect}" if org[:user].nil?
+       raise "User not found for event '#{event.title}', organizer index #{idx}: #{org.inspect}" if org[:user].nil?
 
       eo = existing_eos[org[:user].id]
       if eo
