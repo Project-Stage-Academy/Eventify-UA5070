@@ -29,19 +29,25 @@ const getStatusBadge = (status: string) => {
 };
 
 export default function EventDetails({ event, onBuyClick }: Props) {
-  const defaultImage = "https://placehold.co/300x300?text=No+Image";
-  const imageUrl = event.image_url || defaultImage;
   const badge = getStatusBadge(event.status);
 
   return (
-    <main className="max-w-5xl mx-auto my-10 bg-white rounded-2xl  p-6 md:p-10">
+    <main className="max-w-5xl mx-auto my-10 bg-white rounded-2xl border border-gray-100 shadow-lg p-6 md:p-10">
       <section className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/3">
-          <img
-            src={imageUrl}
-            alt={event.title}
-            className="w-full aspect-square object-cover rounded-xl"
-          />
+          <div className="w-full aspect-square rounded-xl overflow-hidden bg-gray-100">
+            {event.image_url ? (
+              <img
+                src={event.image_url}
+                alt={event.title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                <Calendar className="w-24 h-24" />
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="w-full md:w-2/3 flex flex-col">

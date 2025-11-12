@@ -61,7 +61,7 @@ export function UserTicketItem({
 
           <div className="mt-2 inline-flex items-center text-sm text-gray-700 font-medium">
             <Ticket className="w-4 h-4 mr-1 text-red-600" />
-            Tickets: {isExpanded ? tickets.length : '...'}
+            Tickets: {tickets.length ? tickets.length : '...'}
           </div>
         </div>
 
