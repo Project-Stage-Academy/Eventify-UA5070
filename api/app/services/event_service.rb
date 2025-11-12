@@ -54,4 +54,14 @@ class EventService
       Result.new(success: false, errors: event.errors.full_messages)
     end
   end
+
+  def publish(event)
+    new_status = Event::STATE_ON_PUBLISH.fetch(event.status.to_sym)
+
+    if event.update(status: new_status)
+      Result.new(success: true, event: event)
+    else
+      Result.new(success: false, errors: event.errors.full_messages)
+    end
+  end
 end

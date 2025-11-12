@@ -51,6 +51,20 @@ class Api::V1::EventsController < Api::V1::BaseController
     end
   end
 
+  def publish
+    find_event!
+
+    authorize @event
+
+    result = EventService.new.publish(@event)
+
+    if result.success
+      render json: {}, status: :ok
+    else
+      render json: { errors: result.errors }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def event_params

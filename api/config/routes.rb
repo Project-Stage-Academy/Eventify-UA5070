@@ -24,6 +24,7 @@ Rails.application.routes.draw do
 
       resources :events, only: [ :index, :show, :create, :update ] do
         get :joined, on: :collection
+        post :publish
         resources :event_members, only: [ :create, :index ], path: :members do
           get :reviews, on: :collection
         end

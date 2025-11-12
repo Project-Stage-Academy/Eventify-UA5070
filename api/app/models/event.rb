@@ -37,6 +37,11 @@ class Event < ApplicationRecord
     published: ->(hard_changed) { hard_changed ? :published_on_review : :published }
   }.freeze
 
+  STATE_ON_PUBLISH = {
+    draft: :draft_on_review,
+    published_rejected: :published_on_review
+  }
+
   # Validations for text fields
   validates :title, presence: true, length: { maximum: 128 }, uniqueness: true
   validates :description, length: { maximum: 500 }, allow_blank: true
