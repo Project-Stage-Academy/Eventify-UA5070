@@ -43,3 +43,20 @@ export async function fetchRegEvents({
 
   return response.json() as Promise<PaginatedResponse<Event>>;
 };
+
+
+export async function fetchEventTickets(eventId: string, token: string) {
+  const response = await fetch(`${env.apiUrl}/v1/events/${eventId}/members`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to fetch tickets");
+  }
+
+  return response.json();
+}

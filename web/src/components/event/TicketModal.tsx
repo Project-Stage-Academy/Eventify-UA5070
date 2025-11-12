@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
 import { Modal } from "../ui/Modal";
-import { formatPrice, parsePrice, registerEvent, type Event } from "../../services/EventService";
+import { registerEvent, type Event } from "../../services/EventService";
+import { parsePrice, formatPrice } from "@/utils/formatters";
+
+
 
 type Props = {
   event: Event;
