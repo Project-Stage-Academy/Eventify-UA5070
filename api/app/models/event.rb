@@ -22,6 +22,21 @@ class Event < ApplicationRecord
     :published_rejected
   ].freeze
 
+  HARD_TO_PROPOSED = {
+    title: :proposed_title,
+    description: :proposed_desc,
+    location: :proposed_location
+  }.freeze
+
+  STATE_ON_UPDATE = {
+    draft: :draft,
+    rejected: :draft,
+    published_unverified: :published_unverified,
+    published_rejected: :published_rejected,
+    published_on_review: :published_on_review,
+    published: ->(hard_changed) { hard_changed ? :published_on_review : :published }
+  }.freeze
+
   # Validations for text fields
   validates :title, presence: true, length: { maximum: 128 }, uniqueness: true
   validates :description, length: { maximum: 500 }, allow_blank: true
@@ -64,6 +79,19 @@ class Event < ApplicationRecord
         Rails.logger.error("Failed to update rating fields for Event ID #{id}: #{errors.full_messages.join(', ')}")
       end
     end
+  end
+
+  def self.change_hard_fields_to_proposed(params)
+    hard_changed = false
+
+    HARD_TO_PROPOSED.each do |field, proposed_field|
+      next unless params.key?(field)
+
+      params[proposed_field] = params.delete(field)
+      hard_changed = true
+    end
+
+    hard_changed
   end
 
   private

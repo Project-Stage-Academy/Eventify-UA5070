@@ -62,11 +62,7 @@ class Api::V1::EventsController < Api::V1::BaseController
       :start_date,
       :finish_date,
       :participant_capacity,
-      :ticket_price,
-      :status,
-      :proposed_title,
-      :proposed_desc,
-      :proposed_location
+      :ticket_price
     )
   end
 

@@ -32,6 +32,7 @@ class EventService
 
   def create
     event = Event.new(@params)
+    event.status = :draft
 
     if event.save
       Result.new(true, event, [])
@@ -41,7 +42,13 @@ class EventService
   end
 
   def update(event)
-    if event.update(@params)
+    update_params = @params.dup
+    hard_changed = Event.change_hard_fields_to_proposed(update_params)
+
+    new_status = Event::STATE_ON_UPDATE.fetch(event.status.to_sym)
+    update_params[:status] = new_status.respond_to?(:call) ? new_status.call(hard_changed) : new_status
+
+    if event.update(update_params)
       Result.new(success: true, event: event)
     else
       Result.new(success: false, errors: event.errors.full_messages)
