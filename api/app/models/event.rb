@@ -42,6 +42,21 @@ class Event < ApplicationRecord
     published_rejected: :published_on_review
   }
 
+  STATE_ON_ARCHIVE = {
+    published: :archived,
+    published_unverified: :archived,
+    published_rejected: :archived,
+    published_on_review: :archived
+  }
+
+  STATE_ON_CANCEL = {
+    draft_on_review: :draft,
+    published: :cancelled,
+    published_unverified: :cancelled,
+    published_rejected: :cancelled,
+    published_on_review: :cancelled
+  }
+
   # Validations for text fields
   validates :title, presence: true, length: { maximum: 128 }, uniqueness: true
   validates :description, length: { maximum: 500 }, allow_blank: true

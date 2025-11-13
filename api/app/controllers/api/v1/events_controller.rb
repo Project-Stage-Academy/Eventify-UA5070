@@ -56,13 +56,23 @@ class Api::V1::EventsController < Api::V1::BaseController
 
     authorize @event
 
-    result = EventService.new.publish(@event)
+    default_respond_on EventService.new.publish(@event)
+  end
 
-    if result.success
-      render json: {}, status: :ok
-    else
-      render json: { errors: result.errors }, status: :unprocessable_entity
-    end
+  def archive
+    find_event!
+
+    authorize @event
+
+    default_respond_on EventService.new.archive(@event)
+  end
+
+  def cancel
+    find_event!
+
+    authorize @event
+
+    default_respond_on EventService.new.cancel(@event)
   end
 
   private
@@ -85,5 +95,13 @@ class Api::V1::EventsController < Api::V1::BaseController
 
   rescue ActiveRecord::RecordNotFound
     raise Api::Errors::EventError::NotFound.new(id: params[:id])
+  end
+
+  def default_respond_on(result)
+    if result.success
+      render json: {}, status: :ok
+    else
+      render json: { errors: result.errors }, status: :unprocessable_entity
+    end
   end
 end
