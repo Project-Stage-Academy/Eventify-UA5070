@@ -1,7 +1,17 @@
+# SEED_RESET=true rails db:seed
 if ENV["SEED_RESET"] == "true"
+  EventOrganizer.delete_all
   EventMember.delete_all
   Event.delete_all
 end
+
+alice   = User.find_by(email: "alice@example.com")
+bob     = User.find_by(email: "bob@example.com")
+charlie = User.find_by(email: "charlie@example.com")
+
+raise "Alice user not found"   if alice.nil?
+raise "Bob user not found"     if bob.nil?
+raise "Charlie user not found" if charlie.nil?
 
 events_data = [
   {
@@ -14,7 +24,11 @@ events_data = [
     participant_capacity: 30,
     ticket_price: 50.0,
     status: :published,
-    review_comment: nil
+    review_comment: nil,
+    organizers: [
+      { user: alice, is_primary: true },
+      { user: bob, is_primary: false }
+    ]
   },
   {
     title: "Frontend Meetup",
@@ -26,7 +40,10 @@ events_data = [
     participant_capacity: 50,
     ticket_price: 0.0,
     status: :draft,
-    review_comment: nil
+    review_comment: nil,
+    organizers: [
+      { user: bob, is_primary: true }
+    ]
   },
   {
     title: "AI & Machine Learning Seminar",
@@ -38,7 +55,10 @@ events_data = [
     participant_capacity: 100,
     ticket_price: 100.0,
     status: :published,
-    review_comment: nil
+    review_comment: nil,
+    organizers: [
+      { user: bob, is_primary: true }
+    ]
   },
   {
     title: "Music Festival",
@@ -50,24 +70,41 @@ events_data = [
     participant_capacity: 500,
     ticket_price: 150.0,
     status: :published,
-    review_comment: "Ready for publishing"
-  },
-  {
-    title: "Startup Pitch Night",
-    description: "Presentation of startups for potential investors.",
-    location: "Munich, Germany",
-    coordinates: "POINT(11.5820 48.1351)",
-    start_date: 15.days.from_now,
-    finish_date: 15.days.from_now + 3.hours,
-    participant_capacity: 75,
-    ticket_price: 20.0,
-    status: :draft,
-    review_comment: nil
+    review_comment: "Ready for publishing",
+    organizers: [
+      { user: bob, is_primary: true },
+      { user: charlie, is_primary: false }
+    ]
   }
 ]
 
 events_data.each do |attrs|
-  Event.find_or_initialize_by(title: attrs[:title]).update!(attrs.except(:title))
+  organizers = attrs.delete(:organizers)
+
+  event = Event.find_or_initialize_by(title: attrs[:title])
+  event.update!(attrs)
+
+  next unless organizers.present?
+
+  EventOrganizer.transaction do
+    organizer_users = organizers.map { |org| org[:user] }
+    existing_eos = EventOrganizer.where(event: event, user: organizer_users).index_by(&:user_id)
+
+    organizers.each do |org|
+       raise "User not found for event '#{event.title}', organizer index #{idx}: #{org.inspect}" if org[:user].nil?
+
+      eo = existing_eos[org[:user].id]
+      if eo
+        eo.update!(is_primary: org[:is_primary] || false)
+      else
+        EventOrganizer.create!(
+          event: event,
+          user: org[:user],
+          is_primary: org[:is_primary] || false
+        )
+      end
+    end
+  end
 end
 
 puts "Event seeds created."

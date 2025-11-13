@@ -7,19 +7,25 @@ RSpec.describe "Api::V1::Events", type: :request do
 
   describe "GET /api/v1/events" do
     before do
-      create_list(:event, 5)
+      5.times do |i|
+        create(:event, title: "Event #{i}")
+      end
     end
 
-    it "returns a list of events with pagination meta" do
-      get "/api/v1/events", headers: headers
-      expect(response).to have_http_status(:ok)
-      expect(body["data"]).to be_an(Array)
-      expect(body["data"]).not_to be_empty
-      expect(body["pagination"]).to be_present
-    end
+      it "returns a list of events with pagination meta" do
+        get "/api/v1/events", headers: headers
+        expect(response).to have_http_status(:ok)
+
+        expect(body["data"]).to be_an(Array)
+        expect(body["data"]).not_to be_empty
+        expect(body["pagination"]).to be_present
+      end
 
     context "when no events exist" do
-      before { Event.delete_all }
+      before do
+        EventOrganizer.delete_all
+        Event.delete_all
+      end
 
       it "returns an empty data array" do
         get "/api/v1/events", headers: headers
@@ -98,8 +104,8 @@ RSpec.describe "Api::V1::Events", type: :request do
           title: "New Event",
           description: "Some description",
           location: "Kyiv",
-          start_date: 2.days.from_now,
-          finish_date: 3.days.from_now,
+          start_date: (2.days.from_now + 5.minutes).iso8601,
+          finish_date: (3.days.from_now + 10.minutes).iso8601,
           ticket_price: 10.5,
           participant_capacity: 100,
           status: "draft"
@@ -139,7 +145,6 @@ RSpec.describe "Api::V1::Events", type: :request do
     context "when start_date is in the past" do
       it "returns a validation error" do
         post "/api/v1/events", params: { event: valid_params[:event].merge(start_date: 2.days.ago) }, headers: headers
-        puts JSON.pretty_generate(JSON.parse(response.body))
         expect(response).to have_http_status(:unprocessable_entity)
         expect(body["error"]).to be_present
         expect(body["error"]["meta"]["errors"]).to include("Start date The event's start date must be in the future")

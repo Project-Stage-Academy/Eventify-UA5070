@@ -42,6 +42,7 @@ gem "dry-schema"
 # gem "image_processing", "~> 1.2"
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
+
 gem "rack-cors", require: "rack/cors"
 
 gem "kaminari"
@@ -72,6 +73,8 @@ group :development, :test do
   gem "rspec-rails", "~> 8.0"
 
   gem "faker"
+
+  gem "pundit-matchers"
 
   gem "factory_bot_rails", "~> 6.5"
 

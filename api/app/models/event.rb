@@ -3,6 +3,9 @@ class Event < ApplicationRecord
   has_many :event_members, dependent: :destroy
   has_many :members, through: :event_members, source: :user
 
+  has_many :event_organizers, dependent: :destroy
+  has_many :organizers, through: :event_organizers, source: :user
+
   enum :status, {
     draft: 0,
     draft_on_review: 1,

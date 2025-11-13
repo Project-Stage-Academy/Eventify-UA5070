@@ -1,34 +1,6 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
   hello: "Hello world"
+
   activerecord:
     errors:
       models:
@@ -38,14 +10,25 @@ en:
               not_in_future: "The event's start date must be in the future"
             finish_date:
               after_start_date: "The event's finish date must be after its start date"
+            base:
+              missing_organizer: "Event must have at least one organizer"
+          messages:
+            missing_organizer: "An event must have at least one organizer."
+        event_organizer:
+          messages:
+            last_organizer_removal_forbidden: "An event must have at least one organizer. You cannot remove the last one."
+            organizer_removed: "Organizer removed successfully."
         event_member:
           attributes:
             rating:
               required_if_comment_present: "is required if comment is present"
+
   errors:
     common:
       invalid_params: "Invalid parameters"
       forbidden: "Forbidden"
+      not_authorized: "Not authorized"
+      organizer_not_found: "Organizer not found"
     auth:
       invalid_credentials: "Invalid email or password"
       missing_bearer_token: "Missing bearer token"

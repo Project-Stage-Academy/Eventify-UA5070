@@ -30,6 +30,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_06_165724) do
     t.check_constraint "rating IS NULL OR rating >= 1 AND rating <= 5", name: "rating_range"
   end
 
+  create_table "event_organizers", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "event_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "is_primary", default: false, null: false
+    t.index ["event_id", "user_id"], name: "index_event_organizers_on_event_id_and_user_id", unique: true
+    t.index ["event_id"], name: "index_event_organizers_on_event_id"
+    t.index ["user_id"], name: "index_event_organizers_on_user_id"
+  end
+
   create_table "events", force: :cascade do |t|
     t.string "title", null: false
     t.text "description"
@@ -83,6 +94,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_06_165724) do
 
   add_foreign_key "event_members", "events"
   add_foreign_key "event_members", "users"
+  add_foreign_key "event_organizers", "events"
+  add_foreign_key "event_organizers", "users"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
 end

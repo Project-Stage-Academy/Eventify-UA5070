@@ -1,4 +1,6 @@
 uk:
+  hello: "Привіт, світ"
+
   activerecord:
     errors:
       models:
@@ -7,8 +9,29 @@ uk:
             start_date:
               not_in_future: "Дата початку події має бути в майбутньому"
             finish_date:
-              after_start_date: "Дата завершення має бути після дати початку події"
+              after_start_date: "Дата завершення події має бути після дати початку"
+          messages:
+            missing_organizer: "Подія повинна мати принаймні одного організатора."
+        event_organizer:
+          messages:
+            last_organizer_removal_forbidden: "Подія повинна мати принаймні одного організатора. Неможливо видалити останнього."
+            organizer_removed: "Організатора успішно видалено."
         event_member:
           attributes:
             rating:
-              required_if_comment_present: "є обов'язковим, якщо присутній коментар"
+              required_if_comment_present: "Рейтинг є обов'язковим, якщо присутній коментар"
+
+  errors:
+    common:
+      invalid_params: "Невірні параметри"
+      forbidden: "Доступ заборонено"
+      not_authorized: "Ви не маєте доступу"
+      organizer_not_found: "Організатора не знайдено"
+    auth:
+      invalid_credentials: "Невірна електронна пошта або пароль"
+      missing_bearer_token: "Відсутній токен доступу"
+      expired_token: "Сесія завершена. Будь ласка, увійдіть знову."
+      invalid_token: "Недійсний токен"
+    user:
+      not_found: "Користувача не знайдено"
+      email_taken: "Ця електронна адреса вже використовується"

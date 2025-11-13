@@ -1,16 +1,20 @@
-UserRole.delete_all if ENV["SEED_RESET"] == "true"
-
-def create_user!(role_key, index)
-  role_value = Role::NAMES[role_key]
-  user = User.find_or_create_by!(email: "#{role_key}_#{role_value}_#{index}@example.com") do |u|
-      u.password = "password"
-      u.name = Faker::Name.name
-    end
-
-  user.add_role!(role_value)
+if ENV["SEED_RESET"] == "true"
+  UserRole.delete_all
+  User.delete_all
 end
 
-25.times { |i| create_user!(:user, i) }
-5.times { |i| create_user!(:admin, i) }
+users_data = [
+  { name: "Alice", email: "alice@example.com", password: "password" },
+  { name: "Bob", email: "bob@example.com", password: "password" },
+  { name: "Charlie", email: "charlie@example.com", password: "password" },
+  { name: "David", email: "david@example.com", password: "password" }
+]
 
-puts "User and UserRole seeds created."
+users_data.each do |attrs|
+  User.find_or_create_by!(email: attrs[:email]) do |u|
+    u.name = attrs[:name]
+    u.password = attrs[:password]
+  end
+end
+
+puts "Users seeds created."
