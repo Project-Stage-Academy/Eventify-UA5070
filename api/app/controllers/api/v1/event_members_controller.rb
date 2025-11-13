@@ -2,12 +2,21 @@ class Api::V1::EventMembersController < Api::V1::BaseController
   include Serialization
 
   before_action :validate_id_param, only: [ :show, :update ]
-  before_action -> { validate_id_param(id: :event_id) }, only: [ :index, :create ]
+  before_action -> { validate_id_param(id: :event_id) }, only: [ :index, :create, :reviews ]
 
   def index
     @event_members = EventMemberService.new(current_user).fetch(params)
 
     render json: { data: serialized_event_members(@event_members) }
+  end
+
+  def reviews
+    @event_members = EventMemberService.new(current_user).fetch_reviews(params)
+
+    render json: {
+      data: serialized_event_members(@event_members, view: :review),
+      pagination: pagination_meta(@event_members)
+    }
   end
 
   def show

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_14_194711) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_06_165724) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -57,6 +57,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_14_194711) do
     t.string "proposed_title", limit: 128
     t.text "proposed_desc"
     t.geography "proposed_location", limit: {srid: 4326, type: "st_point", geographic: true}
+    t.decimal "average_rating", precision: 2, scale: 1
+    t.integer "rating_count", default: 0, null: false
+    t.index ["average_rating"], name: "index_events_on_average_rating"
     t.index ["coordinates"], name: "index_events_on_coordinates", using: :gist
     t.index ["start_date"], name: "index_events_on_start_date"
     t.index ["title"], name: "index_events_on_title", unique: true

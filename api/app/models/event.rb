@@ -42,12 +42,31 @@ class Event < ApplicationRecord
 
   validates :status, inclusion: { in: statuses.keys }
 
+  validates :average_rating, numericality: { in: 1..5 }, allow_nil: true
+  validates :rating_count, numericality: { greater_than_or_equal_to: 0 }
+
   def joinable?
     JOINABLE.include?(status.to_sym)
   end
 
   def available_tickets
     participant_capacity - event_members.count
+  end
+
+  MIN_RATING_COUNT_FOR_AVERAGE = 5
+
+  def update_rating_fields
+    with_lock do
+      rated_members = event_members.where.not(rating: nil)
+      rating_count = rated_members.count
+
+      self.rating_count = rating_count
+      self.average_rating = rating_count >= MIN_RATING_COUNT_FOR_AVERAGE ? rated_members.average(:rating) : nil
+
+      unless save
+        Rails.logger.error("Failed to update rating fields for Event ID #{id}: #{errors.full_messages.join(', ')}")
+      end
+    end
   end
 
   private

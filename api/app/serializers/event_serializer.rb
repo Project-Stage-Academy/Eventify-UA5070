@@ -12,7 +12,9 @@ class EventSerializer
       start_date: @event.start_date,
       finish_date: @event.finish_date,
       ticket_price: @event.ticket_price,
-      status: @event.status
+      status: @event.status,
+      average_rating: @event.average_rating,
+      rating_count: @event.rating_count
     }
 
     case @view

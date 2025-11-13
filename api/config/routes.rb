@@ -17,7 +17,11 @@ Rails.application.routes.draw do
 
       resources :events, only: [ :index, :show, :create, :update ] do
         get :joined, on: :collection
-        resources :event_members, only: [ :create, :index ], path: :members
+
+        resources :event_members, only: [ :create, :index ], path: :members do
+          get :reviews, on: :collection
+        end
+
         resources :organizers, only: [ :create, :destroy ], controller: "event_organizers", param: :user_id
       end
 

@@ -13,6 +13,13 @@ class EventMemberSerializer
     }
 
     case @view
+    when :review
+      {
+        username: @event_member.user.name,
+        rating: @event_member.rating,
+        comment: @event_member.comment,
+        date: @event_member.updated_at.to_date
+      }
     when :with_event
       base.merge({
         event_id: @event_member.event_id

@@ -59,6 +59,39 @@ RSpec.describe "Api::V1::EventMembers", type: :request do
     end
   end
 
+  describe "GET /api/v1/events/:event_id/members/reviews" do
+    context "when the request is valid" do
+      let(:event_with_reviews) { create(:event) }
+      let!(:reviewed_members) do
+        create_list(:event_member, 5, event: event_with_reviews, rating: 4, comment: "Test comment")
+      end
+
+      before { get "/api/v1/events/#{event_with_reviews.id}/members/reviews", headers: headers }
+
+      it "returns OK" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns array of reviews" do
+        expect(body["data"]).to be_an(Array)
+        expect(body["data"]).not_to be_empty
+      end
+    end
+
+    context "when event has no reviews" do
+      before { get "/api/v1/events/#{create(:event).id}/members/reviews", headers: headers }
+
+      it "returns OK" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns an empty data array" do
+        expect(body["data"]).to eq([])
+      end
+    end
+  end
+
+
   describe "GET /api/v1/event_members/:id" do
     let!(:event_member) { create(:event_member, user: current_user, event: event) }
 

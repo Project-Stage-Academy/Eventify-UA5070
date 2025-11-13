@@ -26,6 +26,8 @@ RSpec.describe Event, type: :model do
     it { should validate_presence_of(:finish_date) }
     it { should validate_numericality_of(:ticket_price).is_greater_than_or_equal_to(0) }
     it { should validate_numericality_of(:participant_capacity).is_greater_than_or_equal_to(0) }
+    it { should validate_numericality_of(:average_rating).is_in(1..5).allow_nil }
+    it { should validate_numericality_of(:rating_count).is_greater_than_or_equal_to(0) }
 
     context "custom date validations" do
       it "is invalid if start_date is in the past" do
@@ -94,6 +96,33 @@ RSpec.describe Event, type: :model do
 
     it "calculates available tickets correctly" do
       expect(event.available_tickets).to eq(capacity - booked)
+    end
+  end
+
+  describe "#update_rating_fields" do
+    let(:event) { create(:event) }
+    let(:rating) { 4 }
+    let(:below_min_count) { Event::MIN_RATING_COUNT_FOR_AVERAGE - 1 }
+
+    before { create_list(:event_member, below_min_count, event:, rating: rating) }
+
+    it "updates rating_count correctly" do
+      expect { event.update_rating_fields }.to change { event.rating_count }.to(below_min_count)
+    end
+
+    context "when rating_count is below MIN_RATING_COUNT_FOR_AVERAGE" do
+      it "sets average_rating to nil" do
+        event.update_rating_fields
+        expect(event.average_rating).to be_nil
+      end
+    end
+
+    context "when rating_count is equal or greater than MIN_RATING_COUNT_FOR_AVERAGE" do
+      before { create(:event_member, event:, rating:) }
+
+      it "calculates average_rating correctly" do
+        expect { event.update_rating_fields }.to change { event.average_rating }.to(rating)
+      end
     end
   end
 end
