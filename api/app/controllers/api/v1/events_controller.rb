@@ -2,6 +2,12 @@ class Api::V1::EventsController < Api::V1::BaseController
   include Serialization
 
   before_action :validate_id_param, only: [ :show, :update ]
+  before_action :find_event!, only: [ :show, :update ]
+
+  before_action -> do
+    validate_id_param(id: :event_id)
+    find_event!(id: :event_id)
+  end, only: [ :publish, :archive, :cancel, :copy ]
 
   def index
     @events = EventService.new(params).fetch
@@ -22,24 +28,14 @@ class Api::V1::EventsController < Api::V1::BaseController
   end
 
   def show
-    find_event!
-
     render json: { data: EventSerializer.new(@event, view: :full).as_json }
   end
 
   def create
-    result = EventService.new(event_params).create
-
-    if result.success
-      render json: { data: EventSerializer.new(result.event, view: :full).as_json }, status: :created
-    else
-      raise Api::Errors::EventError::ValidationError.new(meta: { errors: result.errors })
-    end
+    respond_on_create EventService.new(event_params).create
   end
 
   def update
-    find_event!
-
     authorize @event
 
     result = EventService.new(event_params).update(@event)
@@ -52,27 +48,27 @@ class Api::V1::EventsController < Api::V1::BaseController
   end
 
   def publish
-    find_event!
-
     authorize @event
 
     default_respond_on EventService.new.publish(@event)
   end
 
   def archive
-    find_event!
-
     authorize @event
 
     default_respond_on EventService.new.archive(@event)
   end
 
   def cancel
-    find_event!
-
     authorize @event
 
     default_respond_on EventService.new.cancel(@event)
+  end
+
+  def copy
+    authorize @event
+
+    respond_on_create EventService.new.copy(@event)
   end
 
   private
@@ -90,11 +86,11 @@ class Api::V1::EventsController < Api::V1::BaseController
     )
   end
 
-  def find_event!
-    @event = Event.find(params[:id])
+  def find_event!(id: :id)
+    @event = Event.find(params[id])
 
   rescue ActiveRecord::RecordNotFound
-    raise Api::Errors::EventError::NotFound.new(id: params[:id])
+    raise Api::Errors::EventError::NotFound.new(id: params[id])
   end
 
   def default_respond_on(result)
@@ -102,6 +98,14 @@ class Api::V1::EventsController < Api::V1::BaseController
       render json: {}, status: :ok
     else
       render json: { errors: result.errors }, status: :unprocessable_entity
+    end
+  end
+
+  def respond_on_create(result)
+    if result.success
+      render json: { data: EventSerializer.new(result.event, view: :full).as_json }, status: :created
+    else
+      raise Api::Errors::EventError::ValidationError.new(meta: { errors: result.errors })
     end
   end
 end

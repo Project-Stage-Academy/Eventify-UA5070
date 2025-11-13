@@ -15,6 +15,10 @@ class EventPolicy < ApplicationPolicy
     user_is_organizer?
   end
 
+  def copy?
+    user_is_organizer?
+  end
+
   private
 
   def user_is_organizer?

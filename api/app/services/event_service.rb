@@ -2,7 +2,7 @@ class EventService
   include Sortable
   include Paginatable
 
-  def initialize(params)
+  def initialize(params = nil)
     @params = params
   end
 
@@ -31,14 +31,7 @@ class EventService
   end
 
   def create
-    event = Event.new(@params)
-    event.status = :draft
-
-    if event.save
-      Result.new(true, event, [])
-    else
-      Result.new(false, event, event.errors.full_messages)
-    end
+    save_new_event Event.new(@params)
   end
 
   def update(event)
@@ -73,11 +66,31 @@ class EventService
     update_status(event, new_status)
   end
 
+  def copy(event)
+    # Wrong status check
+
+    event.title = nil
+
+    save_new_event event.dup
+  end
+
   private
 
   def update_status(event, new_status)
-    if new_status.present? && event.update(status: new_status)
+    raise Api::Errors::EventError::InvalidStatusTransition.new() if new_status.nil?
+
+    if event.update(status: new_status)
       Result.new(success: true)
+    else
+      Result.new(success: false, errors: event.errors.full_messages)
+    end
+  end
+
+  def save_new_event(event)
+    event.status = Event::INITIAL_STATUS
+
+    if event.save
+      Result.new(success: true, event: event)
     else
       Result.new(success: false, errors: event.errors.full_messages)
     end

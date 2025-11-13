@@ -28,6 +28,8 @@ class Event < ApplicationRecord
     location: :proposed_location
   }.freeze
 
+   INITIAL_STATUS = :draft
+
   STATUS_ON_UPDATE = {
     draft: :draft,
     rejected: :draft,

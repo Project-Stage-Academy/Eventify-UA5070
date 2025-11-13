@@ -57,6 +57,7 @@ en:
     event:
       not_found: "Event not found"
       validation_error: "Validation failed for event"
+      invalid_status_transition: "Invalid status transition for event"
     event_member:
       not_found: "Event member not found"
       validation_error: "Validation failed for event member"

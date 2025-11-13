@@ -28,6 +28,7 @@ Rails.application.routes.draw do
         post :publish
         post :archive
         post :cancel
+        post :copy
 
         resources :event_members, only: [ :create, :index ], path: :members do
           get :reviews, on: :collection
