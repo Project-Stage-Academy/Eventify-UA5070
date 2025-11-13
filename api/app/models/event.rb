@@ -28,7 +28,7 @@ class Event < ApplicationRecord
     location: :proposed_location
   }.freeze
 
-   INITIAL_STATUS = :draft
+  INITIAL_STATUS = :draft
 
   STATUS_ON_UPDATE = {
     draft: :draft,
@@ -42,14 +42,14 @@ class Event < ApplicationRecord
   STATUS_ON_PUBLISH = {
     draft: :draft_on_review,
     published_rejected: :published_on_review
-  }
+  }.freeze
 
   STATUS_ON_ARCHIVE = {
     published: :archived,
     published_unverified: :archived,
     published_rejected: :archived,
     published_on_review: :archived
-  }
+  }.freeze
 
   STATUS_ON_CANCEL = {
     draft_on_review: :draft,
@@ -57,10 +57,15 @@ class Event < ApplicationRecord
     published_unverified: :cancelled,
     published_rejected: :cancelled,
     published_on_review: :cancelled
-  }
+  }.freeze
 
-  # Validations for text fields
-  validates :title, presence: true, length: { maximum: 128 }, uniqueness: true
+  STATUS_ON_COPY = [
+    :archived,
+    :cancelled
+  ].freeze
+
+  MAX_TITLE_LENGTH = 128
+  validates :title, presence: true, length: { maximum: MAX_TITLE_LENGTH }, uniqueness: true
   validates :description, length: { maximum: 500 }, allow_blank: true
 
   # Validations for required dates and location
@@ -114,6 +119,15 @@ class Event < ApplicationRecord
     end
 
     hard_changed
+  end
+
+  def copyable?
+    STATUS_ON_COPY.include?(status.to_sym)
+  end
+
+  COPY_TITLE_PREFIX = "Copy of: ".freeze
+  def generate_copy_title
+    self.title = "#{COPY_TITLE_PREFIX}#{self.title}".truncate(MAX_TITLE_LENGTH)
   end
 
   private

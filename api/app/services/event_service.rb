@@ -67,9 +67,9 @@ class EventService
   end
 
   def copy(event)
-    # Wrong status check
+    raise Api::Errors::EventError::InvalidStatusTransition.new() unless event.copyable?
 
-    event.title = nil
+    event.generate_copy_title
 
     save_new_event event.dup
   end
