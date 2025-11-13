@@ -28,7 +28,7 @@ class Event < ApplicationRecord
     location: :proposed_location
   }.freeze
 
-  STATE_ON_UPDATE = {
+  STATUS_ON_UPDATE = {
     draft: :draft,
     rejected: :draft,
     published_unverified: :published_unverified,
@@ -37,19 +37,19 @@ class Event < ApplicationRecord
     published: ->(hard_changed) { hard_changed ? :published_on_review : :published }
   }.freeze
 
-  STATE_ON_PUBLISH = {
+  STATUS_ON_PUBLISH = {
     draft: :draft_on_review,
     published_rejected: :published_on_review
   }
 
-  STATE_ON_ARCHIVE = {
+  STATUS_ON_ARCHIVE = {
     published: :archived,
     published_unverified: :archived,
     published_rejected: :archived,
     published_on_review: :archived
   }
 
-  STATE_ON_CANCEL = {
+  STATUS_ON_CANCEL = {
     draft_on_review: :draft,
     published: :cancelled,
     published_unverified: :cancelled,

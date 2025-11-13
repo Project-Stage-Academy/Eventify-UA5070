@@ -45,7 +45,7 @@ class EventService
     update_params = @params.dup
     hard_changed = Event.change_hard_fields_to_proposed(update_params)
 
-    new_status = Event::STATE_ON_UPDATE.fetch(event.status.to_sym, nil)
+    new_status = Event::STATUS_ON_UPDATE.fetch(event.status.to_sym, nil)
     update_params[:status] = new_status.respond_to?(:call) ? new_status.call(hard_changed) : new_status
 
     if event.update(update_params)
@@ -56,19 +56,19 @@ class EventService
   end
 
   def publish(event)
-    new_status = Event::STATE_ON_PUBLISH.fetch(event.status.to_sym, nil)
+    new_status = Event::STATUS_ON_PUBLISH.fetch(event.status.to_sym, nil)
 
     update_status(event, new_status)
   end
 
   def archive(event)
-    new_status = Event::STATE_ON_ARCHIVE.fetch(event.status.to_sym, nil)
+    new_status = Event::STATUS_ON_ARCHIVE.fetch(event.status.to_sym, nil)
 
     update_status(event, new_status)
   end
 
   def cancel(event)
-    new_status = Event::STATE_ON_CANCEL.fetch(event.status.to_sym, nil)
+    new_status = Event::STATUS_ON_CANCEL.fetch(event.status.to_sym, nil)
 
     update_status(event, new_status)
   end
