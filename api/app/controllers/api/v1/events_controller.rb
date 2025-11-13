@@ -9,6 +9,8 @@ class Api::V1::EventsController < Api::V1::BaseController
     find_event!(id: :event_id)
   end, only: [ :publish, :archive, :cancel, :copy ]
 
+  before_action -> { authorize @event }, only: [ :update, :publish, :archive, :cancel, :copy ]
+
   def index
     @events = EventService.new(params).fetch
 
@@ -36,8 +38,6 @@ class Api::V1::EventsController < Api::V1::BaseController
   end
 
   def update
-    authorize @event
-
     result = EventService.new(event_params).update(@event)
 
     if result.success
@@ -48,26 +48,18 @@ class Api::V1::EventsController < Api::V1::BaseController
   end
 
   def publish
-    authorize @event
-
     default_respond_on EventService.new.publish(@event)
   end
 
   def archive
-    authorize @event
-
     default_respond_on EventService.new.archive(@event)
   end
 
   def cancel
-    authorize @event
-
     default_respond_on EventService.new.cancel(@event)
   end
 
   def copy
-    authorize @event
-
     respond_on_create EventService.new.copy(@event)
   end
 
