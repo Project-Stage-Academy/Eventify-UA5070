@@ -64,6 +64,11 @@ class Event < ApplicationRecord
     :cancelled
   ].freeze
 
+  STATUS_ON_AUTO_APPROVE = {
+    draft_on_review: :published_unverified,
+    published_on_review: :published_unverified
+  }
+
   MAX_TITLE_LENGTH = 128
   validates :title, presence: true, length: { maximum: MAX_TITLE_LENGTH }, uniqueness: true
   validates :description, length: { maximum: 500 }, allow_blank: true

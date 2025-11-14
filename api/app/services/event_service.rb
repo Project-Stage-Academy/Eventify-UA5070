@@ -39,9 +39,13 @@ class EventService
     hard_changed = Event.change_hard_fields_to_proposed(update_params)
 
     new_status = Event::STATUS_ON_UPDATE.fetch(event.status.to_sym, nil)
-    update_params[:status] = new_status.respond_to?(:call) ? new_status.call(hard_changed) : new_status
+    new_status = new_status.respond_to?(:call) ? new_status.call(hard_changed) : new_status
+
+    update_params[:status] = new_status
 
     if event.update(update_params)
+      schedule_auto_approve(event, new_status)
+
       Result.new(success: true, event: event)
     else
       Result.new(success: false, errors: event.errors.full_messages)
@@ -80,6 +84,8 @@ class EventService
     raise Api::Errors::EventError::InvalidStatusTransition.new() if new_status.nil?
 
     if event.update(status: new_status)
+      schedule_auto_approve(event, new_status)
+
       Result.new(success: true)
     else
       Result.new(success: false, errors: event.errors.full_messages)
@@ -94,5 +100,9 @@ class EventService
     else
       Result.new(success: false, errors: event.errors.full_messages)
     end
+  end
+
+  def schedule_auto_approve(event, new_status)
+    AutoEventApproveJob.after_delay(event.id) if Event::STATUS_ON_AUTO_APPROVE.has_key?(new_status)
   end
 end
