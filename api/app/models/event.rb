@@ -135,6 +135,15 @@ class Event < ApplicationRecord
     self.title = "#{COPY_TITLE_PREFIX}#{self.title}".truncate(MAX_TITLE_LENGTH)
   end
 
+  def cancel_approve_job
+    return if approve_job_id.blank?
+
+    SolidQueue::Job.find_by(id: approve_job_id)&.discard
+    update_column(:approve_job_id, nil)
+  rescue StandardError => e
+    Rails.logger.error("Failed to cancel approve job #{approve_job_id} for Event #{id}: #{e.message}")
+  end
+
   private
 
   def validate_start_date

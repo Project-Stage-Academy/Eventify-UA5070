@@ -83,7 +83,10 @@ class EventService
   def update_status(event, new_status)
     raise Api::Errors::EventError::InvalidStatusTransition.new() if new_status.nil?
 
+    old_status = event.status.to_sym
+
     if event.update(status: new_status)
+      event.cancel_approve_job if Event::STATUS_ON_AUTO_APPROVE.has_key?(old_status)
       schedule_auto_approve(event, new_status)
 
       Result.new(success: true)
@@ -103,6 +106,6 @@ class EventService
   end
 
   def schedule_auto_approve(event, new_status)
-    AutoEventApproveJob.after_delay(event.id) if Event::STATUS_ON_AUTO_APPROVE.has_key?(new_status)
+    AutoEventApproveJob.after_delay(event) if Event::STATUS_ON_AUTO_APPROVE.has_key?(new_status)
   end
 end

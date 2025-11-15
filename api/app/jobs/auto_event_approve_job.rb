@@ -3,8 +3,12 @@ class AutoEventApproveJob < ApplicationJob
 
   DELAY = 24.hours
 
-  def self.after_delay(event_id)
-    set(wait: DELAY).perform_later(event_id)
+  def self.after_delay(event)
+    job_id = set(wait: DELAY).perform_later(event.id)
+
+    unless event.update(approve_job_id: job_id.provider_job_id)
+      Rails.logger.error("Failed to save approve_job_id for Event #{event.id}: #{event.errors.full_messages.join(', ')}")
+    end
   end
 
   def perform(event_id)
