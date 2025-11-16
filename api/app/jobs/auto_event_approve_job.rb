@@ -26,7 +26,7 @@ class AutoEventApproveJob < ApplicationJob
   private
 
   def approve(event)
-    new_status = Event::STATUS_ON_AUTO_APPROVE.fetch(event.status.to_sym, nil)
+    new_status = EventStatusService.new(event).status_on_auto_approve
 
     log_error(event, "Invalid status transition from #{event.status}") if new_status.nil?
 

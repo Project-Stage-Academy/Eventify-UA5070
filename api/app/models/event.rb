@@ -22,52 +22,16 @@ class Event < ApplicationRecord
     :published_rejected
   ].freeze
 
+  COPYABLE = [
+    :archived,
+    :cancelled
+  ].freeze
+
   HARD_TO_PROPOSED = {
     title: :proposed_title,
     description: :proposed_desc,
     location: :proposed_location
   }.freeze
-
-  INITIAL_STATUS = :draft
-
-  STATUS_ON_UPDATE = {
-    draft: :draft,
-    rejected: :draft,
-    published_unverified: :published_unverified,
-    published_rejected: :published_rejected,
-    published_on_review: :published_on_review,
-    published: ->(hard_changed) { hard_changed ? :published_on_review : :published }
-  }.freeze
-
-  STATUS_ON_PUBLISH = {
-    draft: :draft_on_review,
-    published_rejected: :published_on_review
-  }.freeze
-
-  STATUS_ON_ARCHIVE = {
-    published: :archived,
-    published_unverified: :archived,
-    published_rejected: :archived,
-    published_on_review: :archived
-  }.freeze
-
-  STATUS_ON_CANCEL = {
-    draft_on_review: :draft,
-    published: :cancelled,
-    published_unverified: :cancelled,
-    published_rejected: :cancelled,
-    published_on_review: :cancelled
-  }.freeze
-
-  STATUS_ON_COPY = [
-    :archived,
-    :cancelled
-  ].freeze
-
-  STATUS_ON_AUTO_APPROVE = {
-    draft_on_review: :published_unverified,
-    published_on_review: :published_unverified
-  }
 
   MAX_TITLE_LENGTH = 128
   validates :title, presence: true, length: { maximum: MAX_TITLE_LENGTH }, uniqueness: true
@@ -93,6 +57,10 @@ class Event < ApplicationRecord
     JOINABLE.include?(status.to_sym)
   end
 
+  def copyable?
+    COPYABLE.include?(status.to_sym)
+  end
+
   def available_tickets
     participant_capacity - event_members.count
   end
@@ -111,37 +79,6 @@ class Event < ApplicationRecord
         Rails.logger.error("Failed to update rating fields for Event ID #{id}: #{errors.full_messages.join(', ')}")
       end
     end
-  end
-
-  def self.change_hard_fields_to_proposed(params)
-    hard_changed = false
-
-    HARD_TO_PROPOSED.each do |field, proposed_field|
-      next unless params.key?(field)
-
-      params[proposed_field] = params.delete(field)
-      hard_changed = true
-    end
-
-    hard_changed
-  end
-
-  def copyable?
-    STATUS_ON_COPY.include?(status.to_sym)
-  end
-
-  COPY_TITLE_PREFIX = "Copy of: ".freeze
-  def generate_copy_title
-    self.title = "#{COPY_TITLE_PREFIX}#{self.title}".truncate(MAX_TITLE_LENGTH)
-  end
-
-  def cancel_approve_job
-    return if approve_job_id.blank?
-
-    SolidQueue::Job.find_by(id: approve_job_id)&.discard
-    update_column(:approve_job_id, nil)
-  rescue StandardError => e
-    Rails.logger.error("Failed to cancel approve job #{approve_job_id} for Event #{id}: #{e.message}")
   end
 
   private

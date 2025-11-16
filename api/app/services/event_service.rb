@@ -36,15 +36,14 @@ class EventService
 
   def update(event)
     update_params = @params.dup
-    hard_changed = Event.change_hard_fields_to_proposed(update_params)
+    hard_changed = change_hard_fields_to_proposed(update_params)
 
-    new_status = Event::STATUS_ON_UPDATE.fetch(event.status.to_sym, nil)
-    new_status = new_status.respond_to?(:call) ? new_status.call(hard_changed) : new_status
+    new_status = EventStatusService.new(event).status_on_update(hard_changed)
 
     update_params[:status] = new_status
 
     if event.update(update_params)
-      schedule_auto_approve(event, new_status)
+      EventStatusService.new(event).schedule_auto_approve_if_needed(new_status)
 
       Result.new(success: true, event: event)
     else
@@ -53,27 +52,21 @@ class EventService
   end
 
   def publish(event)
-    new_status = Event::STATUS_ON_PUBLISH.fetch(event.status.to_sym, nil)
-
-    update_status(event, new_status)
+    update_status(event, EventStatusService.new(event).status_on_publish)
   end
 
   def archive(event)
-    new_status = Event::STATUS_ON_ARCHIVE.fetch(event.status.to_sym, nil)
-
-    update_status(event, new_status)
+    update_status(event, EventStatusService.new(event).status_on_archive)
   end
 
   def cancel(event)
-    new_status = Event::STATUS_ON_CANCEL.fetch(event.status.to_sym, nil)
-
-    update_status(event, new_status)
+    update_status(event, EventStatusService.new(event).status_on_cancel)
   end
 
   def copy(event)
     raise Api::Errors::EventError::InvalidStatusTransition.new() unless event.copyable?
 
-    event.generate_copy_title
+    EventStatusService.new(event).generate_copy_title
 
     save_new_event event.dup
   end
@@ -81,14 +74,7 @@ class EventService
   private
 
   def update_status(event, new_status)
-    raise Api::Errors::EventError::InvalidStatusTransition.new() if new_status.nil?
-
-    old_status = event.status.to_sym
-
-    if event.update(status: new_status)
-      event.cancel_approve_job if Event::STATUS_ON_AUTO_APPROVE.has_key?(old_status)
-      schedule_auto_approve(event, new_status)
-
+    if EventStatusService.new(event).update_status(new_status)
       Result.new(success: true)
     else
       Result.new(success: false, errors: event.errors.full_messages)
@@ -96,7 +82,7 @@ class EventService
   end
 
   def save_new_event(event)
-    event.status = Event::INITIAL_STATUS
+    event.status = EventStatusService::INITIAL_STATUS
 
     if event.save
       Result.new(success: true, event: event)
@@ -105,7 +91,16 @@ class EventService
     end
   end
 
-  def schedule_auto_approve(event, new_status)
-    AutoEventApproveJob.after_delay(event) if Event::STATUS_ON_AUTO_APPROVE.has_key?(new_status)
+  def change_hard_fields_to_proposed(params)
+    hard_changed = false
+
+    Event::HARD_TO_PROPOSED.each do |field, proposed_field|
+      next unless params.key?(field)
+
+      params[proposed_field] = params.delete(field)
+      hard_changed = true
+    end
+
+    hard_changed
   end
 end

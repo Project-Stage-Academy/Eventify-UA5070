@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe AutoEventApproveJob, type: :job do
   include ActiveJob::TestHelper
 
-  let(:status) { Event::STATUS_ON_AUTO_APPROVE.keys.first }
+  let(:status) { :draft_on_review }
   let(:event) { create(:event, status: status) }
 
   describe "::after_delay" do
@@ -39,7 +39,7 @@ RSpec.describe AutoEventApproveJob, type: :job do
           perform_enqueued_jobs { job }
         }.to change { event.reload.status.to_sym }
           .from(status)
-          .to(Event::STATUS_ON_AUTO_APPROVE[status])
+          .to(EventStatusService.new(event).status_on_auto_approve)
       end
     end
 
