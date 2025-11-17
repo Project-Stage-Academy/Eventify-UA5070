@@ -31,7 +31,28 @@ export type AuthResponse = {
 
 export class AuthService {
   async register(input: RegisterInput): Promise<AuthResponse> {
-    const res = await fetch(`${env.apiUrl}/v1/auth/register`, {
+    const url = `${env.apiUrl}/v1/auth/register`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    });
+
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error('AuthService.register - Error response:', text);
+      throw new Error(text || `Register failed ${res.status}`);
+    }
+
+    const data = await res.json();
+    return data as AuthResponse;
+  }
+
+  async login(input: LoginInput): Promise<AuthResponse> {
+    const url = `${env.apiUrl}/v1/auth/login`;
+
+    const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(input),
@@ -39,19 +60,11 @@ export class AuthService {
 
     if (!res.ok) {
       const text = await res.text();
-      throw new Error(text || `Register failed ${res.status}`);
+      console.error('AuthService.login - Error response:', text);
+      throw new Error(text);
     }
 
-    return res.json() as Promise<AuthResponse>;
-  }
-
-  async login(input: LoginInput): Promise<AuthResponse> {
-    const res = await fetch(`${env.apiUrl}/v1/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json() as Promise<AuthResponse>;
+    const data = await res.json();
+    return data as AuthResponse;
   }
 }
